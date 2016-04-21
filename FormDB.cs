@@ -30,7 +30,7 @@ namespace Dandaan
             // i want something responsive, in case it takes
             // a long time to connect to db
 
-            textBox1.AppendText("در حال اتصال به دیتابیس...\r\n");
+            textBox1.AppendText("در حال اتصال به دیتابیس، لطفا صبر کنید...\r\n");
 
             threadDB = new Thread(() =>
             {
