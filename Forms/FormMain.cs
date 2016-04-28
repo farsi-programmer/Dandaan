@@ -15,7 +15,44 @@ namespace Dandaan
     {
         public FormMain()
         {
+            // Order is important
+
             InitializeComponent();
+
+            FormClosing += FormMain_FormClosing;
+
+#if using_ef || using_sqlite
+            DB.Run((c) =>
+            {
+                var s = c.Settings.FirstOrDefault();
+
+                if (s != null)
+                {
+                    if (s.FormMainWindowState != FormWindowState.Minimized)
+                        WindowState = s.FormMainWindowState;
+                }
+            });
+#endif
+        }
+
+        private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            /*DB.Run((c) =>
+            {          
+                if (c.Settings.Count() == 0)
+                {
+                    c.Settings.Add(new Setting() { FormMainWindowState = WindowState });
+                }
+                else
+                    c.Settings.First().FormMainWindowState = WindowState;
+
+                c.SaveChanges();
+            });*/
+        }
+
+        private void FormMain_SizeChanged(object sender, EventArgs e)
+        {
+            
         }
 
         private void FormMain_Load(object sender, EventArgs e)
@@ -32,7 +69,9 @@ namespace Dandaan
         {
             Parallel.For(0, 10, new Action<int>((i) =>
             {
+#if using_ef || using_sqlite
                 DB.Run((c) => FormLogger.Log("تست " + c.Logs.Count()));
+#endif
             }));
         }
 
@@ -59,6 +98,11 @@ namespace Dandaan
         private void FormMain_VisibleChanged(object sender, EventArgs e)
         {
             ;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
         }
     }
 

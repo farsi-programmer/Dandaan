@@ -1,23 +1,34 @@
-﻿//#define using_sqlite
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Data.Entity.Infrastructure;
-using System.Data.Entity;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Data.Entity.Core.Common;
-using System.Reflection;
-#if using_sqlite
-using System.Data.SQLite.EF6;
-using System.Data.SQLite;
-#endif
+﻿// http://offtopic.blog.ir/
 
 namespace Dandaan
 {
+    //#define using_sqlite
+    //#define using_ef
+    using System;
+    using System.Globalization;
+    using System.IO;
+    using System.Collections.Generic;
+    using System.Data.Common;
+#if using_ef || using_sqlite
+    using System.Data.Entity.Infrastructure;
+    using System.Data.Entity;
+    using System.Data.Entity.Migrations;
+    using System.Data.Entity.Core.Common;
+#else
+    using System.Data.SqlTypes;
+#endif
+    using System.Data.SqlClient;
+    using System.Linq;
+    using System.Windows.Forms;
+    using System.Text;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using System.Reflection;
+#if using_sqlite
+    using System.Data.SQLite.EF6;
+    using System.Data.SQLite;
+#endif
+
 #if using_sqlite
     class DB
     {
@@ -110,11 +121,17 @@ namespace Dandaan
 #else
     class DB
     {
-        public const string ConnectionString = @"Data Source=(LocalDB)\mssqllocaldb;AttachDbFilename=|DataDirectory|\Dandaan.mdf;"
+        // TODO: We should use a text file for storing the connection string,
+        // we might want to use sql server (express)
+
+        public static string ConnectionString(bool AttachDb = true) =>
+            @"Data Source=(LocalDB)\mssqllocaldb;"
+              + (AttachDb ? $@"AttachDbFilename=|DataDirectory|\{nameof(Dandaan)}.mdf;" : "")
             //+ @"Initial Catalog=Dandaan;"
-            //+ @"APP=Dandaan";
+            //+ @"APP=Dandaan;"
             + @"Integrated Security=True;MultipleActiveResultSets=True;";
 
+#if using_ef
         static MyDbContext firstContext = new MyDbContext(ConnectionString);
 
         public static void Init()
@@ -189,6 +206,8 @@ namespace Dandaan
                     cmd.CommandText = sql;
                     result = cmd.ExecuteNonQuery();
                 }
+
+                //context.Database.ExecuteSqlCommand(sql
             });
 
             return result;
@@ -211,20 +230,251 @@ namespace Dandaan
         }
     }
 
+    internal sealed class Configuration : DbMigrationsConfiguration<MyDbContext>
+    {
+        public Configuration()
+        {
+            AutomaticMigrationsEnabled = true;
+        }
+
+        protected override void Seed(MyDbContext context)
+        {
+            //  This method will be called after migrating to the latest version.
+
+            //  You can use the DbSet<T>.AddOrUpdate() helper extension method
+            //  to avoid creating duplicate seed data. E.g.
+            //
+            //    context.People.AddOrUpdate(
+            //      p => p.FullName,
+            //      new Person { FullName = "Andrew Peters" },
+            //      new Person { FullName = "Brice Lambson" },
+            //      new Person { FullName = "Rowan Miller" }
+            //    );
+            //
+        }
+    }  
+
     public class MyDbContext : DbContext
     {
         public MyDbContext(string cs) : base(cs)
         {
+            // Or use the Profiler
             //Database.Log = s => System.Windows.Forms.MessageBox.Show(s);
+        }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            Database.SetInitializer<MyDbContext>(new MigrateDatabaseToLatestVersion<MyDbContext, Configuration>(true));
+            base.OnModelCreating(modelBuilder);
         }
 
         public DbSet<Log> Logs { get; set; }
 
         public DbSet<Patient> Patients { get; set; }
+
+        public DbSet<Setting> Settings { get; set; }
+#else
+        static SqlConnection firstConnection = new SqlConnection();
+
+        /*public const string DB_DIRECTORY = "Data";
+
+        public static SqlConnection GetLocalDB(string dbName, bool deleteIfExists = false)
+        {
+            try
+            {
+                string outputFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), DB_DIRECTORY);
+                string mdfFilename = dbName + ".mdf";
+                string dbFileName = Path.Combine(outputFolder, mdfFilename);
+                string logFileName = Path.Combine(outputFolder, String.Format("{0}_log.ldf", dbName));
+                // Create Data Directory If It Doesn't Already Exist.
+                if (!Directory.Exists(outputFolder))
+                {
+                    Directory.CreateDirectory(outputFolder);
+                }
+
+                // If the file exists, and we want to delete old data, remove it here and create a new database.
+                if (File.Exists(dbFileName) && deleteIfExists)
+                {
+                    if (File.Exists(logFileName)) File.Delete(logFileName);
+                    File.Delete(dbFileName);
+                    CreateDatabase(dbName, dbFileName);
+                }
+                // If the database does not already exist, create it.
+                else if (!File.Exists(dbFileName))
+                {
+                    CreateDatabase(dbName, dbFileName);
+                }
+
+                // Open newly created, or old database.
+                string connectionString = String.Format(@"Data Source=(LocalDB)\v11.0;AttachDBFileName={1};Initial Catalog={0};Integrated Security=True;", dbName, dbFileName);
+                SqlConnection connection = new SqlConnection(connectionString);
+                connection.Open();
+                return connection;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public static bool CreateDatabase(string dbName, string dbFileName)
+        {
+            try
+            {
+                string connectionString = String.Format(@"Data Source=(LocalDB)\v11.0;Initial Catalog=master;Integrated Security=True");
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    SqlCommand cmd = connection.CreateCommand();
+
+
+                    DetachDatabase(dbName);
+
+                    cmd.CommandText = String.Format("CREATE DATABASE {0} ON (NAME = N'{0}', FILENAME = '{1}')", dbName, dbFileName);
+                    cmd.ExecuteNonQuery();
+                }
+
+                if (File.Exists(dbFileName)) return true;
+                else return false;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public static bool DetachDatabase(string dbName)
+        {
+            try
+            {
+                string connectionString = String.Format(@"Data Source=(LocalDB)\v11.0;Initial Catalog=master;Integrated Security=True");
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    SqlCommand cmd = connection.CreateCommand();
+                    cmd.CommandText = String.Format("exec sp_detach_db '{0}'", dbName);
+                    cmd.ExecuteNonQuery();
+
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }*/
+
+        public static SqlConnection Connection
+        {
+            get
+            {
+                if (Monitor.TryEnter(firstConnection))
+                    try
+                    {
+                        return firstConnection;
+                    }
+                    finally
+                    {
+                        Monitor.Exit(firstConnection);
+                    }
+                else
+                    using (var connection = new SqlConnection(ConnectionString()))
+                    {
+                        try
+                        {
+                            connection.Open();
+                            return connection;
+                        }
+                        finally
+                        {
+                            connection.Close();
+                        }
+                    }
+            }
+        }
+
+        public static object ExecuteScalar(string sql)
+        {
+            var cmd = Connection.CreateCommand();
+            cmd.CommandText = sql;
+            return cmd.ExecuteScalar();
+        }
+
+        public static void Init()
+        {
+            //Thread.Sleep(5000);            
+
+            AttachOrCreateDatabase();
+
+            // we can have a db version information
+
+            var tables = Assembly.GetExecutingAssembly().GetTypes()
+                .Where(t => t.IsClass && t.Namespace == nameof(Dandaan) + "." + nameof(Tables));
+
+            foreach (var t in tables) CreateTable(t);
+        }
+
+        static void AttachOrCreateDatabase()
+        {
+            var dir = AppDomain.CurrentDomain.GetData("DataDirectory");
+            var name = nameof(Dandaan);
+            var mdf = ".mdf";
+
+            /*if ((int)DB.ExecuteScalar($@"if db_id(N'{name}') is not null select 1
+else select count(*) from sys.databases where [name]=N'{name}'") < 1)*/
+
+            if (File.Exists(dir + "\\" + name + mdf))
+            {
+                firstConnection.ConnectionString = ConnectionString();
+                firstConnection.Open();
+            }
+            else
+            {
+                firstConnection.ConnectionString = ConnectionString(false);
+                firstConnection.Open();
+
+                DB.ExecuteScalar($@"create database
+{name + "_" + Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture)/*this is how ef does it*/}
+on (name={name}, filename='{dir}\{name}{mdf}')
+log on (name={name}_log, filename='{dir}\{name}_log.ldf')");
+
+                firstConnection.Close();
+                firstConnection.ConnectionString = ConnectionString();
+                firstConnection.Open();
+            }
+        }
+
+        public static void CreateTable(Type table)
+        {
+            // if a table doesn't exist, we create it, and
+            // if does exist, we add the missing columns,
+            // migrate data, remove columns, ...
+
+            /*@"IF(EXISTS(SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='" + table.Name + @"'))
+                BEGIN
+                    --
+                END
+            ELSE
+                BEGIN
+                    --
+                END"*/
+        }
+
+        public static void Close()
+        {
+            try
+            {
+                firstConnection.Close();
+                firstConnection.Dispose();
+            }
+            catch { }
+        }
+#endif
     }
 #endif
 
-    public class MyConfiguration : DbConfiguration
+#if using_ef || using_sqlite
+        public class MyConfiguration : DbConfiguration
     {
         public MyConfiguration()
         {
@@ -238,24 +488,45 @@ namespace Dandaan
 #endif
         }
     }
+#endif
 
-    public class Log
+
+    namespace Tables
     {
-        public Log()
+        public class Log
         {
-            DateTime = DateTime.Now;
+            public Log()
+            {
+                DateTime = DateTime.Now;
+            }
+
+            public int Id { get; set; }
+
+            public string Message { get; set; }
+
+            public DateTime DateTime { get; set; }
         }
 
-        public int Id { get; set; }
+        public class Patient
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+        }
 
-        public string Message { get; set; }
+        public class Setting
+        {
+            public int Id { get; set; }
 
-        public DateTime DateTime { get; set; }
-    }
+            public User User { get; set; }
 
-    public class Patient
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
+            public FormWindowState FormMainWindowState { get; set; }
+        }
+
+        public class User
+        {
+            public int Id { get; set; }
+
+            public string Name { get; set; }
+        }
     }
 }
