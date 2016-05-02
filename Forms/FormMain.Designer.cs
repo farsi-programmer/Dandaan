@@ -52,6 +52,7 @@
             this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.toolStrip2.SuspendLayout();
@@ -205,14 +206,14 @@
             this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(61, 32);
+            this.toolStripButton2.Size = new System.Drawing.Size(62, 32);
             this.toolStripButton2.Text = "نوبت";
             this.toolStripButton2.TextDirection = System.Windows.Forms.ToolStripTextDirection.Horizontal;
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(61, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(62, 6);
             this.toolStripSeparator2.TextDirection = System.Windows.Forms.ToolStripTextDirection.Vertical90;
             // 
             // toolStripButton3
@@ -221,14 +222,14 @@
             this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
             this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(61, 32);
+            this.toolStripButton3.Size = new System.Drawing.Size(62, 32);
             this.toolStripButton3.Text = "خانواده";
             this.toolStripButton3.TextDirection = System.Windows.Forms.ToolStripTextDirection.Horizontal;
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(61, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(62, 6);
             this.toolStripSeparator4.TextDirection = System.Windows.Forms.ToolStripTextDirection.Vertical90;
             // 
             // toolStripButton4
@@ -237,14 +238,14 @@
             this.toolStripButton4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton4.Image")));
             this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton4.Name = "toolStripButton4";
-            this.toolStripButton4.Size = new System.Drawing.Size(61, 32);
+            this.toolStripButton4.Size = new System.Drawing.Size(62, 32);
             this.toolStripButton4.Text = "حساب";
             this.toolStripButton4.TextDirection = System.Windows.Forms.ToolStripTextDirection.Horizontal;
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(61, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(62, 6);
             this.toolStripSeparator3.TextDirection = System.Windows.Forms.ToolStripTextDirection.Vertical90;
             // 
             // button4
@@ -277,11 +278,22 @@
             this.button6.Text = "صندوق";
             this.button6.UseVisualStyleBackColor = true;
             // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(516, 562);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(75, 23);
+            this.button7.TabIndex = 9;
+            this.button7.Text = "button7";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(931, 678);
+            this.Controls.Add(this.button7);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
@@ -334,6 +346,7 @@
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Button button7;
     }
 }
 

@@ -31,6 +31,8 @@ namespace Dandaan
 
         private void button1_Click(object sender, EventArgs e)
         {
+            textBox1.Clear();
+
 #if using_ef || using_sqlite
             DB.Run((context) =>
             {

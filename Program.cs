@@ -56,7 +56,7 @@ namespace Dandaan
 
         private static void Application_ApplicationExit(object sender, EventArgs e)
         {
-            DB.Close();
+            ;
         }
     }
 }

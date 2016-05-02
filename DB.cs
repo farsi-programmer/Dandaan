@@ -1,9 +1,10 @@
 ﻿// http://offtopic.blog.ir/
 
+//#define using_sqlite
+//#define using_ef
+
 namespace Dandaan
 {
-    //#define using_sqlite
-    //#define using_ef
     using System;
     using System.Data;
     using System.Data.Linq;
@@ -11,21 +12,18 @@ namespace Dandaan
     using System.Globalization;
     using System.IO;
     using System.Collections.Generic;
-    using System.Data.Common;
 #if using_ef || using_sqlite
+    using System.Data.Common;
     using System.Data.Entity.Infrastructure;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Data.Entity.Core.Common;
-#else
-    using System.Data.SqlTypes;
 #endif
     using System.Data.SqlClient;
     using System.Linq;
     using System.Windows.Forms;
     using System.Text;
     using System.Threading;
-    using System.Threading.Tasks;
     using System.Reflection;
 #if using_sqlite
     using System.Data.SQLite.EF6;
@@ -124,12 +122,14 @@ namespace Dandaan
 #else
     class DB
     {
-        // TODO: We should use a text file for storing the connection string,
+        // TODO: we should use a text file for storing the connection string,
         // we might want to use sql server (express)
 
-        public static string ConnectionString(bool AttachDb = true) =>
+        private static bool attachDb = false;
+
+        public static string ConnectionString =>
             @"Data Source=(LocalDB)\mssqllocaldb;"
-              + (AttachDb ? $@"AttachDbFilename=|DataDirectory|\{nameof(Dandaan)}.mdf;" : "")
+              + (attachDb ? $@"AttachDbFilename=|DataDirectory|\{nameof(Dandaan)}.mdf;" : "")
             //+ @"Initial Catalog=Dandaan;"
             //+ @"APP=Dandaan;"
             + @"Integrated Security=True;MultipleActiveResultSets=True;";
@@ -279,7 +279,6 @@ namespace Dandaan
 
         public DbSet<Setting> Settings { get; set; }
 #else
-        private static SqlConnection firstConnection = new SqlConnection();
 
         /*public const string DB_DIRECTORY = "Data";
 
@@ -373,61 +372,39 @@ namespace Dandaan
         {
             get
             {
-                if (Monitor.TryEnter(firstConnection))
-                    try
-                    {
-                        return firstConnection;
-                    }
-                    finally
-                    {
-                        Monitor.Exit(firstConnection);
-                    }
-                else
-                    using (var connection = new SqlConnection(ConnectionString()))
-                    {
-                        try
-                        {
-                            connection.Open();
-                            return connection;
-                        }
-                        finally
-                        {
-                            connection.Close();
-                        }
-                    }
+                var connection = new SqlConnection(ConnectionString);
+                connection.Open();
+                return connection;
             }
         }
 
-        public static MyLinqContext LinqContext
+        public static MyLinqContext LinqContext => new MyLinqContext(ConnectionString);
+
+        public static void LinqContextRun(Action<MyLinqContext> act)
         {
-            get
-            {
-                using (var context = new MyLinqContext(Connection)) return context;
-            }
+            using (var context = DB.LinqContext) act(context);
         }
 
         public static object ExecuteScalar(string sql, params SqlParameter[] sps)
         {
-            var cmd = Connection.CreateCommand();
-            cmd.CommandText = sql;
-            foreach (var p in sps) cmd.Parameters.Add(p);
-            return cmd.ExecuteScalar();
+            using (var connection = Connection)
+            using (var cmd = connection.CreateCommand())
+            {
+                cmd.CommandText = sql;
+                foreach (var p in sps) cmd.Parameters.Add(p);
+                return cmd.ExecuteScalar();
+            }
         }
 
         public static int ExecuteNonQuery(string sql, params SqlParameter[] sps)
         {
-            var cmd = Connection.CreateCommand();
-            cmd.CommandText = sql;
-            foreach (var p in sps) cmd.Parameters.Add(p);
-            return cmd.ExecuteNonQuery();
-        }
-
-        public static SqlDataReader ExecuteReader(string sql, CommandBehavior behavior = CommandBehavior.Default, params SqlParameter[] sps)
-        {
-            var cmd = Connection.CreateCommand();
-            cmd.CommandText = sql;
-            foreach (var p in sps) cmd.Parameters.Add(p);
-            return cmd.ExecuteReader(behavior);
+            using (var connection = Connection)
+            using (var cmd = connection.CreateCommand())
+            {
+                cmd.CommandText = sql;
+                foreach (var p in sps) cmd.Parameters.Add(p);
+                return cmd.ExecuteNonQuery();
+            }
         }
 
         public static void Init()
@@ -469,25 +446,15 @@ namespace Dandaan
             /*if ((int)DB.ExecuteScalar($@"if db_id(N'{name}') is not null select 1
 else select count(*) from sys.databases where [name]=N'{name}'") < 1)*/
 
-            if (File.Exists(Dir + "\\" + name + mdf))
-            {
-                firstConnection.ConnectionString = ConnectionString();
-                firstConnection.Open();
-            }
-            else
-            {
-                firstConnection.ConnectionString = ConnectionString(false);
-                firstConnection.Open();
-
+            if (!File.Exists(Dir + "\\" + name + mdf))
+            {          
                 ExecuteScalar($@"create database
 {name}_{Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture)/*this is how ef does it*/}
 on (name={name}, filename='{Dir}\{name}{mdf}')
 log on (name={name}_log, filename='{Dir}\{name}_log.ldf')");
-
-                firstConnection.Close();
-                firstConnection.ConnectionString = ConnectionString();
-                firstConnection.Open();
             }
+
+            attachDb = true;
         }
 
         /*public static void CreateTable(Type tableType)
@@ -544,18 +511,12 @@ where table_name=N'{tableName}'") > 0;
                 }
             }
         }
-
-        public static void Close()
-        {
-            firstConnection.Close();
-            firstConnection.Dispose();
-        }
 #endif
     }
 #endif
 
 #if using_ef || using_sqlite
-        public class MyConfiguration : DbConfiguration
+    public class MyConfiguration : DbConfiguration
     {
         public MyConfiguration()
         {
@@ -590,18 +551,13 @@ where table_name=N'{tableName}'") > 0;
         [Table(Name = "Log")]
         public class Log
         {
-            [Column(IsPrimaryKey = true, IsDbGenerated = true)]
+            [Column]//[Column(IsPrimaryKey = true, IsDbGenerated = true)]
             public int Id { get; set; }
 
             [Column]
             public string Message { get; set; }
-            /*{
-                get 
 
-                set { if (value.Length > 800) value = value.Substring(0, 800); }
-            }*/
-
-            [Column(IsDbGenerated = true)]
+            [Column]//[Column(IsDbGenerated = true)]
             public DateTime DateTime { get; set; }
            
             public const string CreateTable = @"
@@ -622,40 +578,39 @@ END";
 
             public static IEnumerable<Log> Select()
             {
-                /*var sdr = DB.ExecuteReader(@"SELECT * FROM log ORDER BY id");
-
-                while (sdr.Read())
+                /*using (var connection = DB.Connection)
+                using (var cmd = connection.CreateCommand())
                 {
-                    yield return new Log()
+                    cmd.CommandText = @"SELECT * FROM log ORDER BY id";
+                    var sdr = cmd.ExecuteReader();
+                    while (sdr.Read())
                     {
-                        Id = (int)sdr[nameof(Id)],
-                        DateTime = (DateTime)sdr[nameof(DateTime)],
-                        Message = (string)sdr[nameof(Message)]
-                    };
-                }*/
+                        yield return new Log()
+                        {
+                            Id = (int)sdr[nameof(Id)],
+                            DateTime = (DateTime)sdr[nameof(DateTime)],
+                            Message = (string)sdr[nameof(Message)]
+                        };
+                    }
+                    sdr.Close();
+                }*/               
 
-                using (var en = DB.LinqContext.Logs.GetEnumerator())
+                using (var context = DB.LinqContext)
+                using (var en = context.Logs.GetEnumerator())
                     while (en.MoveNext())
                         yield return en.Current;
             }
 
             public static void Insert(Log log)
             {
-                //DB.ExecuteNonQuery(@"INSERT INTO [dbo].[log] ([message]) VALUES(@message)",
-                //new SqlParameter("@message", SqlDbType.NVarChar, 800) { Value = log.Message });
+                DB.ExecuteNonQuery(@"INSERT INTO [dbo].[log] ([message]) VALUES(@message)",
+                    new SqlParameter("@message", SqlDbType.NVarChar, 800) { Value = log.Message });
 
-                try
+                /*DB.LinqContextRun((context) =>
                 {
-                    //DB.LinqContext.Logs.InsertOnSubmit(log);
-                    //DB.LinqContext.SubmitChanges();
-
-                    var db = DB.Connection;
-
-                    new Thread(new ThreadStart(new Action(() => MessageBox.Show(DB.Connection.Database)))).Start();
-
-                    MessageBox.Show(DB.Connection.Database);
-                }
-                catch (Exception ex) { MessageBox.Show(ex+""); }
+                    context.Logs.InsertOnSubmit(log);
+                    context.SubmitChanges();
+                });*/
             }
         }
 

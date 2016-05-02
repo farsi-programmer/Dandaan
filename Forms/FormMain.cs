@@ -67,10 +67,12 @@ namespace Dandaan
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Parallel.For(0, 10, new Action<int>((i) =>
+            Parallel.For(0, 10000, new ParallelOptions() { MaxDegreeOfParallelism = 1000 }, new Action<int>((i) =>
             {
 #if using_ef || using_sqlite
                 DB.Run((c) => FormLogger.Log("تست " + c.Logs.Count()));
+#else
+                Tables.Log.Insert(new Tables.Log() { Message = i + "" });
 #endif
             }));
         }
@@ -103,6 +105,11 @@ namespace Dandaan
         private void button3_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(DB.Connection.Database);
         }
     }
 
