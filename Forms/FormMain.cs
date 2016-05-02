@@ -87,7 +87,7 @@ namespace Dandaan
 
         private void button2_Click(object sender, EventArgs e)
         {
-            ;
+            DB.Log(@"xyz");
         }
 
         private void FormMain_Shown(object sender, EventArgs e)

@@ -5,6 +5,9 @@ namespace Dandaan
     //#define using_sqlite
     //#define using_ef
     using System;
+    using System.Data;
+    using System.Data.Linq;
+    using System.Data.Linq.Mapping;
     using System.Globalization;
     using System.IO;
     using System.Collections.Generic;
@@ -130,6 +133,8 @@ namespace Dandaan
             //+ @"Initial Catalog=Dandaan;"
             //+ @"APP=Dandaan;"
             + @"Integrated Security=True;MultipleActiveResultSets=True;";
+
+        public static readonly string Dir = Application.StartupPath;
 
 #if using_ef
         static MyDbContext firstContext = new MyDbContext(ConnectionString);
@@ -274,7 +279,7 @@ namespace Dandaan
 
         public DbSet<Setting> Settings { get; set; }
 #else
-        static SqlConnection firstConnection = new SqlConnection();
+        private static SqlConnection firstConnection = new SqlConnection();
 
         /*public const string DB_DIRECTORY = "Data";
 
@@ -393,11 +398,36 @@ namespace Dandaan
             }
         }
 
-        public static object ExecuteScalar(string sql)
+        public static MyLinqContext LinqContext
+        {
+            get
+            {
+                using (var context = new MyLinqContext(Connection)) return context;
+            }
+        }
+
+        public static object ExecuteScalar(string sql, params SqlParameter[] sps)
         {
             var cmd = Connection.CreateCommand();
             cmd.CommandText = sql;
+            foreach (var p in sps) cmd.Parameters.Add(p);
             return cmd.ExecuteScalar();
+        }
+
+        public static int ExecuteNonQuery(string sql, params SqlParameter[] sps)
+        {
+            var cmd = Connection.CreateCommand();
+            cmd.CommandText = sql;
+            foreach (var p in sps) cmd.Parameters.Add(p);
+            return cmd.ExecuteNonQuery();
+        }
+
+        public static SqlDataReader ExecuteReader(string sql, CommandBehavior behavior = CommandBehavior.Default, params SqlParameter[] sps)
+        {
+            var cmd = Connection.CreateCommand();
+            cmd.CommandText = sql;
+            foreach (var p in sps) cmd.Parameters.Add(p);
+            return cmd.ExecuteReader(behavior);
         }
 
         public static void Init()
@@ -406,24 +436,40 @@ namespace Dandaan
 
             AttachOrCreateDatabase();
 
-            // we can have a db version information
+            //ExecuteNonQuery(File.ReadAllText(Dir + "\\" + nameof(Dandaan) + ".sql"));
+
+            var sb = new StringBuilder();
+            sb.AppendLine(@"BEGIN TRANSACTION");
 
             var tables = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(t => t.IsClass && t.Namespace == nameof(Dandaan) + "." + nameof(Tables));
+                .Where(t => t.IsClass && t.Namespace == nameof(Dandaan) + "." + nameof(Tables)
+                && t.IsPublic/*this is necessary because of ienumerable*/);
 
-            foreach (var t in tables) CreateTable(t);
+            foreach (var t in tables)
+            {
+                //CreateTable(t);
+
+                var f = t.GetField(nameof(Tables.Log.CreateTable));
+
+                //if (f != null)
+                sb.AppendLine((string)f.GetRawConstantValue());
+            }
+
+            sb.AppendLine(@"COMMIT");
+
+            //MessageBox.Show(sb.ToString());
+            ExecuteNonQuery(sb.ToString());
         }
 
-        static void AttachOrCreateDatabase()
+        private static void AttachOrCreateDatabase()
         {
-            var dir = AppDomain.CurrentDomain.GetData("DataDirectory");
             var name = nameof(Dandaan);
             var mdf = ".mdf";
 
             /*if ((int)DB.ExecuteScalar($@"if db_id(N'{name}') is not null select 1
 else select count(*) from sys.databases where [name]=N'{name}'") < 1)*/
 
-            if (File.Exists(dir + "\\" + name + mdf))
+            if (File.Exists(Dir + "\\" + name + mdf))
             {
                 firstConnection.ConnectionString = ConnectionString();
                 firstConnection.Open();
@@ -433,10 +479,10 @@ else select count(*) from sys.databases where [name]=N'{name}'") < 1)*/
                 firstConnection.ConnectionString = ConnectionString(false);
                 firstConnection.Open();
 
-                DB.ExecuteScalar($@"create database
-{name + "_" + Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture)/*this is how ef does it*/}
-on (name={name}, filename='{dir}\{name}{mdf}')
-log on (name={name}_log, filename='{dir}\{name}_log.ldf')");
+                ExecuteScalar($@"create database
+{name}_{Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture)/*this is how ef does it*/}
+on (name={name}, filename='{Dir}\{name}{mdf}')
+log on (name={name}_log, filename='{Dir}\{name}_log.ldf')");
 
                 firstConnection.Close();
                 firstConnection.ConnectionString = ConnectionString();
@@ -444,30 +490,65 @@ log on (name={name}_log, filename='{dir}\{name}_log.ldf')");
             }
         }
 
-        public static void CreateTable(Type table)
+        /*public static void CreateTable(Type tableType)
         {
             // if a table doesn't exist, we create it, and
-            // if does exist, we add the missing columns,
+            // if it does exist, we add the missing columns,
             // migrate data, remove columns, ...
 
-            /*@"IF(EXISTS(SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='" + table.Name + @"'))
-                BEGIN
-                    --
-                END
-            ELSE
-                BEGIN
-                    --
-                END"*/
+            if (!TableExists(tableType.Name))
+                ;//ExecuteNonQuery($@"{tableType.Name}");
+            else
+            {
+                ;
+            }
+        }*/
+
+        public static bool TableExists(string tableName)
+        {
+            return (int)ExecuteScalar($@"select count(*) from information_schema.tables
+where table_name=N'{tableName}'") > 0;
+        }
+
+        // from ef
+        public static string AppendStringLiteral(string literalValue)
+        {
+            return "N'" + literalValue.Replace("'", "''") + "'";
+        }
+
+        public static void Log(string message)
+        {
+            try
+            {
+                Tables.Log.Insert(new Tables.Log() { Message = message });
+            }
+            catch
+            {
+                Mutex mutex = null;
+
+                try
+                {
+                    var name = nameof(Dandaan);
+
+                    mutex = new Mutex(false, "Global\\" + name + "Log");
+                    mutex.WaitOne();
+
+                    File.AppendAllText(Dir + "\\" + name + ".txt",
+                        name + "\t\t" + DateTime.Now.ToString(CultureInfo.InvariantCulture)
+                        + "\r\n" + message + "\r\n\r\n");
+                }
+                catch { }
+                finally
+                {
+                    mutex?.ReleaseMutex();
+                }
+            }
         }
 
         public static void Close()
         {
-            try
-            {
-                firstConnection.Close();
-                firstConnection.Dispose();
-            }
-            catch { }
+            firstConnection.Close();
+            firstConnection.Dispose();
         }
 #endif
     }
@@ -490,24 +571,95 @@ log on (name={name}_log, filename='{dir}\{name}_log.ldf')");
     }
 #endif
 
+    public class MyLinqContext : DataContext
+    {
+        public Table<Tables.Log> Logs;
+
+        public MyLinqContext(string connection) : base(connection) { }
+
+        public MyLinqContext(SqlConnection connection) : base(connection) { }
+    }
 
     namespace Tables
     {
+        /*public class DatabaseInfo
+        {
+            public int Version { get; set; }
+        }*/
+
+        [Table(Name = "Log")]
         public class Log
         {
-            public Log()
-            {
-                DateTime = DateTime.Now;
-            }
-
+            [Column(IsPrimaryKey = true, IsDbGenerated = true)]
             public int Id { get; set; }
 
+            [Column]
             public string Message { get; set; }
+            /*{
+                get 
 
+                set { if (value.Length > 800) value = value.Substring(0, 800); }
+            }*/
+
+            [Column(IsDbGenerated = true)]
             public DateTime DateTime { get; set; }
+           
+            public const string CreateTable = @"
+IF (SELECT count(*) FROM information_schema.tables WHERE table_name=N'log') < 1
+BEGIN
+	CREATE TABLE [dbo].[log](
+		[id] [int] IDENTITY(1,1) NOT NULL,
+		[message] [nvarchar](800) NOT NULL,
+		[datetime] [smalldatetime] NOT NULL,
+	 CONSTRAINT [PK_log] PRIMARY KEY CLUSTERED 
+	(
+		[id] ASC
+	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+	) ON [PRIMARY]
+
+	ALTER TABLE [dbo].[log] ADD  CONSTRAINT [DF_log_datetime]  DEFAULT (getdate()) FOR [datetime]
+END";
+
+            public static IEnumerable<Log> Select()
+            {
+                /*var sdr = DB.ExecuteReader(@"SELECT * FROM log ORDER BY id");
+
+                while (sdr.Read())
+                {
+                    yield return new Log()
+                    {
+                        Id = (int)sdr[nameof(Id)],
+                        DateTime = (DateTime)sdr[nameof(DateTime)],
+                        Message = (string)sdr[nameof(Message)]
+                    };
+                }*/
+
+                using (var en = DB.LinqContext.Logs.GetEnumerator())
+                    while (en.MoveNext())
+                        yield return en.Current;
+            }
+
+            public static void Insert(Log log)
+            {
+                //DB.ExecuteNonQuery(@"INSERT INTO [dbo].[log] ([message]) VALUES(@message)",
+                //new SqlParameter("@message", SqlDbType.NVarChar, 800) { Value = log.Message });
+
+                try
+                {
+                    //DB.LinqContext.Logs.InsertOnSubmit(log);
+                    //DB.LinqContext.SubmitChanges();
+
+                    var db = DB.Connection;
+
+                    new Thread(new ThreadStart(new Action(() => MessageBox.Show(DB.Connection.Database)))).Start();
+
+                    MessageBox.Show(DB.Connection.Database);
+                }
+                catch (Exception ex) { MessageBox.Show(ex+""); }
+            }
         }
 
-        public class Patient
+        /*public class Patient
         {
             public int Id { get; set; }
             public string Name { get; set; }
@@ -527,6 +679,6 @@ log on (name={name}_log, filename='{dir}\{name}_log.ldf')");
             public int Id { get; set; }
 
             public string Name { get; set; }
-        }
+        }*/
     }
 }

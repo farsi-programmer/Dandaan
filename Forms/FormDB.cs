@@ -51,7 +51,7 @@ namespace Dandaan
                     {
                         Invoke((Action)delegate()
                         {
-                            try//this is another thread
+                            try // this is in the main thread
                             {
                                 textBox1.AppendText("اتصال برقرار شد.\r\n");
 
@@ -67,20 +67,22 @@ namespace Dandaan
                 catch (ThreadAbortException) { }
                 catch (Exception ex)
                 {
+                    while (ex.InnerException != null) ex = ex.InnerException;
+
                     try
                     {
                         Invoke(new Action(() =>
                         {
-                            try//this is another thread
+                            try // this is in the main thread
                             {
                                 textBox1.AppendText("خطا در برقراری ارتباط با دیتابیس!\r\n");
-                                textBox2.AppendText(ex.Message + "\r\n");
+                                textBox2.AppendText(ex + "\r\n\r\n");
                                 button1.Enabled = true;
                             }
                             catch { }
                         }));
                     }
-                    catch { }
+                    catch { } // in case the application is being closed and the form is disposed
                 }
             });
 
