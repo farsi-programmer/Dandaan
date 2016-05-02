@@ -32,6 +32,10 @@ namespace Dandaan
                         WindowState = s.FormMainWindowState;
                 }
             });
+#else
+            //Tables.DandaanSetting.Select();
+            //if (s.FormMainWindowState != FormWindowState.Minimized)
+              //  WindowState = s.FormMainWindowState;
 #endif
         }
 

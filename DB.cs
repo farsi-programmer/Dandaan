@@ -536,6 +536,10 @@ where table_name=N'{tableName}'") > 0;
     {
         public Table<Tables.Log> Logs;
 
+        public Table<Tables.DandaanSetting> DandaanSettings;
+
+        public Table<Tables.DandaanUser> DandaanUsers;
+
         public MyLinqContext(string connection) : base(connection) { }
 
         public MyLinqContext(SqlConnection connection) : base(connection) { }
@@ -561,20 +565,21 @@ where table_name=N'{tableName}'") > 0;
             public DateTime DateTime { get; set; }
            
             public const string CreateTable = @"
-IF (SELECT count(*) FROM information_schema.tables WHERE table_name=N'log') < 1
+IF (SELECT count(*) FROM information_schema.tables WHERE table_name=N'Log') < 1
 BEGIN
-	CREATE TABLE [dbo].[log](
-		[id] [int] IDENTITY(1,1) NOT NULL,
-		[message] [nvarchar](800) NOT NULL,
-		[datetime] [smalldatetime] NOT NULL,
-	 CONSTRAINT [PK_log] PRIMARY KEY CLUSTERED 
-	(
-		[id] ASC
-	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-	) ON [PRIMARY]
+    CREATE TABLE [dbo].[Log](
+	    [Id] [int] IDENTITY(1,1) NOT NULL,
+	    [Message] [nvarchar](800) NOT NULL,
+	    [DateTime] [smalldatetime] NOT NULL,
+     CONSTRAINT [PK_Log] PRIMARY KEY CLUSTERED 
+    (
+	    [Id] ASC
+    )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+    ) ON [PRIMARY]
 
-	ALTER TABLE [dbo].[log] ADD  CONSTRAINT [DF_log_datetime]  DEFAULT (getdate()) FOR [datetime]
-END";
+    ALTER TABLE [dbo].[Log] ADD  CONSTRAINT [DF_Log_DateTime]  DEFAULT (getdate()) FOR [DateTime]
+END
+";
 
             public static IEnumerable<Log> Select()
             {
@@ -603,8 +608,8 @@ END";
 
             public static void Insert(Log log)
             {
-                DB.ExecuteNonQuery(@"INSERT INTO [dbo].[log] ([message]) VALUES(@message)",
-                    new SqlParameter("@message", SqlDbType.NVarChar, 800) { Value = log.Message });
+                DB.ExecuteNonQuery(@"insert into Log(Message) values(@Message)",
+                    new SqlParameter("@Message", SqlDbType.NVarChar, 800) { Value = log.Message });
 
                 /*DB.LinqContextRun((context) =>
                 {
@@ -618,22 +623,85 @@ END";
         {
             public int Id { get; set; }
             public string Name { get; set; }
-        }
-
-        public class Setting
-        {
-            public int Id { get; set; }
-
-            public User User { get; set; }
-
-            public FormWindowState FormMainWindowState { get; set; }
-        }
-
-        public class User
-        {
-            public int Id { get; set; }
-
-            public string Name { get; set; }
         }*/
+
+        [Table(Name = nameof(DandaanSetting))]
+        public class DandaanSetting
+        {
+            [Column]
+            public int Id { get; set; }
+
+            [Column]
+            public int DandaanUser { get; set; }
+
+            [Column]
+            public int FormMainWindowState { get; set; }
+
+            public const string CreateTable = @"
+IF (SELECT count(*) FROM information_schema.tables WHERE table_name=N'DandaanSetting') < 1
+BEGIN
+    CREATE TABLE [dbo].[DandaanSetting](
+	    [Id] [int] IDENTITY(1,1) NOT NULL,
+	    [DandaanUser] [int] NOT NULL,
+	    [FormMainWindowState] [int] NOT NULL,
+     CONSTRAINT [PK_DandaanSetting] PRIMARY KEY CLUSTERED 
+    (
+	    [Id] ASC
+    )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+    ) ON [PRIMARY]
+
+    ALTER TABLE [dbo].[DandaanSetting]  WITH CHECK ADD  CONSTRAINT [FK_DandaanSetting_DandaanUser] FOREIGN KEY([DandaanUser])
+    REFERENCES [dbo].[DandaanUser] ([Id])
+
+    ALTER TABLE [dbo].[DandaanSetting] CHECK CONSTRAINT [FK_DandaanSetting_DandaanUser] 
+END";
+            public static DandaanSetting Select(int dandaanUser)
+            {
+                using (var context = DB.LinqContext)
+                    return context.DandaanSettings.Where(s => s.DandaanUser == dandaanUser).FirstOrDefault();
+            }
+
+            public static void Insert(DandaanSetting dandaanSetting)
+            {
+                DB.ExecuteNonQuery($@"insert into 
+DandaanSetting({nameof(DandaanUser)}, {nameof(FormMainWindowState)})
+values(@{nameof(DandaanUser)}, @{nameof(FormMainWindowState)})",
+                    new SqlParameter($"@{nameof(DandaanUser)}", SqlDbType.Int)
+                    { Value = dandaanSetting.DandaanUser },
+                    new SqlParameter($"@{nameof(FormMainWindowState)}", SqlDbType.Int)
+                    { Value = dandaanSetting.FormMainWindowState });
+            }
+        }
+
+        [Table(Name = nameof(DandaanUser))]
+        public class DandaanUser
+        {
+            [Column]
+            public int Id { get; set; }
+
+            [Column]
+            public string Name { get; set; }
+
+            //public string Password { get; set; }
+
+            public const string CreateTable = @"
+IF (SELECT count(*) FROM information_schema.tables WHERE table_name=N'DandaanUser') < 1
+BEGIN
+    CREATE TABLE [dbo].[DandaanUser](
+	    [Id] [int] IDENTITY(1,1) NOT NULL,
+	    [Name] [nvarchar](100) NOT NULL,
+     CONSTRAINT [PK_DandaanUser] PRIMARY KEY CLUSTERED 
+    (
+	    [Id] ASC
+    )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+    ) ON [PRIMARY]
+END";
+
+            public static void Insert(DandaanUser dandaanUser)
+            {
+                DB.ExecuteNonQuery(@"insert into DandaanUser(Name) values(@Name)",
+                    new SqlParameter("@Name", SqlDbType.NVarChar, 100) { Value = dandaanUser.Name });
+            }
+        }
     }
 }
