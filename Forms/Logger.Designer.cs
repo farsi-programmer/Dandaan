@@ -1,6 +1,6 @@
 ﻿namespace Dandaan.Forms
 {
-    partial class FormLogger
+    partial class Logger
     {
         /// <summary>
         /// Required designer variable.

@@ -1,6 +1,6 @@
 ﻿namespace Dandaan.Forms
 {
-    partial class FormMain
+    partial class Main
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.فایلToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.لاگToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();

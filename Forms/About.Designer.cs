@@ -1,6 +1,6 @@
 ﻿namespace Dandaan.Forms
 {
-    partial class FormAbout
+    partial class About
     {
         /// <summary>
         /// Required designer variable.

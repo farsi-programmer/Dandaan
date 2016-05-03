@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace Dandaan.Tables
 {
-    [Table(Name = "Log")]
-    public class DandaanLog
+    [Table(Name = nameof(Log))]
+    public class Log
     {
         [Column]//[Column(IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
@@ -21,29 +21,27 @@ namespace Dandaan.Tables
         [Column]//[Column(IsDbGenerated = true)]
         public DateTime DateTime { get; set; }
 
-        public const string CreateTable = @"
-IF (SELECT count(*) FROM information_schema.tables WHERE table_name=N'Log') < 1
-BEGIN
+        public static void CreateAndMigrate()
+        {
+            DB.ExecuteNonQuery($@"
+{SQL.IfNotExistsTable(nameof(Log))}
     CREATE TABLE [dbo].[Log](
 	    [Id] [int] IDENTITY(1,1) NOT NULL,
 	    [Message] [nvarchar](800) NOT NULL,
-	    [DateTime] [smalldatetime] NOT NULL,
+	    [DateTime] [smalldatetime] NOT NULL CONSTRAINT [DF_Log_DateTime]  DEFAULT (getdate()),
      CONSTRAINT [PK_Log] PRIMARY KEY CLUSTERED 
     (
 	    [Id] ASC
     )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-    ) ON [PRIMARY]
+    ) ON [PRIMARY]");
+        }
 
-    ALTER TABLE [dbo].[Log] ADD  CONSTRAINT [DF_Log_DateTime]  DEFAULT (getdate()) FOR [DateTime]
-END
-";
-
-        public static IEnumerable<DandaanLog> Select()
+        public static IEnumerable<Log> Select()
         {
             /*using (var connection = DB.Connection)
             using (var cmd = connection.CreateCommand())
             {
-                cmd.CommandText = @"SELECT * FROM log ORDER BY id";
+                cmd.CommandText = @"select * from [Log] order by id";
                 var sdr = cmd.ExecuteReader();
                 while (sdr.Read())
                 {
@@ -57,15 +55,15 @@ END
                 sdr.Close();
             }*/
 
-            using (var context = DB.LinqContext)
-            using (var en = context.DandaanLogs.GetEnumerator())
+            using (var context = DB.DataContext)
+            using (var en = context.Logs.GetEnumerator())
                 while (en.MoveNext())
                     yield return en.Current;
         }
 
-        public static void Insert(DandaanLog log)
+        public static void Insert(Log log)
         {
-            DB.ExecuteNonQuery(@"insert into Log(Message) values(@Message)",
+            DB.ExecuteNonQuery(@"insert into [Log] (Message) values (@Message)",
                 new SqlParameter("@Message", SqlDbType.NVarChar, 800) { Value = log.Message });
 
             /*DB.LinqContextRun((context) =>

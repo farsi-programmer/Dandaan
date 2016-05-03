@@ -131,8 +131,6 @@ namespace Dandaan
             //+ @"APP=Dandaan;"
             + @"Integrated Security=True;MultipleActiveResultSets=True;";
 
-        public static readonly string Dir = Application.StartupPath;
-
 #if using_ef
         static MyDbContext firstContext = new MyDbContext(ConnectionString);
 
@@ -375,11 +373,11 @@ namespace Dandaan
             }
         }
 
-        public static DandaanLinqContext LinqContext => new DandaanLinqContext(ConnectionString);
+        public static DandaanDataContext DataContext => new DandaanDataContext(ConnectionString);
 
-        public static void LinqContextRun(Action<DandaanLinqContext> act)
+        public static void LinqContextRun(Action<DandaanDataContext> act)
         {
-            using (var context = DB.LinqContext) act(context);
+            using (var context = DB.DataContext) act(context);
         }
 
         public static object ExecuteScalar(string sql, params SqlParameter[] sps)
@@ -410,10 +408,12 @@ namespace Dandaan
 
             AttachOrCreateDatabase();
 
-            //ExecuteNonQuery(File.ReadAllText(Dir + "\\" + nameof(Dandaan) + ".sql"));
+            CreateTablesAndMigrateData();
+        }
 
-            var sb = new StringBuilder();
-            sb.AppendLine(@"BEGIN TRANSACTION");
+        private static void CreateTablesAndMigrateData()
+        {
+            //ExecuteNonQuery(File.ReadAllText(Dir + "\\" + nameof(Dandaan) + ".sql"));
 
             var tables = Assembly.GetExecutingAssembly().GetTypes()
                 .Where(t => t.IsClass && t.Namespace == nameof(Dandaan) + "." + nameof(Tables)
@@ -421,18 +421,12 @@ namespace Dandaan
 
             foreach (var t in tables)
             {
-                //CreateTable(t);
+                //var f = t.GetField(nameof(Tables.DandaanLog.CreateTable));
+                //sb.AppendLine((string)f.GetRawConstantValue());
 
-                var f = t.GetField(nameof(Tables.DandaanLog.CreateTable));
-
-                //if (f != null)
-                sb.AppendLine((string)f.GetRawConstantValue());
+                var m = t.GetMethod(nameof(Tables.Log.CreateAndMigrate));
+                m.Invoke(null, null);
             }
-
-            sb.AppendLine(@"COMMIT");
-
-            //MessageBox.Show(sb.ToString());
-            ExecuteNonQuery(sb.ToString());
         }
 
         private static void AttachOrCreateDatabase()
@@ -443,12 +437,12 @@ namespace Dandaan
             /*if ((int)DB.ExecuteScalar($@"if db_id(N'{name}') is not null select 1
 else select count(*) from sys.databases where [name]=N'{name}'") < 1)*/
 
-            if (!File.Exists(Dir + "\\" + name + mdf))
+            if (!File.Exists(Common.StartupPath + "\\" + name + mdf))
             {          
                 ExecuteScalar($@"create database
 {name}_{Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture)/*this is how ef does it*/}
-on (name={name}, filename='{Dir}\{name}{mdf}')
-log on (name={name}_log, filename='{Dir}\{name}_log.ldf')");
+on (name={name}, filename='{Common.StartupPath}\{name}{mdf}')
+log on (name={name}_log, filename='{Common.StartupPath}\{name}_log.ldf')");
             }
 
             attachDb = true;
@@ -466,25 +460,19 @@ log on (name={name}_log, filename='{Dir}\{name}_log.ldf')");
             {
                 ;
             }
-        }*/
+        }
 
         public static bool TableExists(string tableName)
         {
             return (int)ExecuteScalar($@"select count(*) from information_schema.tables
 where table_name=N'{tableName}'") > 0;
-        }
-
-        // from ef
-        public static string AppendStringLiteral(string literalValue)
-        {
-            return "N'" + literalValue.Replace("'", "''") + "'";
-        }
+        }*/
 
         public static void Log(string message)
         {
             try
             {
-                Tables.DandaanLog.Insert(new Tables.DandaanLog() { Message = message });
+                Tables.Log.Insert(new Tables.Log() { Message = message });
             }
             catch
             {
@@ -497,7 +485,7 @@ where table_name=N'{tableName}'") > 0;
                     mutex = new Mutex(false, "Global\\" + name + "Log");
                     mutex.WaitOne();
 
-                    File.AppendAllText(Dir + "\\" + name + ".txt",
+                    File.AppendAllText(Common.StartupPath + "\\" + name + ".txt",
                         name + "\t\t" + DateTime.Now.ToString(CultureInfo.InvariantCulture)
                         + "\r\n" + message + "\r\n\r\n");
                 }

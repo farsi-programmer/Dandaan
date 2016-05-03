@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class FormAbout : Form
+    public partial class About : Form
     {
-        public FormAbout()
+        public About()
         {
             InitializeComponent();
         }

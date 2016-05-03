@@ -88,58 +88,60 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DandaanLinqContext.cs" />
+    <Compile Include="Common.cs" />
+    <Compile Include="DandaanDataContext.cs" />
     <Compile Include="DB.cs" />
-    <Compile Include="Forms\CommonFormStuff.cs" />
-    <Compile Include="Forms\FormAbout.cs">
+    <Compile Include="Forms\Common.cs" />
+    <Compile Include="Forms\About.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormAbout.Designer.cs">
-      <DependentUpon>FormAbout.cs</DependentUpon>
+    <Compile Include="Forms\About.Designer.cs">
+      <DependentUpon>About.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormLogin.cs">
+    <Compile Include="Forms\Login.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormLogin.Designer.cs">
-      <DependentUpon>FormLogin.cs</DependentUpon>
+    <Compile Include="Forms\Login.Designer.cs">
+      <DependentUpon>Login.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormMain.cs">
+    <Compile Include="Forms\Main.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormMain.Designer.cs">
-      <DependentUpon>FormMain.cs</DependentUpon>
+    <Compile Include="Forms\Main.Designer.cs">
+      <DependentUpon>Main.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormLogger.cs">
+    <Compile Include="Forms\Logger.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormLogger.Designer.cs">
-      <DependentUpon>FormLogger.cs</DependentUpon>
+    <Compile Include="Forms\Logger.Designer.cs">
+      <DependentUpon>Logger.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormDB.cs">
+    <Compile Include="Forms\DB.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormDB.Designer.cs">
-      <DependentUpon>FormDB.cs</DependentUpon>
+    <Compile Include="Forms\DB.Designer.cs">
+      <DependentUpon>DB.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tables\DandaanSetting.cs" />
-    <Compile Include="Tables\DandaanUser.cs" />
-    <Compile Include="Tables\DandaanLog.cs" />
-    <EmbeddedResource Include="Forms\FormAbout.resx">
-      <DependentUpon>FormAbout.cs</DependentUpon>
+    <Compile Include="SQL.cs" />
+    <Compile Include="Tables\Setting.cs" />
+    <Compile Include="Tables\User.cs" />
+    <Compile Include="Tables\Log.cs" />
+    <EmbeddedResource Include="Forms\About.resx">
+      <DependentUpon>About.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormLogin.resx">
-      <DependentUpon>FormLogin.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Login.resx">
+      <DependentUpon>Login.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormMain.resx">
-      <DependentUpon>FormMain.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Main.resx">
+      <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormLogger.resx">
-      <DependentUpon>FormLogger.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Logger.resx">
+      <DependentUpon>Logger.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormDB.resx">
-      <DependentUpon>FormDB.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\DB.resx">
+      <DependentUpon>DB.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

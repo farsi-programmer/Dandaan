@@ -11,9 +11,9 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class FormLogger : Form
+    public partial class Logger : Form
     {
-        public FormLogger()
+        public Logger()
         {
             InitializeComponent();
         }
@@ -42,7 +42,7 @@ namespace Dandaan.Forms
                 }
             });
 #else
-            foreach(var item in Tables.DandaanLog.Select())
+            foreach(var item in Tables.Log.Select())
             {
                 textBox1.AppendText(item.Id + "\t" + item.DateTime + "\t" + item.Message + "\r\n");
             }

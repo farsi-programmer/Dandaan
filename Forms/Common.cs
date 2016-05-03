@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Dandaan.Forms
 {
-    class CommonFormStuff
+    class Common
     {
-        public static void DoCommonSettings(Form form)
+        public static void Settings(Form form)
         {
             form.StartPosition = FormStartPosition.CenterScreen;
         }

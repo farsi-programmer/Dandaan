@@ -11,9 +11,9 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class FormMain : Form
+    public partial class Main : Form
     {
-        public FormMain()
+        public Main()
         {
             // Order is important
 
@@ -76,19 +76,19 @@ namespace Dandaan.Forms
 #if using_ef || using_sqlite
                 DB.Run((c) => FormLogger.Log("تست " + c.Logs.Count()));
 #else
-                Tables.DandaanLog.Insert(new Tables.DandaanLog() { Message = i + "" });
+                Tables.Log.Insert(new Tables.Log() { Message = i + "" });
 #endif
             }));
         }
 
         private void لاگToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new FormLogger().Show(this);
+            new Logger().Show(this);
         }
 
         private void دربارهToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new FormAbout().Show(this);
+            new About().Show(this);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -113,7 +113,7 @@ namespace Dandaan.Forms
 
         private void button7_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(DB.Connection.Database);
+            MessageBox.Show(Dandaan.DB.Connection.Database);
         }
     }
 

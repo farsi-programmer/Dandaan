@@ -11,13 +11,13 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class FormDB : Form
+    public partial class DB : Form
     {
-        public FormDB()
+        public DB()
         {
             InitializeComponent();
 
-            CommonFormStuff.DoCommonSettings(this);
+            Common.Settings(this);
         }
 
         Thread threadDB;
@@ -38,7 +38,7 @@ namespace Dandaan.Forms
             {
                 try
                 {
-                    DB.Init();
+                    Dandaan.DB.Init();
 
                     /*Parallel.For(0, 10, new Action<int>((j) =>
                     {
@@ -58,8 +58,8 @@ namespace Dandaan.Forms
                                 textBox1.AppendText("اتصال برقرار شد.\r\n");
 
                                 Visible = false;
-                                if (new FormLogin().ShowDialog(this) == DialogResult.OK)
-                                    new FormMain().ShowDialog(this);
+                                if (new Login().ShowDialog(this) == DialogResult.OK)
+                                    new Main().ShowDialog(this);
                                 Close();
                             }
                             catch { }

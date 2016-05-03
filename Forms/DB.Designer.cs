@@ -1,6 +1,6 @@
 ﻿namespace Dandaan.Forms
 {
-    partial class FormDB
+    partial class DB
     {
         /// <summary>
         /// Required designer variable.

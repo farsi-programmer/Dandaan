@@ -10,13 +10,13 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class FormLogin : Form
+    public partial class Login : Form
     {
-        public FormLogin()
+        public Login()
         {
             InitializeComponent();
 
-            CommonFormStuff.DoCommonSettings(this);
+            Common.Settings(this);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -26,7 +26,7 @@ namespace Dandaan.Forms
 
         private void FormLogin_Load(object sender, EventArgs e)
         {
-            var c = Tables.DandaanUser.Count();
+            var c = Tables.User.Count();
 
             if (c < 1)
             {
@@ -36,7 +36,7 @@ namespace Dandaan.Forms
 
                 textBox1.Text = "admin";
 
-                Tables.DandaanUser.Insert(new Tables.DandaanUser() { Name = "admin" });
+                Tables.User.Insert(new Tables.User() { Name = "admin" });
             }
             else if (c == 1)
             {
