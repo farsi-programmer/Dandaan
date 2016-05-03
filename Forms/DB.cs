@@ -11,13 +11,11 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class DB : Form
+    public partial class DB : DandaanForm
     {
         public DB()
         {
             InitializeComponent();
-
-            Common.Settings(this);
         }
 
         Thread threadDB;

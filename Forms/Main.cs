@@ -33,7 +33,7 @@ namespace Dandaan.Forms
                 }
             });
 #else
-            //Tables.DandaanSetting.Select();
+            //Tables.Setting.Select()
             //if (s.FormMainWindowState != FormWindowState.Minimized)
               //  WindowState = s.FormMainWindowState;
 #endif
@@ -71,7 +71,7 @@ namespace Dandaan.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Parallel.For(0, 10000, new ParallelOptions() { MaxDegreeOfParallelism = 1000 }, new Action<int>((i) =>
+            Parallel.For(0, 100, new ParallelOptions() { MaxDegreeOfParallelism = 100 }, new Action<int>((i) =>
             {
 #if using_ef || using_sqlite
                 DB.Run((c) => FormLogger.Log("تست " + c.Logs.Count()));

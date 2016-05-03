@@ -8,13 +8,17 @@ namespace Dandaan
 {
     static class Program
     {
+        public static readonly string DataDirectory = Application.StartupPath;
+
+        public static int UserId { get; set; }
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
-            AppDomain.CurrentDomain.SetData("DataDirectory", Common.StartupPath);
+            AppDomain.CurrentDomain.SetData("DataDirectory", DataDirectory);
             Application.ApplicationExit += Application_ApplicationExit;
 
             Application.ThreadException += Application_ThreadException;

@@ -10,18 +10,40 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class Login : Form
+    public partial class Login : DandaanForm
     {
         public Login()
         {
             InitializeComponent();
 
-            Common.Settings(this);
-        }
+            AcceptButton = button1;
+            CancelButton = button2;            
+        }        
 
         private void button1_Click(object sender, EventArgs e)
         {
-            DialogResult = DialogResult.OK;
+            var id = Tables.User.Login(textBox1.Text, textBox2.Text);
+
+            if (id > 0)
+            {
+                if (Tables.User.IsEnabled(id))
+                {
+                    Program.UserId = id;
+                    DialogResult = DialogResult.OK;
+                }
+                else
+                {
+                    textBox3.BackColor = Color.PaleVioletRed;
+                    textBox3.AppendText("نام کاربری غیر فعال شده است."
+                        + "\r\n");
+                }
+            }
+            else
+            {
+                textBox3.BackColor = Color.PaleVioletRed;
+                textBox3.AppendText("نام کاربری و یا پسورد اشتباه وارد شده است."
+                    + "\r\n");
+            }
         }
 
         private void FormLogin_Load(object sender, EventArgs e)
@@ -32,19 +54,26 @@ namespace Dandaan.Forms
             {
                 textBox3.AppendText(@"شما اولین کاربر برنامه هستید"
 + @"، بنابراین میتوانید با نام کاربری admin و"
-+ @" بدون وارد کردن پسورد به برنامه وارد شوید.");
-
++ @" بدون وارد کردن پسورد به برنامه وارد شوید."
++ "\r\n");
                 textBox1.Text = "admin";
 
                 Tables.User.Insert(new Tables.User() { Name = "admin" });
             }
             else if (c == 1)
             {
-                textBox3.AppendText(@"شما تنها کاربر برنامه هستید.");
-
+                textBox3.AppendText(@"برنامه فقط یک کاربر دارد."
++ "\r\n");
                 textBox1.Text = "admin";
             }
             //else
+
+            textBox1.Focus();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
         }
     }
 }

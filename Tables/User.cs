@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 using System.Data;
 using System.Data.SqlClient;
 using System.Data.Linq.Mapping;
@@ -47,8 +48,28 @@ namespace Dandaan.Tables
 
         public static int Count()
         {
+            using (var context = DB.DataContext) return context.Users.Count();
+        }
+
+        public static int Login(string name, string password)
+        {
             using (var context = DB.DataContext)
-                return context.Users.Count();
+            {
+                var user = context.Users.Where(u => u.Name == name && u.Password == password)         
+                    .FirstOrDefault();
+
+                return user != null ? user.Id : 0;
+            }
+        }
+
+        public static bool IsEnabled(int id)
+        {
+            using (var context = DB.DataContext)
+            {
+                var user = context.Users.Where(u => u.Id == id).FirstOrDefault();
+
+                return user != null ? (user.Enabled == 1) : false;
+            }
         }
 
         public static void Insert(User user)

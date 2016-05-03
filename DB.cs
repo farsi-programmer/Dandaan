@@ -433,16 +433,17 @@ namespace Dandaan
         {
             var name = nameof(Dandaan);
             var mdf = ".mdf";
+            var dir = Program.DataDirectory;
 
             /*if ((int)DB.ExecuteScalar($@"if db_id(N'{name}') is not null select 1
 else select count(*) from sys.databases where [name]=N'{name}'") < 1)*/
 
-            if (!File.Exists(Common.StartupPath + "\\" + name + mdf))
+            if (!File.Exists(dir + "\\" + name + mdf))
             {          
                 ExecuteScalar($@"create database
 {name}_{Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture)/*this is how ef does it*/}
-on (name={name}, filename='{Common.StartupPath}\{name}{mdf}')
-log on (name={name}_log, filename='{Common.StartupPath}\{name}_log.ldf')");
+on (name={name}, filename='{dir}\{name}{mdf}')
+log on (name={name}_log, filename='{dir}\{name}_log.ldf')");
             }
 
             attachDb = true;
@@ -485,7 +486,7 @@ where table_name=N'{tableName}'") > 0;
                     mutex = new Mutex(false, "Global\\" + name + "Log");
                     mutex.WaitOne();
 
-                    File.AppendAllText(Common.StartupPath + "\\" + name + ".txt",
+                    File.AppendAllText(Program.DataDirectory + "\\" + name + ".txt",
                         name + "\t\t" + DateTime.Now.ToString(CultureInfo.InvariantCulture)
                         + "\r\n" + message + "\r\n\r\n");
                 }
