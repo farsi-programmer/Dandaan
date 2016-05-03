@@ -119,7 +119,6 @@
             this.Controls.Add(this.button1);
             this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "Login";
-            this.Text = "مدیریت دندانپزشکی";
             this.Load += new System.EventHandler(this.FormLogin_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

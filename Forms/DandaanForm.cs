@@ -15,6 +15,8 @@ namespace Dandaan.Forms
             StartPosition = FormStartPosition.CenterScreen;
 
             Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(178)));
+
+            Text = "مدیریت دندانپزشکی";
         }
     }
 }

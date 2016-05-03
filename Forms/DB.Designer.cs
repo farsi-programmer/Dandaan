@@ -80,7 +80,7 @@
             // 
             // DB
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(687, 513);
             this.Controls.Add(this.button2);
@@ -88,7 +88,6 @@
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.textBox1);
             this.Name = "DB";
-            this.Text = "مدیریت دندانپزشکی";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormDB_FormClosing);
             this.Load += new System.EventHandler(this.FormDB_Load);
             this.ResumeLayout(false);
