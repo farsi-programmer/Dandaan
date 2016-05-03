@@ -7,11 +7,8 @@ namespace Dandaan
 {
     using System;
     using System.Data;
-    using System.Data.Linq;
-    using System.Data.Linq.Mapping;
     using System.Globalization;
     using System.IO;
-    using System.Collections.Generic;
 #if using_ef || using_sqlite
     using System.Data.Common;
     using System.Data.Entity.Infrastructure;
@@ -378,9 +375,9 @@ namespace Dandaan
             }
         }
 
-        public static MyLinqContext LinqContext => new MyLinqContext(ConnectionString);
+        public static DandaanLinqContext LinqContext => new DandaanLinqContext(ConnectionString);
 
-        public static void LinqContextRun(Action<MyLinqContext> act)
+        public static void LinqContextRun(Action<DandaanLinqContext> act)
         {
             using (var context = DB.LinqContext) act(context);
         }
@@ -426,7 +423,7 @@ namespace Dandaan
             {
                 //CreateTable(t);
 
-                var f = t.GetField(nameof(Tables.Log.CreateTable));
+                var f = t.GetField(nameof(Tables.DandaanLog.CreateTable));
 
                 //if (f != null)
                 sb.AppendLine((string)f.GetRawConstantValue());
@@ -487,7 +484,7 @@ where table_name=N'{tableName}'") > 0;
         {
             try
             {
-                Tables.Log.Insert(new Tables.Log() { Message = message });
+                Tables.DandaanLog.Insert(new Tables.DandaanLog() { Message = message });
             }
             catch
             {
@@ -531,177 +528,4 @@ where table_name=N'{tableName}'") > 0;
         }
     }
 #endif
-
-    public class MyLinqContext : DataContext
-    {
-        public Table<Tables.Log> Logs;
-
-        public Table<Tables.DandaanSetting> DandaanSettings;
-
-        public Table<Tables.DandaanUser> DandaanUsers;
-
-        public MyLinqContext(string connection) : base(connection) { }
-
-        public MyLinqContext(SqlConnection connection) : base(connection) { }
-    }
-
-    namespace Tables
-    {
-        /*public class DatabaseInfo
-        {
-            public int Version { get; set; }
-        }*/
-
-        [Table(Name = "Log")]
-        public class Log
-        {
-            [Column]//[Column(IsPrimaryKey = true, IsDbGenerated = true)]
-            public int Id { get; set; }
-
-            [Column]
-            public string Message { get; set; }
-
-            [Column]//[Column(IsDbGenerated = true)]
-            public DateTime DateTime { get; set; }
-           
-            public const string CreateTable = @"
-IF (SELECT count(*) FROM information_schema.tables WHERE table_name=N'Log') < 1
-BEGIN
-    CREATE TABLE [dbo].[Log](
-	    [Id] [int] IDENTITY(1,1) NOT NULL,
-	    [Message] [nvarchar](800) NOT NULL,
-	    [DateTime] [smalldatetime] NOT NULL,
-     CONSTRAINT [PK_Log] PRIMARY KEY CLUSTERED 
-    (
-	    [Id] ASC
-    )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-    ) ON [PRIMARY]
-
-    ALTER TABLE [dbo].[Log] ADD  CONSTRAINT [DF_Log_DateTime]  DEFAULT (getdate()) FOR [DateTime]
-END
-";
-
-            public static IEnumerable<Log> Select()
-            {
-                /*using (var connection = DB.Connection)
-                using (var cmd = connection.CreateCommand())
-                {
-                    cmd.CommandText = @"SELECT * FROM log ORDER BY id";
-                    var sdr = cmd.ExecuteReader();
-                    while (sdr.Read())
-                    {
-                        yield return new Log()
-                        {
-                            Id = (int)sdr[nameof(Id)],
-                            DateTime = (DateTime)sdr[nameof(DateTime)],
-                            Message = (string)sdr[nameof(Message)]
-                        };
-                    }
-                    sdr.Close();
-                }*/               
-
-                using (var context = DB.LinqContext)
-                using (var en = context.Logs.GetEnumerator())
-                    while (en.MoveNext())
-                        yield return en.Current;
-            }
-
-            public static void Insert(Log log)
-            {
-                DB.ExecuteNonQuery(@"insert into Log(Message) values(@Message)",
-                    new SqlParameter("@Message", SqlDbType.NVarChar, 800) { Value = log.Message });
-
-                /*DB.LinqContextRun((context) =>
-                {
-                    context.Logs.InsertOnSubmit(log);
-                    context.SubmitChanges();
-                });*/
-            }
-        }
-
-        /*public class Patient
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
-        }*/
-
-        [Table(Name = nameof(DandaanSetting))]
-        public class DandaanSetting
-        {
-            [Column]
-            public int Id { get; set; }
-
-            [Column]
-            public int DandaanUser { get; set; }
-
-            [Column]
-            public int FormMainWindowState { get; set; }
-
-            public const string CreateTable = @"
-IF (SELECT count(*) FROM information_schema.tables WHERE table_name=N'DandaanSetting') < 1
-BEGIN
-    CREATE TABLE [dbo].[DandaanSetting](
-	    [Id] [int] IDENTITY(1,1) NOT NULL,
-	    [DandaanUser] [int] NOT NULL,
-	    [FormMainWindowState] [int] NOT NULL,
-     CONSTRAINT [PK_DandaanSetting] PRIMARY KEY CLUSTERED 
-    (
-	    [Id] ASC
-    )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-    ) ON [PRIMARY]
-
-    ALTER TABLE [dbo].[DandaanSetting]  WITH CHECK ADD  CONSTRAINT [FK_DandaanSetting_DandaanUser] FOREIGN KEY([DandaanUser])
-    REFERENCES [dbo].[DandaanUser] ([Id])
-
-    ALTER TABLE [dbo].[DandaanSetting] CHECK CONSTRAINT [FK_DandaanSetting_DandaanUser] 
-END";
-            public static DandaanSetting Select(int dandaanUser)
-            {
-                using (var context = DB.LinqContext)
-                    return context.DandaanSettings.Where(s => s.DandaanUser == dandaanUser).FirstOrDefault();
-            }
-
-            public static void Insert(DandaanSetting dandaanSetting)
-            {
-                DB.ExecuteNonQuery($@"insert into 
-DandaanSetting({nameof(DandaanUser)}, {nameof(FormMainWindowState)})
-values(@{nameof(DandaanUser)}, @{nameof(FormMainWindowState)})",
-                    new SqlParameter($"@{nameof(DandaanUser)}", SqlDbType.Int)
-                    { Value = dandaanSetting.DandaanUser },
-                    new SqlParameter($"@{nameof(FormMainWindowState)}", SqlDbType.Int)
-                    { Value = dandaanSetting.FormMainWindowState });
-            }
-        }
-
-        [Table(Name = nameof(DandaanUser))]
-        public class DandaanUser
-        {
-            [Column]
-            public int Id { get; set; }
-
-            [Column]
-            public string Name { get; set; }
-
-            //public string Password { get; set; }
-
-            public const string CreateTable = @"
-IF (SELECT count(*) FROM information_schema.tables WHERE table_name=N'DandaanUser') < 1
-BEGIN
-    CREATE TABLE [dbo].[DandaanUser](
-	    [Id] [int] IDENTITY(1,1) NOT NULL,
-	    [Name] [nvarchar](100) NOT NULL,
-     CONSTRAINT [PK_DandaanUser] PRIMARY KEY CLUSTERED 
-    (
-	    [Id] ASC
-    )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-    ) ON [PRIMARY]
-END";
-
-            public static void Insert(DandaanUser dandaanUser)
-            {
-                DB.ExecuteNonQuery(@"insert into DandaanUser(Name) values(@Name)",
-                    new SqlParameter("@Name", SqlDbType.NVarChar, 100) { Value = dandaanUser.Name });
-            }
-        }
-    }
 }

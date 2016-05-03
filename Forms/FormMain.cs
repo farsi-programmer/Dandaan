@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Dandaan
+namespace Dandaan.Forms
 {
     public partial class FormMain : Form
     {
@@ -76,24 +76,24 @@ namespace Dandaan
 #if using_ef || using_sqlite
                 DB.Run((c) => FormLogger.Log("تست " + c.Logs.Count()));
 #else
-                Tables.Log.Insert(new Tables.Log() { Message = i + "" });
+                Tables.DandaanLog.Insert(new Tables.DandaanLog() { Message = i + "" });
 #endif
             }));
         }
 
         private void لاگToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new FormLogger().Show();
+            new FormLogger().Show(this);
         }
 
         private void دربارهToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new FormAbout().Show();
+            new FormAbout().Show(this);
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            DB.Log(@"xyz");
+            ;
         }
 
         private void FormMain_Shown(object sender, EventArgs e)

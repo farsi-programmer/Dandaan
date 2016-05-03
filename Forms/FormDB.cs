@@ -9,13 +9,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Dandaan
+namespace Dandaan.Forms
 {
     public partial class FormDB : Form
     {
         public FormDB()
         {
             InitializeComponent();
+
+            CommonFormStuff.DoCommonSettings(this);
         }
 
         Thread threadDB;
@@ -56,7 +58,8 @@ namespace Dandaan
                                 textBox1.AppendText("اتصال برقرار شد.\r\n");
 
                                 Visible = false;
-                                new FormMain().ShowDialog(this);
+                                if (new FormLogin().ShowDialog(this) == DialogResult.OK)
+                                    new FormMain().ShowDialog(this);
                                 Close();
                             }
                             catch { }

@@ -88,12 +88,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DandaanLinqContext.cs" />
     <Compile Include="DB.cs" />
+    <Compile Include="Forms\CommonFormStuff.cs" />
     <Compile Include="Forms\FormAbout.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\FormAbout.Designer.cs">
       <DependentUpon>FormAbout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormLogin.Designer.cs">
+      <DependentUpon>FormLogin.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormMain.cs">
       <SubType>Form</SubType>
@@ -115,8 +123,14 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tables\DandaanSetting.cs" />
+    <Compile Include="Tables\DandaanUser.cs" />
+    <Compile Include="Tables\DandaanLog.cs" />
     <EmbeddedResource Include="Forms\FormAbout.resx">
       <DependentUpon>FormAbout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormLogin.resx">
+      <DependentUpon>FormLogin.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
@@ -168,6 +182,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

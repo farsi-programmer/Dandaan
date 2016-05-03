@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Dandaan
+namespace Dandaan.Forms
 {
     public partial class FormLogger : Form
     {
@@ -42,7 +42,7 @@ namespace Dandaan
                 }
             });
 #else
-            foreach(var item in Tables.Log.Select())
+            foreach(var item in Tables.DandaanLog.Select())
             {
                 textBox1.AppendText(item.Id + "\t" + item.DateTime + "\t" + item.Message + "\r\n");
             }

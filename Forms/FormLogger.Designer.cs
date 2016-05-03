@@ -1,4 +1,4 @@
-﻿namespace Dandaan
+﻿namespace Dandaan.Forms
 {
     partial class FormLogger
     {
