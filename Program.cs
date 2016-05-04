@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
 
 namespace Dandaan
@@ -11,6 +9,23 @@ namespace Dandaan
         public static readonly string DataDirectory = Application.StartupPath;
 
         public static int UserId { get; set; }
+
+        public static LocalSettings LocalSettings = new LocalSettings();
+
+        public static void ReadLocalSettings()
+        {
+            var name = nameof(Dandaan);
+            var filePath = DataDirectory + "\\" + name + ".txt";
+            if (File.Exists(filePath))
+                LocalSettings = Serializer.Deserialize<LocalSettings>(filePath, name);
+        }
+
+        public static void WriteLocalSettings()
+        {
+            var name = nameof(Dandaan);
+            var filePath = DataDirectory + "\\" + name + ".txt";
+            Serializer.Serialize(LocalSettings, filePath, name);
+        }
 
         /// <summary>
         /// The main entry point for the application.
@@ -26,7 +41,7 @@ namespace Dandaan
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Forms.DB());
+            Application.Run(new Forms.ConnectDB());
         }
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

@@ -119,7 +119,7 @@ namespace Dandaan
 #else
     class DB
     {
-        // TODO: we should use a text file for storing the connection string,
+        // TODO: we should use a text file (LocalSettings) for storing the connection string,
         // we might want to use sql server (express)
 
         private static bool attachDb = false;
@@ -375,7 +375,7 @@ namespace Dandaan
 
         public static DandaanDataContext DataContext => new DandaanDataContext(ConnectionString);
 
-        public static void LinqContextRun(Action<DandaanDataContext> act)
+        public static void DandaanDataContextRun(Action<DandaanDataContext> act)
         {
             using (var context = DB.DataContext) act(context);
         }
@@ -486,7 +486,7 @@ where table_name=N'{tableName}'") > 0;
                     mutex = new Mutex(false, "Global\\" + name + "Log");
                     mutex.WaitOne();
 
-                    File.AppendAllText(Program.DataDirectory + "\\" + name + ".txt",
+                    File.AppendAllText(Program.DataDirectory + "\\" + name + "Log.txt",
                         name + "\t\t" + DateTime.Now.ToString(CultureInfo.InvariantCulture)
                         + "\r\n" + message + "\r\n\r\n");
                 }

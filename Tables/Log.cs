@@ -66,7 +66,7 @@ namespace Dandaan.Tables
             DB.ExecuteNonQuery(@"insert into [Log] (Message) values (@Message)",
                 new SqlParameter("@Message", SqlDbType.NVarChar, 800) { Value = log.Message });
 
-            /*DB.LinqContextRun((context) =>
+            /*DB.DandaanDataContextRun((context) =>
             {
                 context.Logs.InsertOnSubmit(log);
                 context.SubmitChanges();

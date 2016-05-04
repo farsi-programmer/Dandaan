@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -11,11 +12,13 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class DB : DandaanForm
+    public partial class ConnectDB : DandaanForm
     {
-        public DB()
+        public ConnectDB()
         {
             InitializeComponent();
+
+            CancelButton = button2;
         }
 
         Thread threadDB;
@@ -25,8 +28,10 @@ namespace Dandaan.Forms
             connect();
         }
 
-        void connect()
-        { 
+        private void connect()
+        {
+            Program.ReadLocalSettings();
+
             // i want something responsive, in case it takes
             // a long time to connect to db
 
@@ -99,6 +104,11 @@ namespace Dandaan.Forms
         {
             button1.Enabled = false;
             connect();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }

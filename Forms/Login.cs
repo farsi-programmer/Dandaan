@@ -29,6 +29,9 @@ namespace Dandaan.Forms
                 if (Tables.User.IsEnabled(id))
                 {
                     Program.UserId = id;
+                    Program.LocalSettings.LoginUserName = textBox1.Text;
+                    Program.WriteLocalSettings();
+
                     DialogResult = DialogResult.OK;
                 }
                 else
@@ -66,7 +69,10 @@ namespace Dandaan.Forms
 + "\r\n");
                 textBox1.Text = "admin";
             }
-            //else
+            else
+            {
+                textBox1.Text = Program.LocalSettings.LoginUserName;
+            }
 
             textBox1.Focus();
         }

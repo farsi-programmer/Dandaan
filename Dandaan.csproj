@@ -76,6 +76,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Debug\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -117,14 +118,16 @@
     <Compile Include="Forms\Logger.Designer.cs">
       <DependentUpon>Logger.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\DB.cs">
+    <Compile Include="Forms\ConnectDB.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\DB.Designer.cs">
-      <DependentUpon>DB.cs</DependentUpon>
+    <Compile Include="Forms\ConnectDB.Designer.cs">
+      <DependentUpon>ConnectDB.cs</DependentUpon>
     </Compile>
+    <Compile Include="LocalSettings.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serializer.cs" />
     <Compile Include="SQL.cs" />
     <Compile Include="Tables\Setting.cs" />
     <Compile Include="Tables\User.cs" />
@@ -141,8 +144,8 @@
     <EmbeddedResource Include="Forms\Logger.resx">
       <DependentUpon>Logger.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\DB.resx">
-      <DependentUpon>DB.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ConnectDB.resx">
+      <DependentUpon>ConnectDB.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
