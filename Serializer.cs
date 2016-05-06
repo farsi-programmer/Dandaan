@@ -59,7 +59,7 @@ namespace Dandaan
         public static string Serialize(object obj)
         {
             var sb = new StringBuilder();
-            using (var writer = XmlWriter.Create(sb, new XmlWriterSettings() { Encoding = Encoding.UTF8 }))
+            using (var writer = XmlWriter.Create(sb))
             {
                 DataContractSerializer serializer = new DataContractSerializer(obj.GetType());
                 serializer.WriteObject(writer, obj);

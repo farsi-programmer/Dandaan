@@ -129,7 +129,9 @@ namespace Dandaan
               + (attachDb ? $@"AttachDbFilename=|DataDirectory|\{nameof(Dandaan)}.mdf;" : "")
             //+ @"Initial Catalog=Dandaan;"
             //+ @"APP=Dandaan;"
-            + @"Integrated Security=True;MultipleActiveResultSets=True;";
+            + @"Integrated Security=True;"
+            // i don't think i need this + @"MultipleActiveResultSets=True;"
+;
 
 #if using_ef
         static MyDbContext firstContext = new MyDbContext(ConnectionString);
@@ -373,11 +375,11 @@ namespace Dandaan
             }
         }
 
-        public static DandaanDataContext DataContext => new DandaanDataContext(ConnectionString);
+        public static DataContext DataContext => new DataContext(ConnectionString);
 
-        public static void DandaanDataContextRun(Action<DandaanDataContext> act)
+        public static void DataContextRun(Action<DataContext> act)
         {
-            using (var context = DB.DataContext) act(context);
+            using (var context = DataContext) act(context);
         }
 
         public static object ExecuteScalar(string sql, params SqlParameter[] sps)

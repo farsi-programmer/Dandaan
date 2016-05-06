@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 namespace Dandaan.Forms
 {
     // a recompile is needed for changes to this class to take effect for the designer
-    public class DandaanForm : Form
+    public class Form : System.Windows.Forms.Form
     {
-        public DandaanForm()
+        public Form()
         {
             StartPosition = FormStartPosition.CenterScreen;
 

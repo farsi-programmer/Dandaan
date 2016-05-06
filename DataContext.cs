@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Dandaan
 {
-    public class DandaanDataContext : DataContext
+    public class DataContext : System.Data.Linq.DataContext
     {
         public Table<Tables.Log> Logs;
 
@@ -16,8 +16,8 @@ namespace Dandaan
 
         public Table<Tables.User> Users;
 
-        public DandaanDataContext(string connection) : base(connection) { }
+        public DataContext(string connection) : base(connection) { }
 
-        public DandaanDataContext(SqlConnection connection) : base(connection) { }
+        public DataContext(SqlConnection connection) : base(connection) { }
     }
 }

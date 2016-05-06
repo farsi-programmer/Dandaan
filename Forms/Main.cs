@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class Main : Form
+    public partial class Main : System.Windows.Forms.Form
     {
         public Main()
         {
@@ -33,15 +33,16 @@ namespace Dandaan.Forms
                 }
             });
 #else
-            //Tables.Setting.Select()
-            //if (s.FormMainWindowState != FormWindowState.Minimized)
-              //  WindowState = s.FormMainWindowState;
+            var s = Tables.Setting.SelectOrInsert(Program.UserId);
+            if (s.FormMainWindowState != (byte)FormWindowState.Minimized)
+                WindowState = (FormWindowState)s.FormMainWindowState;
 #endif
         }
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            /*DB.Run((c) =>
+#if using_ef || using_sqlite
+            DB.Run((c) =>
             {          
                 if (c.Settings.Count() == 0)
                 {
@@ -51,7 +52,12 @@ namespace Dandaan.Forms
                     c.Settings.First().FormMainWindowState = WindowState;
 
                 c.SaveChanges();
-            });*/
+            });
+#else
+            var s = Tables.Setting.SelectOrInsert(Program.UserId);
+            s.FormMainWindowState = (byte)WindowState;
+            Tables.Setting.Update(s);
+#endif
         }
 
         private void FormMain_SizeChanged(object sender, EventArgs e)
@@ -93,7 +99,7 @@ namespace Dandaan.Forms
 
         private void button2_Click(object sender, EventArgs e)
         {
-            ;
+            Tables.Log.Insert(new Tables.Log() { Message = "wشسیسیبسیب d ی ک edfsd" });
         }
 
         private void FormMain_Shown(object sender, EventArgs e)

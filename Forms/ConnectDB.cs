@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class ConnectDB : DandaanForm
+    public partial class ConnectDB : Form
     {
         public ConnectDB()
         {
@@ -41,7 +41,7 @@ namespace Dandaan.Forms
             {
                 try
                 {
-                    Dandaan.DB.Init();
+                    DB.Init();
 
                     /*Parallel.For(0, 10, new Action<int>((j) =>
                     {

@@ -13,37 +13,28 @@ namespace Dandaan.Tables
     [Table(Name = nameof(User))]
     public class User
     {
-        [Column]
+        [Column]//(IsDbGenerated = true)]
         public int Id { get; set; }
 
-        [Column]
+        [Column]//(IsPrimaryKey = true)]
         public string Name { get; set; }
 
-        [Column]
+        [Column]//(IsDbGenerated = true)]
         public string Password { get; set; }
 
-        [Column]
+        [Column]//(IsDbGenerated = true)]
         public byte Enabled { get; set; }
 
         public static void CreateAndMigrate()
         {
-            DB.ExecuteNonQuery($@"
-{SQL.IfNotExistsTable(nameof(User))}
-    CREATE TABLE [dbo].[User](
-        [Id] [int] IDENTITY(1,1) NOT NULL,
-        [Name] [nvarchar](100) NOT NULL,
-        [Password] [nvarchar](100) NOT NULL CONSTRAINT [DF_User_Password]  DEFAULT (N''),
-        [Enabled] [tinyint] NOT NULL CONSTRAINT [DF_User_Enabled]  DEFAULT ((1)),
-     CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED 
-    (
-        [Name] ASC
-    )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
-    CONSTRAINT
-    IX_User UNIQUE NONCLUSTERED 
-    (
-        Id
-    ) WITH(PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]    
-    ) ON [PRIMARY]");
+            var sql = SQL.IfNotExistsTable(nameof(User)) + @"
+CREATE TABLE [dbo].[User] (
+    [Id] [int] IDENTITY NOT NULL CONSTRAINT [IX_User] UNIQUE NONCLUSTERED,
+    [Name] [nvarchar](100) NOT NULL CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED,
+    [Password] [nvarchar](100) NOT NULL CONSTRAINT [DF_User_Password] DEFAULT (N''),
+    [Enabled] [tinyint] NOT NULL CONSTRAINT [DF_User_Enabled] DEFAULT ((1)), 
+);";
+            DB.ExecuteNonQuery(SQL.Transaction(sql));
         }
 
         public static int Count()
@@ -72,10 +63,34 @@ namespace Dandaan.Tables
             }
         }
 
-        public static void Insert(User user)
+        public static int Insert(User user)
         {
-            DB.ExecuteNonQuery(@"insert into [User] (Name) values (@Name)",
-                new SqlParameter("@Name", SqlDbType.NVarChar, 100) { Value = user.Name });
+            var sql = SQL.Transaction(// we get an updlock and hold it for the duration of the transaction
+                @"if not exists (select * from [User] with (updlock,holdlock) where Name=@Name)
+begin
+--waitfor delay '0:00:15'; -- use this to see if locks are working correctly
+insert into [User] (Name) values (@Name);
+select scope_identity();
+end;");
+
+            var id = DB.ExecuteScalar(sql, new SqlParameter("@Name", SqlDbType.NVarChar, 100)
+            { Value = user.Name });
+
+            /*DB.DataContextRun((context) =>
+            {
+                if (user.Name.Length > 100) user.Name = user.Name.Substring(0, 100);
+                context.Users.InsertOnSubmit(user);
+                context.SubmitChanges();
+            });*/
+
+            //if (id != null && id != DBNull.Value)
+            if(id is decimal)
+            {
+                Setting.SelectOrInsert((int)(decimal)id);
+                return (int)(decimal)id;
+            }
+
+            return 0;
         }
     }
 }

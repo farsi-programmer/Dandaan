@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 using System.Data;
 using System.Data.SqlClient;
 using System.Data.Linq.Mapping;
@@ -12,29 +13,25 @@ namespace Dandaan.Tables
     [Table(Name = nameof(Log))]
     public class Log
     {
-        [Column]//[Column(IsPrimaryKey = true, IsDbGenerated = true)]
+        [Column]//(IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id { get; set; }
 
         [Column]
         public string Message { get; set; }
 
-        [Column]//[Column(IsDbGenerated = true)]
+        [Column]//(IsDbGenerated = true)]
         public DateTime DateTime { get; set; }
 
         public static void CreateAndMigrate()
         {
-            DB.ExecuteNonQuery($@"
-{SQL.IfNotExistsTable(nameof(Log))}
-    CREATE TABLE [dbo].[Log](
-	    [Id] [int] IDENTITY(1,1) NOT NULL,
-	    [Message] [nvarchar](800) NOT NULL,
-	    [DateTime] [smalldatetime] NOT NULL CONSTRAINT [DF_Log_DateTime]  DEFAULT (getdate()),
-     CONSTRAINT [PK_Log] PRIMARY KEY CLUSTERED 
-    (
-	    [Id] ASC
-    )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-    ) ON [PRIMARY]");
-        }
+            var sql = SQL.IfNotExistsTable(nameof(Log)) + @"
+CREATE TABLE [dbo].[Log] (
+    [Id] [int] IDENTITY NOT NULL CONSTRAINT [PK_Log] PRIMARY KEY CLUSTERED,
+    [Message] [nvarchar](800) NOT NULL,
+    [DateTime] [smalldatetime] NOT NULL CONSTRAINT [DF_Log_DateTime] DEFAULT (getdate()),
+);";
+            DB.ExecuteNonQuery(SQL.Transaction(sql));
+       }
 
         public static IEnumerable<Log> Select()
         {
@@ -63,11 +60,12 @@ namespace Dandaan.Tables
 
         public static void Insert(Log log)
         {
-            DB.ExecuteNonQuery(@"insert into [Log] (Message) values (@Message)",
+            DB.ExecuteNonQuery(@"insert into [Log] (Message) values (@Message);",
                 new SqlParameter("@Message", SqlDbType.NVarChar, 800) { Value = log.Message });
 
-            /*DB.DandaanDataContextRun((context) =>
+            /*DB.DataContextRun((context) =>
             {
+                if (log.Message.Length > 800) log.Message = log.Message.Substring(0, 800);
                 context.Logs.InsertOnSubmit(log);
                 context.SubmitChanges();
             });*/
