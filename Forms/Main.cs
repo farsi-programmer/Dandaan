@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class Main : System.Windows.Forms.Form
+    public partial class Main : FormFontText
     {
         public Main()
         {
@@ -33,9 +33,9 @@ namespace Dandaan.Forms
                 }
             });
 #else
-            var s = Tables.Setting.SelectOrInsert(Program.UserId);
-            if (s.FormMainWindowState != (byte)FormWindowState.Minimized)
-                WindowState = (FormWindowState)s.FormMainWindowState;
+            var s = Tables.Setting.SelectOrInsertDefault(Program.UserId);
+            if (s.MainFormWindowState != FormWindowState.Minimized)
+                WindowState = s.MainFormWindowState;
 #endif
         }
 
@@ -54,15 +54,15 @@ namespace Dandaan.Forms
                 c.SaveChanges();
             });
 #else
-            var s = Tables.Setting.SelectOrInsert(Program.UserId);
-            s.FormMainWindowState = (byte)WindowState;
+            var s = Tables.Setting.SelectOrInsertDefault(Program.UserId);
+            s.MainFormWindowState = WindowState;
             Tables.Setting.Update(s);
 #endif
         }
 
         private void FormMain_SizeChanged(object sender, EventArgs e)
         {
-            
+            ;
         }
 
         private void FormMain_Load(object sender, EventArgs e)
@@ -89,12 +89,14 @@ namespace Dandaan.Forms
 
         private void لاگToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new Logger().Show(this);
+            new Logger().Show(/*this this keeps the form on top, which i don't like*/);
         }
+
+        About about = null;
 
         private void دربارهToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new About().Show(this);
+            showForm(ref about);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -120,6 +122,31 @@ namespace Dandaan.Forms
         private void button7_Click(object sender, EventArgs e)
         {
             MessageBox.Show(Dandaan.DB.Connection.Database);
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        Patients patients = null;
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            showForm(ref patients);
+        }
+
+        void showForm<T>(ref T f) where T : Form
+        {
+            if (f == null) f = Activator.CreateInstance<T>();
+
+            if (f.Visible == true)
+            {
+                if (f.WindowState == FormWindowState.Minimized)
+                    f.WindowState = f.lastFormWindowState;
+                else f.Focus();//BringToFront();
+            }
+            else f.Show();
         }
     }
 

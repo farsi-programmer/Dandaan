@@ -56,13 +56,21 @@ namespace Dandaan.Forms
                     {
                         Invoke((Action)delegate()
                         {
-                            try // this is in the main thread
+                            // this is in the main thread
+
+                            try
                             {
                                 textBox1.AppendText("اتصال برقرار شد.\r\n");
-
                                 Visible = false;
-                                if (new Login().ShowDialog(this) == DialogResult.OK)
-                                    new Main().ShowDialog(this);
+                            }
+                            catch { }
+
+                            // i want to see errors
+                            if (new Login().ShowDialog() == DialogResult.OK)
+                                new Main().ShowDialog();
+
+                            try
+                            {
                                 Close();
                             }
                             catch { }

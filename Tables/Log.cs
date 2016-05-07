@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Dandaan.Tables
 {
-    [Table(Name = nameof(Log))]
+    [Table(Name = l)]
     public class Log
     {
         [Column]//(IsPrimaryKey = true, IsDbGenerated = true)]
@@ -22,13 +22,15 @@ namespace Dandaan.Tables
         [Column]//(IsDbGenerated = true)]
         public DateTime DateTime { get; set; }
 
+        const string l = nameof(Log), m = nameof(Message), i = nameof(Id), d = nameof(DateTime);
+
         public static void CreateAndMigrate()
         {
-            var sql = SQL.IfNotExistsTable(nameof(Log)) + @"
-CREATE TABLE [dbo].[Log] (
-    [Id] [int] IDENTITY NOT NULL CONSTRAINT [PK_Log] PRIMARY KEY CLUSTERED,
-    [Message] [nvarchar](800) NOT NULL,
-    [DateTime] [smalldatetime] NOT NULL CONSTRAINT [DF_Log_DateTime] DEFAULT (getdate()),
+            var sql = SQL.IfNotExistsTable(l) + $@"
+CREATE TABLE [dbo].[{l}] (
+    [{i}] [int] IDENTITY NOT NULL CONSTRAINT [PK_{l}] PRIMARY KEY CLUSTERED,
+    [{m}] [nvarchar](800) NOT NULL,
+    [{d}] [smalldatetime] NOT NULL CONSTRAINT [DF_{l}_{d}] DEFAULT (getdate()),
 );";
             DB.ExecuteNonQuery(SQL.Transaction(sql));
        }
@@ -60,8 +62,8 @@ CREATE TABLE [dbo].[Log] (
 
         public static void Insert(Log log)
         {
-            DB.ExecuteNonQuery(@"insert into [Log] (Message) values (@Message);",
-                new SqlParameter("@Message", SqlDbType.NVarChar, 800) { Value = log.Message });
+            DB.ExecuteNonQuery($@"insert into [{l}] ({m}) values (@{m});",
+                new SqlParameter($"@{m}", SqlDbType.NVarChar, 800) { Value = log.Message });
 
             /*DB.DataContextRun((context) =>
             {

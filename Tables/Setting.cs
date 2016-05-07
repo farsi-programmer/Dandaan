@@ -9,30 +9,32 @@ using System.Threading.Tasks;
 
 namespace Dandaan.Tables
 {
-    [Table(Name = nameof(Setting))]
+    [Table(Name = s)]
     public class Setting
     {
         [Column(IsPrimaryKey = true)]
         public int UserId { get; set; }
 
         [Column]
-        public byte FormMainWindowState { get; set; }
+        public System.Windows.Forms.FormWindowState MainFormWindowState { get; set; }
+
+        const string s = nameof(Setting), f = nameof(MainFormWindowState), u = nameof(UserId);
 
         public static void CreateAndMigrate()
         {
             // Setting references User
             User.CreateAndMigrate();
 
-            var sql = SQL.IfNotExistsTable(nameof(Setting)) + @"
-CREATE TABLE [dbo].[Setting] (
-    [UserId] [int] NOT NULL CONSTRAINT [PK_Setting] PRIMARY KEY CLUSTERED
-        CONSTRAINT [FK_Setting_User] FOREIGN KEY REFERENCES [dbo].[User] ([Id]),
-    [FormMainWindowState] [tinyint] NOT NULL,
+            var sql = SQL.IfNotExistsTable(s) + $@"
+CREATE TABLE [dbo].[{s}] (
+    [{u}] [int] NOT NULL CONSTRAINT [PK_{s}] PRIMARY KEY CLUSTERED
+        CONSTRAINT [FK_{s}_{nameof(User)}] FOREIGN KEY REFERENCES [dbo].[{nameof(User)}] ([{nameof(User.Id)}]),
+    [{f}] [int] NOT NULL,
 );";
             DB.ExecuteNonQuery(SQL.Transaction(sql));
         }
 
-        public static Setting SelectOrInsert(int userId)
+        public static Setting SelectOrInsertDefault(int userId)
         {
             Setting setting = null;
 
@@ -43,26 +45,26 @@ CREATE TABLE [dbo].[Setting] (
                 Insert(new Setting() { UserId = userId });
             else return setting;
 
-            return SelectOrInsert(userId);
+            return SelectOrInsertDefault(userId);
         }
 
         private static void Insert(Setting setting)
         {
             var sql = SQL.Transaction(
-                @"if not exists (select * from [Setting] with (updlock,holdlock) where UserId=@UserId)
-insert into [Setting] ([UserId], [FormMainWindowState]) values (@UserId, @FormMainWindowState);");
+                $@"if not exists (select * from [{s}] with (updlock,holdlock) where {u}=@{u})
+insert into [{s}] ([{u}], [{f}]) values (@{u}, @{f});");
 
             DB.ExecuteNonQuery(sql,
-                new SqlParameter("@UserId", SqlDbType.Int) { Value = setting.UserId },
-                new SqlParameter("@FormMainWindowState", SqlDbType.TinyInt)
-                { Value = setting.FormMainWindowState });
+                new SqlParameter($"@{u}", SqlDbType.Int) { Value = setting.UserId },
+                new SqlParameter($"@{f}", SqlDbType.TinyInt)
+                { Value = setting.MainFormWindowState });
         }
 
         internal static void Update(Setting setting)
         {
             using (var context = DB.DataContext)
             {
-                context.Settings.Attach(setting, SelectOrInsert(setting.UserId));
+                context.Settings.Attach(setting, SelectOrInsertDefault(setting.UserId));
                 context.SubmitChanges();
             }      
         }

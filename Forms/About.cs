@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class About : System.Windows.Forms.Form
+    public partial class About : Form
     {
         public About()
         {

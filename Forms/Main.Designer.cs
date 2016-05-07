@@ -53,6 +53,7 @@
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.toolStrip2.SuspendLayout();
@@ -66,8 +67,9 @@
             this.راهنماToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(11, 4, 0, 4);
             this.menuStrip1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.menuStrip1.Size = new System.Drawing.Size(931, 33);
+            this.menuStrip1.Size = new System.Drawing.Size(1008, 37);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -111,9 +113,10 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(447, 486);
+            this.button1.Location = new System.Drawing.Point(305, 457);
+            this.button1.Margin = new System.Windows.Forms.Padding(6);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.Size = new System.Drawing.Size(108, 34);
             this.button1.TabIndex = 1;
             this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
@@ -121,19 +124,21 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(111, 149);
+            this.textBox1.Location = new System.Drawing.Point(42, 70);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(6);
             this.textBox1.MaxLength = 32767000;
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(572, 300);
+            this.textBox1.Size = new System.Drawing.Size(612, 327);
             this.textBox1.TabIndex = 2;
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(528, 486);
+            this.button2.Location = new System.Drawing.Point(425, 457);
+            this.button2.Margin = new System.Windows.Forms.Padding(6);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.Size = new System.Drawing.Size(108, 34);
             this.button2.TabIndex = 3;
             this.button2.Text = "button2";
             this.button2.UseVisualStyleBackColor = true;
@@ -147,10 +152,11 @@
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButton1,
             this.toolStripSeparator1});
-            this.toolStrip1.Location = new System.Drawing.Point(714, 364);
+            this.toolStrip1.Location = new System.Drawing.Point(169, 443);
             this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
             this.toolStrip1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.toolStrip1.Size = new System.Drawing.Size(58, 35);
+            this.toolStrip1.Size = new System.Drawing.Size(59, 35);
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -171,9 +177,10 @@
             // button3
             // 
             this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(178)));
-            this.button3.Location = new System.Drawing.Point(848, 36);
+            this.button3.Location = new System.Drawing.Point(558, 426);
+            this.button3.Margin = new System.Windows.Forms.Padding(6);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 40);
+            this.button3.Size = new System.Drawing.Size(87, 32);
             this.button3.TabIndex = 5;
             this.button3.Text = "نوبت​ها";
             this.button3.UseVisualStyleBackColor = true;
@@ -192,10 +199,11 @@
             this.toolStripButton4,
             this.toolStripSeparator3});
             this.toolStrip2.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
-            this.toolStrip2.Location = new System.Drawing.Point(730, 434);
+            this.toolStrip2.Location = new System.Drawing.Point(678, 297);
             this.toolStrip2.Name = "toolStrip2";
+            this.toolStrip2.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
             this.toolStrip2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.toolStrip2.Size = new System.Drawing.Size(64, 125);
+            this.toolStrip2.Size = new System.Drawing.Size(65, 125);
             this.toolStrip2.TabIndex = 2;
             this.toolStrip2.Text = "toolStrip2";
             this.toolStrip2.TextDirection = System.Windows.Forms.ToolStripTextDirection.Vertical90;
@@ -250,49 +258,63 @@
             // 
             // button4
             // 
-            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(178)));
-            this.button4.Location = new System.Drawing.Point(767, 36);
+            this.button4.Location = new System.Drawing.Point(446, 503);
+            this.button4.Margin = new System.Windows.Forms.Padding(6);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 40);
+            this.button4.Size = new System.Drawing.Size(87, 32);
             this.button4.TabIndex = 6;
             this.button4.Text = "بیماران";
             this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // button5
             // 
-            this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(178)));
-            this.button5.Location = new System.Drawing.Point(848, 82);
+            this.button5.Location = new System.Drawing.Point(558, 467);
+            this.button5.Margin = new System.Windows.Forms.Padding(6);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(75, 40);
+            this.button5.Size = new System.Drawing.Size(87, 32);
             this.button5.TabIndex = 7;
             this.button5.Text = "خانواده";
             this.button5.UseVisualStyleBackColor = true;
             // 
             // button6
             // 
-            this.button6.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(178)));
-            this.button6.Location = new System.Drawing.Point(848, 128);
+            this.button6.Location = new System.Drawing.Point(558, 508);
+            this.button6.Margin = new System.Windows.Forms.Padding(6);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(75, 40);
+            this.button6.Size = new System.Drawing.Size(87, 32);
             this.button6.TabIndex = 8;
             this.button6.Text = "صندوق";
             this.button6.UseVisualStyleBackColor = true;
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(516, 562);
+            this.button7.Location = new System.Drawing.Point(946, 1038);
+            this.button7.Margin = new System.Windows.Forms.Padding(6);
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(75, 23);
+            this.button7.Size = new System.Drawing.Size(138, 42);
             this.button7.TabIndex = 9;
             this.button7.Text = "button7";
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
-            // FormMain
+            // button8
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.button8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button8.Location = new System.Drawing.Point(903, 40);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(93, 35);
+            this.button8.TabIndex = 1;
+            this.button8.Text = "بیماران";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
+            // Main
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(931, 678);
+            this.ClientSize = new System.Drawing.Size(1008, 730);
+            this.Controls.Add(this.button8);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
@@ -305,8 +327,8 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "FormMain";
-            this.Text = "مدیریت دندانپزشکی";
+            this.Margin = new System.Windows.Forms.Padding(6);
+            this.Name = "Main";
             this.Load += new System.EventHandler(this.FormMain_Load);
             this.Shown += new System.EventHandler(this.FormMain_Shown);
             this.VisibleChanged += new System.EventHandler(this.FormMain_VisibleChanged);
@@ -347,6 +369,7 @@
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button button8;
     }
 }
 

@@ -34,6 +34,7 @@ constraint_name=N'{constraintName}')";
 
         // important
         // always use multiple lines, something might have been commented in the sql parameter
+        // and always use semicolons
         // important
 
         public static string SerializableTransaction(string sql)
@@ -79,28 +80,36 @@ commit transaction;";
 
         public static string TransactionalLock(string sql, string mutexName, int TimeoutInMilliSeconds)
         {
-            return $@"BEGIN TRAN;
+            return $@"BEGIN TRANSACTION;
 DECLARE @getapplock_result int;
-EXEC @getapplock_result=sp_getapplock @Resource='{mutexName}', @LockMode='Exclusive',
-	@LockOwner='Transaction', @LockTimeout={TimeoutInMilliSeconds}, @DbPrincipal='dbo';
+EXEC @getapplock_result=sp_getapplock @Resource=N'{mutexName}', @LockMode=N'Exclusive',
+	@LockOwner=N'Transaction', @LockTimeout={TimeoutInMilliSeconds}, @DbPrincipal=N'dbo';
 if @getapplock_result=>0
 begin
 {sql}
 end;
-COMMIT TRAN;";
+COMMIT TRANSACTION;";
         }
+
+        // Locks associated with the current transaction are released when the transaction
+        // commits or rolls back.
+        // Locks can be explicitly released with sp_releaseapplock.
 
         public static string NonWaitableTransactionalLock(string sql, string mutexName)
         {
-            return $@"BEGIN TRAN;
+            // an alternative to this is to set LOCK_TIMEOUT to zero, and try to lock a table row
+            // (0 means to not wait at all and return a message as soon as a lock is encountered)
+            // but this method seems simpler:
+
+            return $@"BEGIN TRANSACTION;
 DECLARE @getapplock_result int;
-EXEC @getapplock_result=sp_getapplock @Resource='{mutexName}', @LockMode='Exclusive',
-	@LockOwner='Transaction', @LockTimeout=0, @DbPrincipal='dbo';
+EXEC @getapplock_result=sp_getapplock @Resource=N'{mutexName}', @LockMode=N'Exclusive',
+	@LockOwner=N'Transaction', @LockTimeout=0, @DbPrincipal=N'dbo';
 if @getapplock_result=0
 begin
 {sql}
 end;
-COMMIT TRAN;";
+COMMIT TRANSACTION;";
         }
     }
 }

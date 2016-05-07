@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class Logger : System.Windows.Forms.Form
+    public partial class Logger : Form
     {
         public Logger()
         {

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Dandaan.Tables
 {
-    [Table(Name = nameof(User))]
+    [Table(Name = u)]
     public class User
     {
         [Column]//(IsDbGenerated = true)]
@@ -25,14 +25,17 @@ namespace Dandaan.Tables
         [Column]//(IsDbGenerated = true)]
         public byte Enabled { get; set; }
 
+        const string u = nameof(User), n = nameof(Name), i = nameof(Id), p = nameof(Password),
+            e = nameof(Enabled);
+
         public static void CreateAndMigrate()
         {
-            var sql = SQL.IfNotExistsTable(nameof(User)) + @"
-CREATE TABLE [dbo].[User] (
-    [Id] [int] IDENTITY NOT NULL CONSTRAINT [IX_User] UNIQUE NONCLUSTERED,
-    [Name] [nvarchar](100) NOT NULL CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED,
-    [Password] [nvarchar](100) NOT NULL CONSTRAINT [DF_User_Password] DEFAULT (N''),
-    [Enabled] [tinyint] NOT NULL CONSTRAINT [DF_User_Enabled] DEFAULT ((1)), 
+            var sql = SQL.IfNotExistsTable(u) + $@"
+CREATE TABLE [dbo].[{u}] (
+    [{i}] [int] IDENTITY NOT NULL CONSTRAINT [IX_{u}] UNIQUE NONCLUSTERED,
+    [{n}] [nvarchar](100) NOT NULL CONSTRAINT [PK_{u}] PRIMARY KEY CLUSTERED,
+    [{p}] [nvarchar](100) NOT NULL CONSTRAINT [DF_{u}_{p}] DEFAULT (N''),
+    [{e}] [tinyint] NOT NULL CONSTRAINT [DF_{u}_{e}] DEFAULT ((1)), 
 );";
             DB.ExecuteNonQuery(SQL.Transaction(sql));
         }
@@ -66,14 +69,14 @@ CREATE TABLE [dbo].[User] (
         public static int Insert(User user)
         {
             var sql = SQL.Transaction(// we get an updlock and hold it for the duration of the transaction
-                @"if not exists (select * from [User] with (updlock,holdlock) where Name=@Name)
+                $@"if not exists (select * from [{u}] with (updlock,holdlock) where {n}=@{n})
 begin
 --waitfor delay '0:00:15'; -- use this to see if locks are working correctly
-insert into [User] (Name) values (@Name);
+insert into [{u}] ({n}) values (@{n});
 select scope_identity();
 end;");
 
-            var id = DB.ExecuteScalar(sql, new SqlParameter("@Name", SqlDbType.NVarChar, 100)
+            var id = DB.ExecuteScalar(sql, new SqlParameter($"@{n}", SqlDbType.NVarChar, 100)
             { Value = user.Name });
 
             /*DB.DataContextRun((context) =>
@@ -86,7 +89,7 @@ end;");
             //if (id != null && id != DBNull.Value)
             if(id is decimal)
             {
-                Setting.SelectOrInsert((int)(decimal)id);
+                Setting.SelectOrInsertDefault((int)(decimal)id);
                 return (int)(decimal)id;
             }
 
