@@ -427,7 +427,7 @@ namespace Dandaan
                 //sb.AppendLine((string)f.GetRawConstantValue());
 
                 var m = t.GetMethod(nameof(Tables.Log.CreateAndMigrate));
-                m.Invoke(null, null);
+                m.Invoke(null, new object[] { t });
             }
         }
 

@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Text.RegularExpressions;
+using System.ComponentModel;
+using System.Reflection;
+using System.Data.SqlClient;
 using System.Data;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +28,23 @@ namespace Dandaan
         public static string IfNotExistsDefaultConstraint(string name)
         {
             return $@"if not exists (select * from sys.default_constraints where name=N'{name}')";
+        }
+
+        internal static void CreateTable(Type t)
+        {
+            var ms = t.GetProperties();
+            var sb = new StringBuilder();
+            sb.AppendLine(IfNotExistsTable(t.Name));
+            sb.AppendLine($"CREATE TABLE [dbo].[{t.Name}] (");
+
+            foreach (var m in ms)
+            {
+                var desc = GetDescriptionAttribute(m);
+                sb.AppendLine($"[{m.Name}] {desc},");
+            }
+
+            sb.AppendLine(");");
+            DB.ExecuteNonQuery(Transaction(sb.ToString()));
         }
 
         public static string IfNotExistsReferentialConstraint(string constraintName)
@@ -110,6 +131,129 @@ begin
 {sql}
 end;
 COMMIT TRANSACTION;";
+        }
+
+        public static string Insert(string table, List<string> columns, params string[] IfNotExists)
+        {
+            var sb = new StringBuilder();
+
+            if (IfNotExists.Length > 0)
+            {
+                // we get an updlock and hold it for the duration of the transaction
+                sb.Append($@"if not exists (select * from [dbo].[{table}] with (updlock,holdlock) where ");
+
+                for (int i = 0; i < IfNotExists.Length; i++)
+                {
+                    sb.Append($"{IfNotExists[i]}=@{IfNotExists[i]}");
+                    if (i != IfNotExists.Length - 1) sb.Append(" and ");
+                }
+
+                sb.Append(") ");
+            }
+
+            sb.Append($@"
+begin
+--waitfor delay '0:00:15'; --use this to see if locks are working correctly
+insert into [dbo].[{table}] (");
+
+            for (int i = 0; i < columns.Count; i++)
+            {
+                sb.Append(columns[i]);
+                if (i != columns.Count - 1) sb.Append(", ");
+            }            
+
+            sb.Append(") values (");
+
+            for (int i = 0; i < columns.Count; i++)
+            {
+                sb.Append("@" + columns[i]);
+                if (i != columns.Count - 1) sb.Append(", ");
+            }            
+
+            sb.Append(@");
+select scope_identity();
+end;");
+
+            return IfNotExists.Length > 0 ? Transaction(sb.ToString()) : sb.ToString();
+        }
+
+        public static int Insert(object obj, params string[] IfNotExists)
+        {
+            var p1 = new List<string>();
+            var p2 = new List<SqlParameter>();
+
+            var t = obj.GetType();
+            var ms = t.GetProperties();
+
+            foreach (var m in ms)
+            {
+                var desc = GetDescriptionAttribute(m);
+
+                if(!Regex.IsMatch(desc, @"[\s]+identity[\s]+", RegexOptions.IgnoreCase)
+                    && !Regex.IsMatch(desc, @"[\s]+default[\(\s]+", RegexOptions.IgnoreCase))
+                {
+                    p1.Add(m.Name);
+                    p2.Add(SqlParameter(m.Name, t.GetProperty(m.Name).GetValue(obj), desc));
+                }
+            }
+
+            var result = DB.ExecuteScalar(Insert(t.Name, p1, IfNotExists), p2.ToArray());
+
+            //if (result != null && result != DBNull.Value)
+            if (result is decimal) return (int)(decimal)result;
+
+            return 0;
+        }
+
+        public static SqlParameter SqlParameter(string name, object value, string desc/*description attribute*/)
+        {
+            SqlParameter p = null;
+
+            if (desc.Contains("[nvarchar]"))
+            {
+                var len = match(desc, $@"\[nvarchar][\s]*\(([\d]+)\)").Groups[1].Value;
+                p = new SqlParameter($"@{name}", SqlDbType.NVarChar, int.Parse(len)) { Value = value };
+            }
+            else if (desc.Contains("[int]"))
+            {
+                p = new SqlParameter($"@{name}", SqlDbType.Int) { Value = value };
+            }
+            else if (desc.Contains("[tinyint]"))
+            {
+                p = new SqlParameter($"@{name}", SqlDbType.TinyInt) { Value = value };
+            }
+            //else if
+
+            return p;
+        }
+
+        public static Match match(string input, string pattern)
+        {
+            return Regex.Match(input, pattern, RegexOptions.IgnoreCase);
+        }
+
+        public static string GetDescriptionAttribute(MemberInfo m, bool shouldHave = true)
+        {
+            var attributes = (DescriptionAttribute[])m.GetCustomAttributes<DescriptionAttribute>();
+
+            return NewMethod(shouldHave, attributes);
+        }
+
+        public static string GetDescriptionAttribute(Type t, bool shouldHave = true)
+        {
+            var attributes = (DescriptionAttribute[])t.GetCustomAttributes<DescriptionAttribute>();
+
+            return NewMethod(shouldHave, attributes);
+        }
+
+        private static string NewMethod(bool shouldHave, DescriptionAttribute[] attributes)
+        {
+            if (shouldHave)
+                return attributes[0].Description;
+            else if (attributes != null && attributes.Length > 0)
+                return attributes[0].Description;
+
+            return "";
         }
     }
 }

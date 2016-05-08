@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Reflection;
+using System.ComponentModel;
 using System.Windows.Forms;
 using System.Data;
 using System.Data.SqlClient;
@@ -10,30 +12,25 @@ using System.Threading.Tasks;
 
 namespace Dandaan.Tables
 {
-    [Table(Name = l)]
+    [Table(Name = nameof(Log))]
     public class Log
     {
         [Column]//(IsPrimaryKey = true, IsDbGenerated = true)]
+        [Description("[int] IDENTITY NOT NULL CONSTRAINT [PK_" + nameof(Log) + "] PRIMARY KEY CLUSTERED")]
         public int Id { get; set; }
 
         [Column]
+        [Description("[nvarchar](800) NOT NULL")]
         public string Message { get; set; }
 
         [Column]//(IsDbGenerated = true)]
+        [Description("[smalldatetime] NOT NULL CONSTRAINT [DF_" + nameof(Log) + "_" + nameof(DateTime) + "] DEFAULT (getdate())")]
         public DateTime DateTime { get; set; }
 
-        const string l = nameof(Log), m = nameof(Message), i = nameof(Id), d = nameof(DateTime);
-
-        public static void CreateAndMigrate()
+        public static void CreateAndMigrate(Type t)
         {
-            var sql = SQL.IfNotExistsTable(l) + $@"
-CREATE TABLE [dbo].[{l}] (
-    [{i}] [int] IDENTITY NOT NULL CONSTRAINT [PK_{l}] PRIMARY KEY CLUSTERED,
-    [{m}] [nvarchar](800) NOT NULL,
-    [{d}] [smalldatetime] NOT NULL CONSTRAINT [DF_{l}_{d}] DEFAULT (getdate()),
-);";
-            DB.ExecuteNonQuery(SQL.Transaction(sql));
-       }
+            SQL.CreateTable(t);
+        }
 
         public static IEnumerable<Log> Select()
         {
@@ -60,17 +57,18 @@ CREATE TABLE [dbo].[{l}] (
                     yield return en.Current;
         }
 
-        public static void Insert(Log log)
+        public static int Insert(Log log)
         {
-            DB.ExecuteNonQuery($@"insert into [{l}] ({m}) values (@{m});",
-                new SqlParameter($"@{m}", SqlDbType.NVarChar, 800) { Value = log.Message });
-
             /*DB.DataContextRun((context) =>
             {
                 if (log.Message.Length > 800) log.Message = log.Message.Substring(0, 800);
                 context.Logs.InsertOnSubmit(log);
                 context.SubmitChanges();
             });*/
-        }
+
+            var id = SQL.Insert(log);
+
+            return id;
+        }        
     }
 }

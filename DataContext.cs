@@ -12,9 +12,11 @@ namespace Dandaan
     {
         public Table<Tables.Log> Logs;
 
+        public Table<Tables.User> Users;
+
         public Table<Tables.Setting> Settings;
 
-        public Table<Tables.User> Users;
+        public Table<Tables.Patient> Patients;
 
         public DataContext(string connection) : base(connection) { }
 
