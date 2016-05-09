@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Reflection;
@@ -44,7 +45,32 @@ namespace Dandaan
             }
 
             sb.AppendLine(");");
-            DB.ExecuteNonQuery(Transaction(sb.ToString()));
+
+            var sql = Transaction(sb.ToString());
+
+            if (t.Name != nameof(Tables.Table))
+            {
+                // if the table has changed, there should be a migration method for it
+
+                // first we insert, if there is nothing for this table
+                if (Insert(new Tables.Table() { Name = t.Name, SQL = sql, Version = 0 },
+                    nameof(Tables.Table.Name)) == 0)
+                {
+                    var last = Tables.Table.Select(new Tables.Table() { Name = t.Name });
+
+                    if (sql != last.SQL)
+                    {
+                        t.GetMethod("MigrateTo" + (last.Version + 1)).Invoke(null, null);
+
+                        // what if the program is closed here, can we call MigrateTo more than once?
+                        // should we make these two lines atomic?
+
+                        Insert(new Tables.Table() { Name = t.Name, SQL = sql, Version = last.Version + 1 });
+                    }
+                }
+            }
+
+            DB.ExecuteNonQuery(sql);
         }
 
         public static string IfNotExistsReferentialConstraint(string constraintName)
@@ -189,8 +215,8 @@ end;");
             {
                 var desc = GetDescriptionAttribute(m);
 
-                if(!Regex.IsMatch(desc, @"[\s]+identity[\s]+", RegexOptions.IgnoreCase)
-                    && !Regex.IsMatch(desc, @"[\s]+default[\(\s]+", RegexOptions.IgnoreCase))
+                if(!IsMatch(desc, @"[\s]+identity[\s]+")
+                    && !IsMatch(desc, @"[\s]+default[\(\s]+"))
                 {
                     p1.Add(m.Name);
                     p2.Add(SqlParameter(m.Name, t.GetProperty(m.Name).GetValue(obj), desc));
@@ -211,7 +237,7 @@ end;");
 
             if (desc.Contains("[nvarchar]"))
             {
-                var len = match(desc, $@"\[nvarchar][\s]*\(([\d]+)\)").Groups[1].Value;
+                var len = Match(desc, $@"\[nvarchar][\s]*\(([\d]+)\)").Groups[1].Value;
                 p = new SqlParameter($"@{name}", SqlDbType.NVarChar, int.Parse(len)) { Value = value };
             }
             else if (desc.Contains("[int]"))
@@ -227,9 +253,14 @@ end;");
             return p;
         }
 
-        public static Match match(string input, string pattern)
+        public static Match Match(string input, string pattern)
         {
             return Regex.Match(input, pattern, RegexOptions.IgnoreCase);
+        }
+
+        public static bool IsMatch(string input, string pattern)
+        {
+            return Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
         }
 
         public static string GetDescriptionAttribute(MemberInfo m, bool shouldHave = true)

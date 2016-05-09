@@ -30,11 +30,6 @@ namespace Dandaan.Tables
         [Description("[tinyint] NOT NULL CONSTRAINT [DF_" + nameof(User) + "_" + nameof(Enabled) + "] DEFAULT ((1))")]
         public byte Enabled { get; set; }
 
-        public static void CreateAndMigrate(Type t)
-        {
-            SQL.CreateTable(t);
-        }
-
         public static int Count()
         {
             using (var context = DB.DataContext) return context.Users.Count();

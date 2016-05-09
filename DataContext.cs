@@ -10,9 +10,11 @@ namespace Dandaan
 {
     public class DataContext : System.Data.Linq.DataContext
     {
-        public Table<Tables.Log> Logs;
+        public Table<Tables.Table> Tables;
 
         public Table<Tables.User> Users;
+
+        public Table<Tables.Log> Logs;
 
         public Table<Tables.Setting> Settings;
 

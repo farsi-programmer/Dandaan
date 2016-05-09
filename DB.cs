@@ -122,15 +122,16 @@ namespace Dandaan
         // TODO: we should use a text file (LocalSettings) for storing the connection string,
         // we might want to use sql server (express)
 
-        private static bool attachDb = false;
+        private static bool attachDB = false;
 
         public static string ConnectionString =>
             @"Data Source=(LocalDB)\mssqllocaldb;"
-              + (attachDb ? $@"AttachDbFilename=|DataDirectory|\{nameof(Dandaan)}.mdf;" : "")
+              + (attachDB ? $@"AttachDbFilename=|DataDirectory|\{nameof(Dandaan)}.mdf;" : "")
             //+ @"Initial Catalog=Dandaan;"
+            //+ $@"Initial Catalog=[{Program.DataDirectory}\{nameof(Dandaan)}.mdf];"
             //+ @"APP=Dandaan;"
             + @"Integrated Security=True;"
-            // i don't think i need this + @"MultipleActiveResultSets=True;"
+// i don't think i need this + @"MultipleActiveResultSets=True;"
 ;
 
 #if using_ef
@@ -421,13 +422,21 @@ namespace Dandaan
                 .Where(t => t.IsClass && t.Namespace == nameof(Dandaan) + "." + nameof(Tables)
                 && t.IsPublic/*this is necessary because of ienumerable*/);
 
+            // this is the first table
+            SQL.CreateTable(typeof(Tables.Table));
+
+            // Setting references User
+            SQL.CreateTable(typeof(Tables.User));
+
             foreach (var t in tables)
             {
                 //var f = t.GetField(nameof(Tables.DandaanLog.CreateTable));
                 //sb.AppendLine((string)f.GetRawConstantValue());
 
-                var m = t.GetMethod(nameof(Tables.Log.CreateAndMigrate));
-                m.Invoke(null, new object[] { t });
+                //var m = t.GetMethod(nameof(Tables.Log.CreateAndMigrate));
+                //m.Invoke(null, new object[] { t });
+
+                SQL.CreateTable(t);
             }
         }
 
@@ -436,19 +445,25 @@ namespace Dandaan
             var name = nameof(Dandaan);
             var mdf = ".mdf";
             var dir = Program.DataDirectory;
+            var path = dir + "\\" + name + mdf;
 
-            /*if ((int)DB.ExecuteScalar($@"if db_id(N'{name}') is not null select 1
-else select count(*) from sys.databases where [name]=N'{name}'") < 1)*/
-
-            if (!File.Exists(dir + "\\" + name + mdf))
-            {          
+            if (!File.Exists(path))
+            {
+                // detach_db if the file is deleted
+                if ((int)ExecuteScalar($@"if db_id(N'{path}') is not null select 1
+else select count(*) from sys.databases where [name]=N'{path}'") > 0)
+                    ExecuteScalar($@"USE [master]
+-- Drop Connections
+--ALTER DATABASE [{path}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+EXEC master.dbo.sp_detach_db @dbname = N'{path}';");
+                         
                 ExecuteScalar($@"create database
 {name}_{Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture)/*this is how ef does it*/}
-on (name={name}, filename='{dir}\{name}{mdf}')
-log on (name={name}_log, filename='{dir}\{name}_log.ldf')");
+on (name={name}, filename='{path}')
+log on (name={name}_log, filename='{dir}\{name}_log.ldf');");
             }
 
-            attachDb = true;
+            attachDB = true;
         }
 
         /*public static void CreateTable(Type tableType)

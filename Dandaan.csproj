@@ -137,6 +137,7 @@
     <Compile Include="SQL.cs" />
     <Compile Include="Tables\Patient.cs" />
     <Compile Include="Tables\Setting.cs" />
+    <Compile Include="Tables\Table.cs" />
     <Compile Include="Tables\User.cs" />
     <Compile Include="Tables\Log.cs" />
     <EmbeddedResource Include="Forms\About.resx">

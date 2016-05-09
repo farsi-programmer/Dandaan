@@ -27,11 +27,6 @@ namespace Dandaan.Tables
         [Description("[smalldatetime] NOT NULL CONSTRAINT [DF_" + nameof(Log) + "_" + nameof(DateTime) + "] DEFAULT (getdate())")]
         public DateTime DateTime { get; set; }
 
-        public static void CreateAndMigrate(Type t)
-        {
-            SQL.CreateTable(t);
-        }
-
         public static IEnumerable<Log> Select()
         {
             /*using (var connection = DB.Connection)

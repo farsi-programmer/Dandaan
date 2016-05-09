@@ -22,14 +22,6 @@ CONSTRAINT [FK_" + nameof(Setting) + "_" + nameof(User) + @"] FOREIGN KEY REFERE
         [Description("[int] NOT NULL")]
         public System.Windows.Forms.FormWindowState MainFormWindowState { get; set; }
 
-        public static void CreateAndMigrate(Type t)
-        {
-            // Setting references User
-            User.CreateAndMigrate(typeof(User));
-
-            SQL.CreateTable(t);
-        }
-
         public static Setting SelectOrInsertDefault(int userId)
         {
             Setting setting = null;
@@ -44,11 +36,14 @@ CONSTRAINT [FK_" + nameof(Setting) + "_" + nameof(User) + @"] FOREIGN KEY REFERE
             return SelectOrInsertDefault(userId);
         }
 
-        private static int Insert(Setting setting)
+        public static void MigrateTo1()
         {
-            var id = SQL.Insert(setting, nameof(UserId));
+            ;
+        }
 
-            return id;
+        private static void Insert(Setting setting)
+        {
+            SQL.Insert(setting, nameof(UserId));
         }
 
         internal static void Update(Setting setting)
