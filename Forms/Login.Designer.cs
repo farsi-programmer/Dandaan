@@ -39,7 +39,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(14, 90);
+            this.button1.Location = new System.Drawing.Point(15, 90);
             this.button1.Margin = new System.Windows.Forms.Padding(6);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(106, 42);
@@ -97,7 +97,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(129, 90);
+            this.button2.Location = new System.Drawing.Point(130, 90);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(106, 42);
             this.button2.TabIndex = 4;
@@ -117,7 +117,6 @@
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button1);
-            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "Login";
             this.Load += new System.EventHandler(this.FormLogin_Load);
             this.ResumeLayout(false);

@@ -94,11 +94,20 @@
     <Compile Include="Forms\About.Designer.cs">
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\About.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\Form.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\About.cs">
+    <Compile Include="Forms\Form.Designer.cs">
+      <DependentUpon>Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Logger.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Logger.Designer.cs">
+      <DependentUpon>Logger.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Login.cs">
       <SubType>Form</SubType>
@@ -112,12 +121,6 @@
     <Compile Include="Forms\Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Logger.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Logger.Designer.cs">
-      <DependentUpon>Logger.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\ConnectDB.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -129,6 +132,18 @@
     </Compile>
     <Compile Include="Forms\Patients.Designer.cs">
       <DependentUpon>Patients.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TextBrowser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\TextBrowser.Designer.cs">
+      <DependentUpon>TextBrowser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\UserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\UserControl.Designer.cs">
+      <DependentUpon>UserControl.cs</DependentUpon>
     </Compile>
     <Compile Include="LocalSettings.cs" />
     <Compile Include="Program.cs" />
@@ -144,20 +159,26 @@
     <EmbeddedResource Include="Forms\About.resx">
       <DependentUpon>About.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Logger.resx">
+      <DependentUpon>Logger.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Login.resx">
       <DependentUpon>Login.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Logger.resx">
-      <DependentUpon>Logger.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\ConnectDB.resx">
       <DependentUpon>ConnectDB.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Patients.resx">
       <DependentUpon>Patients.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TextBrowser.resx">
+      <DependentUpon>TextBrowser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\UserControl.resx">
+      <DependentUpon>UserControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

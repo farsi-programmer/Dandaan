@@ -17,12 +17,6 @@ namespace Dandaan.Forms
             InitializeComponent();
         }
 
-        private void Patients_Resize(object sender, EventArgs e)
-        {
-            if (lastFormWindowState != WindowState && WindowState != FormWindowState.Minimized)
-                lastFormWindowState = WindowState;
-        }
-
         private void Patients_ResizeBegin(object sender, EventArgs e)
         {
             ;

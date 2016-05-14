@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class Main : FormFontText
+    public partial class Main : Form
     {
         public Main()
         {
