@@ -42,7 +42,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(283, 26);
             this.label1.TabIndex = 0;
-            this.label1.Text = "نرم افزار مدیریت دندانپزشکی متن باز\r\n";
+            this.label1.Text = "نرم افزار مدیریت دندانپزشکی متن باز";
             // 
             // linkLabel1
             // 
@@ -78,7 +78,6 @@
             this.Controls.Add(this.linkLabel2);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.label1);
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.Name = "About";
             this.Text = "درباره";
             this.ResumeLayout(false);

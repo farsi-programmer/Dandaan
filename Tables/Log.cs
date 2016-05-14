@@ -16,18 +16,18 @@ namespace Dandaan.Tables
     public class Log
     {
         [Column]//(IsPrimaryKey = true, IsDbGenerated = true)]
-        [Description("[int] IDENTITY NOT NULL CONSTRAINT [PK_" + nameof(Log) + "] PRIMARY KEY CLUSTERED")]
+        [Dandaan(Sql = "[int] IDENTITY NOT NULL CONSTRAINT [PK_" + nameof(Log) + "] PRIMARY KEY CLUSTERED (Id DESC)")]
         public int Id { get; set; }
 
         [Column]
-        [Description("[nvarchar](800) NOT NULL")]
+        [Dandaan(Sql = "[nvarchar](1000) NOT NULL")]
         public string Message { get; set; }
 
         [Column]//(IsDbGenerated = true)]
-        [Description("[smalldatetime] NOT NULL CONSTRAINT [DF_" + nameof(Log) + "_" + nameof(DateTime) + "] DEFAULT (getdate())")]
+        [Dandaan(Sql = "[smalldatetime] NOT NULL CONSTRAINT [DF_" + nameof(Log) + "_" + nameof(DateTime) + "] DEFAULT (getdate())")]
         public DateTime DateTime { get; set; }
 
-        public static IEnumerable<Log> Select()
+        public static IEnumerable<Log> Select(int page = 1, int pageSize = 1000)
         {
             /*using (var connection = DB.Connection)
             using (var cmd = connection.CreateCommand())
@@ -47,23 +47,16 @@ namespace Dandaan.Tables
             }*/
 
             using (var context = DB.DataContext)
-            using (var en = context.Logs.GetEnumerator())
+            using (var en = context.Logs.Skip((page - 1) * pageSize).Take(pageSize).GetEnumerator())
                 while (en.MoveNext())
                     yield return en.Current;
         }
 
-        public static int Insert(Log log)
+        /*DB.DataContextRun((context) =>
         {
-            /*DB.DataContextRun((context) =>
-            {
-                if (log.Message.Length > 800) log.Message = log.Message.Substring(0, 800);
-                context.Logs.InsertOnSubmit(log);
-                context.SubmitChanges();
-            });*/
-
-            var id = SQL.Insert(log);
-
-            return id;
-        }        
+            if (log.Message.Length > 800) log.Message = log.Message.Substring(0, 800);
+            context.Logs.InsertOnSubmit(log);
+            context.SubmitChanges();
+        });*/
     }
 }

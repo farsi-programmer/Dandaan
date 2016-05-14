@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace Dandaan.Forms
 {
-    // a recompile is needed for changes to this class to take effect for the designer
+    // a recompile is needed for changes in here to take effect for the designer
+
     public class Form : FormFontText
     {
         public FormWindowState lastFormWindowState;
@@ -22,7 +24,9 @@ namespace Dandaan.Forms
     {
         public FormFontText()
         {
-            Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(178)));
+            AutoScaleMode = AutoScaleMode.Font;
+
+            Font = new Font("Microsoft Sans Serif", 14.25f);
 
             Text = "مدیریت دندانپزشکی";
         }

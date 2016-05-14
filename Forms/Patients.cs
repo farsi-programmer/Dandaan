@@ -32,5 +32,10 @@ namespace Dandaan.Forms
         {
             ;
         }
+
+        private void Patients_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

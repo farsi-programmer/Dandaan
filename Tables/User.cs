@@ -15,19 +15,19 @@ namespace Dandaan.Tables
     public class User
     {
         [Column]//(IsDbGenerated = true)]
-        [Description("[int] IDENTITY NOT NULL CONSTRAINT [IX_"+ nameof(User) + "] UNIQUE NONCLUSTERED")]
+        [Dandaan(Sql = "[int] IDENTITY NOT NULL CONSTRAINT [IX_" + nameof(User) + "] UNIQUE NONCLUSTERED")]
         public int Id { get; set; }
 
         [Column]//(IsPrimaryKey = true)]
-        [Description("[nvarchar](100) NOT NULL CONSTRAINT [PK_" + nameof(User) + "] PRIMARY KEY CLUSTERED")]
+        [Dandaan(Sql = "[nvarchar](100) NOT NULL CONSTRAINT [PK_" + nameof(User) + "] PRIMARY KEY CLUSTERED")]
         public string Name { get; set; }
 
         [Column]//(IsDbGenerated = true)]
-        [Description("[nvarchar](100) NOT NULL CONSTRAINT [DF_" + nameof(User) + "_" + nameof(Password) + "] DEFAULT (N'')")]
+        [Dandaan(Sql = "[nvarchar](100) NOT NULL CONSTRAINT [DF_" + nameof(User) + "_" + nameof(Password) + "] DEFAULT (N'')")]
         public string Password { get; set; }
 
         [Column]//(IsDbGenerated = true)]
-        [Description("[tinyint] NOT NULL CONSTRAINT [DF_" + nameof(User) + "_" + nameof(Enabled) + "] DEFAULT ((1))")]
+        [Dandaan(Sql = "[tinyint] NOT NULL CONSTRAINT [DF_" + nameof(User) + "_" + nameof(Enabled) + "] DEFAULT ((1))")]
         public byte Enabled { get; set; }
 
         public static int Count()

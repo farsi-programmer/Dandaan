@@ -40,7 +40,7 @@ namespace Dandaan
 
             foreach (var m in ms)
             {
-                var desc = GetDescriptionAttribute(m);
+                var desc = GetDandaanAttribute(m).Sql;
                 sb.AppendLine($"[{m.Name}] {desc},");
             }
 
@@ -213,7 +213,7 @@ end;");
 
             foreach (var m in ms)
             {
-                var desc = GetDescriptionAttribute(m);
+                var desc = GetDandaanAttribute(m).Sql;
 
                 if(!IsMatch(desc, @"[\s]+identity[\s]+")
                     && !IsMatch(desc, @"[\s]+default[\(\s]+"))
@@ -263,21 +263,35 @@ end;");
             return Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
         }
 
-        public static string GetDescriptionAttribute(MemberInfo m, bool shouldHave = true)
+        public static Tables.DandaanAttribute GetDandaanAttribute(MemberInfo m)
+        {
+            var attributes = (Tables.DandaanAttribute[])m.GetCustomAttributes<Tables.DandaanAttribute>();
+
+            return attributes[0];
+        }
+
+        public static Tables.DandaanAttribute GetDandaanAttribute(Type t)
+        {
+            var attributes = (Tables.DandaanAttribute[])t.GetCustomAttributes<Tables.DandaanAttribute>();
+
+            return attributes[0];
+        }
+
+        public static string GetDescriptionAttribute(MemberInfo m, bool shouldHave = true) 
         {
             var attributes = (DescriptionAttribute[])m.GetCustomAttributes<DescriptionAttribute>();
 
-            return NewMethod(shouldHave, attributes);
+            return GetFirstDescription(attributes, shouldHave);
         }
 
-        public static string GetDescriptionAttribute(Type t, bool shouldHave = true)
+        public static string GetDescriptionAttribute(Type t, bool shouldHave = true) 
         {
             var attributes = (DescriptionAttribute[])t.GetCustomAttributes<DescriptionAttribute>();
 
-            return NewMethod(shouldHave, attributes);
+            return GetFirstDescription(attributes, shouldHave);
         }
 
-        private static string NewMethod(bool shouldHave, DescriptionAttribute[] attributes)
+        private static string GetFirstDescription(DescriptionAttribute[] attributes, bool shouldHave)
         {
             if (shouldHave)
                 return attributes[0].Description;
@@ -285,6 +299,16 @@ end;");
                 return attributes[0].Description;
 
             return "";
+        }
+
+        public static int Count<T>() where T : class
+        {
+            using (var context = DB.DataContext)
+            {
+                var pi = context.GetType().GetField(typeof(T).Name + "s");
+
+                return ((System.Data.Linq.Table<T>)(pi.GetValue(context))).Count();
+            }
         }
     }
 }

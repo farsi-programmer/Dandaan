@@ -77,19 +77,23 @@ namespace Dandaan.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
+            new Thread(new ThreadStart(() =>
             Parallel.For(0, 100, new ParallelOptions() { MaxDegreeOfParallelism = 100 }, new Action<int>((i) =>
             {
 #if using_ef || using_sqlite
                 DB.Run((c) => FormLogger.Log("تست " + c.Logs.Count()));
 #else
-                Tables.Log.Insert(new Tables.Log() { Message = i + "" });
+                SQL.Insert(new Tables.Log() { Message = i + @"123
+456" });
 #endif
-            }));
+            })))).Start();
         }
+
+        Logger logger = null;
 
         private void لاگToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new Logger().Show(/*this this keeps the form on top, which i don't like*/);
+            showForm(ref logger);
         }
 
         About about = null;
@@ -101,7 +105,7 @@ namespace Dandaan.Forms
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Tables.Log.Insert(new Tables.Log() { Message = "wشسیسیبسیب d ی ک edfsd" });
+            SQL.Insert(new Tables.Log() { Message = "wشسیسیبسیب d ی ک edfsd" });
         }
 
         private void FormMain_Shown(object sender, EventArgs e)
@@ -138,7 +142,7 @@ namespace Dandaan.Forms
 
         void showForm<T>(ref T f) where T : Form
         {
-            if (f == null) f = Activator.CreateInstance<T>();
+            if (f == null || f.IsDisposed) f = Activator.CreateInstance<T>();
 
             if (f.Visible == true)
             {
@@ -146,7 +150,12 @@ namespace Dandaan.Forms
                     f.WindowState = f.lastFormWindowState;
                 else f.Focus();//BringToFront();
             }
-            else f.Show();
+            else f.Show();//(this); this keeps the form on top, which i don't like
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            ;
         }
     }
 

@@ -490,7 +490,7 @@ where table_name=N'{tableName}'") > 0;
         {
             try
             {
-                Tables.Log.Insert(new Tables.Log() { Message = message });
+                SQL.Insert(new Tables.Log() { Message = message });
             }
             catch
             {

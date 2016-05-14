@@ -16,20 +16,20 @@ namespace Dandaan.Tables
     public class Table
     {
         [Column]
-        [Description("[int] IDENTITY NOT NULL CONSTRAINT [IX_" + nameof(Table) + "] UNIQUE NONCLUSTERED")]
+        [Dandaan(Sql = "[int] IDENTITY NOT NULL CONSTRAINT [IX_" + nameof(Table) + "] UNIQUE NONCLUSTERED")]
         public int Id { get; set; }
 
         [Column]
-        [Description("[nvarchar](100) NOT NULL CONSTRAINT [PK_" + nameof(Table) + @"] PRIMARY KEY CLUSTERED 
+        [Dandaan(Sql = "[nvarchar](100) NOT NULL CONSTRAINT [PK_" + nameof(Table) + @"] PRIMARY KEY CLUSTERED 
 ([Name] ASC, [Version] DESC)")]
         public string Name { get; set; }
 
         [Column]
-        [Description("[int] NOT NULL")]
+        [Dandaan(Sql = "[int] NOT NULL")]
         public int Version { get; set; }
 
         [Column]
-        [Description("[nvarchar](800) NOT NULL")]
+        [Dandaan(Sql = "[nvarchar](1000) NOT NULL")]
         public string SQL { get; set; }
 
         public static Table Select(Table table)
