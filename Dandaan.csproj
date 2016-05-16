@@ -97,6 +97,12 @@
     <Compile Include="Forms\About.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\Browser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Browser.Designer.cs">
+      <DependentUpon>Browser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Form.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -126,6 +132,12 @@
     </Compile>
     <Compile Include="Forms\ConnectDB.Designer.cs">
       <DependentUpon>ConnectDB.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Patient.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Patient.Designer.cs">
+      <DependentUpon>Patient.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Patients.cs">
       <SubType>Form</SubType>
@@ -159,6 +171,9 @@
     <EmbeddedResource Include="Forms\About.resx">
       <DependentUpon>About.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Browser.resx">
+      <DependentUpon>Browser.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Logger.resx">
       <DependentUpon>Logger.cs</DependentUpon>
     </EmbeddedResource>
@@ -171,11 +186,15 @@
     <EmbeddedResource Include="Forms\ConnectDB.resx">
       <DependentUpon>ConnectDB.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Patient.resx">
+      <DependentUpon>Patient.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Patients.resx">
       <DependentUpon>Patients.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\TextBrowser.resx">
       <DependentUpon>TextBrowser.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\UserControl.resx">
       <DependentUpon>UserControl.cs</DependentUpon>

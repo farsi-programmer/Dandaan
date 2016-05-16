@@ -18,7 +18,7 @@ namespace Dandaan.Forms
         {
             InitializeComponent();
 
-            textBrowser1.CountFunc = SQL.Count<Tables.Log>;
+            textBrowser1.SetCountFunc(SQL.Count<Tables.Log>);
 
             textBrowser1.TextFunc = (page, pageSize) =>
             {
