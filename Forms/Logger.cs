@@ -24,7 +24,7 @@ namespace Dandaan.Forms
             {
                 var t = typeof(Tables.Log);
                 var sb = new StringBuilder();
-                var str = "";
+                //var str = "";
 
                 foreach (var item in Tables.Log.Select(page, pageSize))
                 {
@@ -33,7 +33,7 @@ namespace Dandaan.Forms
                     //sb.Append($"{item.Id}\t{item.DateTime}\t{Regex.Replace(str, "\r\n", @"\r\n")}\r\n");
 
                     // this is specially necessary if we want to get the id for edit or delete
-                    sb.Append($"{item.Id}\t{item.DateTime}\t{Regex.Replace(str, "[\r\n]*", " ")}\r\n");
+                    sb.Append($"{item.Id}\t{item.DateTime}\t{Regex.Replace(item.Message, "[\r\n]+", " ")}\r\n\r\n");
                 }
 
                 return sb.ToString();

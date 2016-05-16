@@ -32,10 +32,7 @@
             // 
             // Patient
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Name = "Patient";
-            this.Size = new System.Drawing.Size(491, 295);
             this.ResumeLayout(false);
 
         }

@@ -19,7 +19,7 @@ namespace Dandaan.Forms
         {
             InitializeComponent();
 
-            browser1.Act = (count, page, pageSize, setWorking) =>
+            browserMenu1.Act = (count, page, pageSize, setWorking, pageChange) =>
             {
                 if (count == 0)
                 {
@@ -47,15 +47,19 @@ namespace Dandaan.Forms
                         {
                             textBox1.Text = TextFunc(page, pageSize);
 
-                            if (selection.Length == 0 && selectionStart < textBox1.Text.Length)
-                                textBox1.SelectionStart = selectionStart;
-                            else
+                            if (!pageChange)
                             {
-                                var i = textBox1.Text.IndexOf(selection);
-                                if (i > -1) textBox1.Select(i, selection.Length + i < textBox1.Text.Length ? selection.Length : textBox1.Text.Length - i - 1);
+                                if (selection.Length == 0 && selectionStart < textBox1.Text.Length)
+                                    textBox1.SelectionStart = selectionStart;
+                                else
+                                {
+                                    var i = textBox1.Text.IndexOf(selection, selectionStart);
+                                    if (i > -1) textBox1.Select(i, selection.Length);
+                                }
+
+                                textBox1.ScrollToCaret();
                             }
 
-                            textBox1.ScrollToCaret();
                             setWorking(false);
                         }));
                     }).Start();
@@ -64,8 +68,10 @@ namespace Dandaan.Forms
             };
         }
 
-        public void Close() => browser1.Close();
+        public void Close() => browserMenu1.Close();
 
-        public void SetCountFunc(Func<int> countFunc) => browser1.CountFunc = countFunc;
+        public void SetWordWrap(bool value) => textBox1.WordWrap = value;
+
+        public void SetCountFunc(Func<int> countFunc) => browserMenu1.CountFunc = countFunc;
     }
 }

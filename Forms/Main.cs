@@ -1,4 +1,6 @@
-﻿using System;
+﻿// http://offtopic.blog.ir/
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,11 +17,13 @@ namespace Dandaan.Forms
     {
         public Main()
         {
-            // Order is important
+            // order is important
 
             InitializeComponent();
 
-            FormClosing += FormMain_FormClosing;
+            //Width += 30;
+            //Height += 70;
+            StartPosition = FormStartPosition.WindowsDefaultLocation;
 
 #if using_ef || using_sqlite
             DB.Run((c) =>
@@ -39,7 +43,7 @@ namespace Dandaan.Forms
 #endif
         }
 
-        private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+        private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
 #if using_ef || using_sqlite
             DB.Run((c) =>
@@ -60,12 +64,12 @@ namespace Dandaan.Forms
 #endif
         }
 
-        private void FormMain_SizeChanged(object sender, EventArgs e)
+        private void Main_SizeChanged(object sender, EventArgs e)
         {
             ;
         }
 
-        private void FormMain_Load(object sender, EventArgs e)
+        private void Main_Load(object sender, EventArgs e)
         {
             ;
         }
@@ -105,15 +109,17 @@ namespace Dandaan.Forms
 
         private void button2_Click(object sender, EventArgs e)
         {
-            SQL.Insert(new Tables.Log() { Message = "wشسیسیبسیب d ی ک edfsd" });
+            SQL.Insert(new Tables.Log() { Message =
+                "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+            });
         }
 
-        private void FormMain_Shown(object sender, EventArgs e)
+        private void Main_Shown(object sender, EventArgs e)
         {
             ;
         }
 
-        private void FormMain_VisibleChanged(object sender, EventArgs e)
+        private void Main_VisibleChanged(object sender, EventArgs e)
         {
             ;
         }
@@ -155,7 +161,7 @@ namespace Dandaan.Forms
 
         private void button9_Click(object sender, EventArgs e)
         {
-            ;
+            throw new Exception("");
         }
     }
 

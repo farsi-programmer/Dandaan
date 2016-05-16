@@ -33,18 +33,11 @@
             // 
             // textBrowser1
             // 
-            this.textBrowser1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
-            this.textBrowser1.Location = new System.Drawing.Point(0, 0);
-            this.textBrowser1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.textBrowser1.Name = "textBrowser1";
-            this.textBrowser1.Size = new System.Drawing.Size(784, 562);
             this.textBrowser1.TabIndex = 0;
             // 
             // Logger
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 562);
             this.Controls.Add(this.textBrowser1);
             this.Name = "Logger";
             this.Text = "لاگ";

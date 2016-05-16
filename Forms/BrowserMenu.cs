@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class Browser : UserControl
+    public partial class BrowserMenu : UserControl
     {
-        public Browser()
+        public BrowserMenu()
         {
             InitializeComponent();
         }
@@ -27,16 +27,21 @@ namespace Dandaan.Forms
         private bool working = false;
 
         public Func<int> CountFunc = () => 0;
-        public Action<int, int, int, Action<bool>> Act = (i, j, k, l) => { };
+        //public Action<int, int, int, Action<bool>> Act = (i, j, k, l) => { };
+        public delegate void ActDelegate(int count, int page, int pageSize, Action<bool> setWorking,
+            bool pageChange);
+        public ActDelegate Act = (i, j, k, l, m) => { };
 
         private void button1_Click(object sender, EventArgs e)
         {
             if (working) return;
             working = true;
             count = CountFunc();
+            var pageChange = false;
 
             if (count != lastCount || page != lastPage)
             {
+                pageChange = page != lastPage;
                 lastCount = count;
                 lastPage = page;
                 textBox2.Text = page.ToString();
@@ -52,12 +57,12 @@ namespace Dandaan.Forms
                 }
                 else buttonFirst.Enabled = buttonPrevious.Enabled = buttonNext.Enabled = buttonLast.Enabled = false;
 
-                Act(count, page, pageSize, (newValue) => working = newValue);
+                Act(count, page, pageSize, (value) => working = value, pageChange);
             }
             else working = false;
         }
 
-        private void Browser_Load(object sender, EventArgs e)
+        private void BrowserMenu_Load(object sender, EventArgs e)
         {
             button1_Click(null, null);
 
@@ -80,6 +85,11 @@ namespace Dandaan.Forms
         {
             page--;
             button1_Click(null, null);
+        }
+
+        private void textBox2_MouseClick(object sender, MouseEventArgs e)
+        {
+            textBox2.SelectAll();
         }
 
         private void buttonNext_Click(object sender, EventArgs e)

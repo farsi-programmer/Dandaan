@@ -20,15 +20,7 @@ namespace Dandaan.Forms
         {
             InitializeComponent();
 
-            StartPosition = FormStartPosition.CenterScreen;
-
-            //AutoScaleMode = AutoScaleMode.Font;
-
-            Font = new Font("Microsoft Sans Serif", 14.25f);
-
-            Text = "مدیریت دندانپزشکی";
-
-            Resize += Form_Resize;
+            //StartPosition = FormStartPosition.CenterScreen;
         }
 
         private void Form_Resize(object sender, EventArgs e)

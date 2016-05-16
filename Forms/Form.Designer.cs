@@ -28,9 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.SuspendLayout();
+            // 
+            // Form
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Text = "Form";
+            this.ClientSize = new System.Drawing.Size(784, 562);
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(178)));
+            this.Name = "Form";
+            this.Text = "مدیریت دندانپزشکی";
+            this.Resize += new System.EventHandler(this.Form_Resize);
+            this.ResumeLayout(false);
+
         }
 
         #endregion

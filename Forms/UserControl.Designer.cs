@@ -32,8 +32,11 @@
             // 
             // UserControl
             // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(178)));
             this.Name = "UserControl";
+            this.Size = new System.Drawing.Size(784, 562);
             this.ResumeLayout(false);
 
         }

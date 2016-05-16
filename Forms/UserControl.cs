@@ -15,8 +15,6 @@ namespace Dandaan.Forms
         public UserControl()
         {
             InitializeComponent();
-
-            Font = new Font("Microsoft Sans Serif", 14.25f);
         }
     }
 }
