@@ -27,7 +27,7 @@ namespace Dandaan.Tables
         [Dandaan(Sql = "[smalldatetime] NOT NULL CONSTRAINT [DF_" + nameof(Log) + "_" + nameof(DateTime) + "] DEFAULT (getdate())")]
         public DateTime DateTime { get; set; }
 
-        public static IEnumerable<Log> Select(int page = 1, int pageSize = 1000)
+        public static IEnumerable<Log> Select(int page, int pageSize)
         {
             /*using (var connection = DB.Connection)
             using (var cmd = connection.CreateCommand())

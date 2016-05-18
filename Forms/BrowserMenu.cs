@@ -17,49 +17,47 @@ namespace Dandaan.Forms
             InitializeComponent();
         }
 
-        public void Close()
+        internal void Close()
         {
             timer?.Dispose();
         }
 
-        private Timer timer;
-        private int lastCount = 0, lastPage = 0, page = 1, count = 0, pageSize = 100;
-        private bool working = false;
+        Timer timer;
+        internal int Page = 1, PageSize = 100;
+        internal bool Working = false;
+        int count = 0;
 
-        public Func<int> CountFunc = () => 0;
-        //public Action<int, int, int, Action<bool>> Act = (i, j, k, l) => { };
-        public delegate void ActDelegate(int count, int page, int pageSize, Action<bool> setWorking,
-            bool pageChange);
-        public ActDelegate Act = (i, j, k, l, m) => { };
+        internal Func<int> CountFunc = () => 0;
+        internal Action Act = () => { };
+        internal Func<bool> ChangeFocus = () => { return true; };
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (working) return;
-            working = true;
-            count = CountFunc();
-            var pageChange = false;
+            loadData(false);
+        }
 
-            if (count != lastCount || page != lastPage)
+        void loadData(bool auto)
+        { 
+            if (Working) return;
+            Working = true;
+
+            Act();
+            count = CountFunc(); // this can be wrong in high loads
+
+            if (!auto || (auto && !textBox2.Focused)) textBox2.Text = Page.ToString();
+            if (label1.Text != count.ToString()) label1.Text = count.ToString();
+
+            if (count > PageSize)
             {
-                pageChange = page != lastPage;
-                lastCount = count;
-                lastPage = page;
-                textBox2.Text = page.ToString();
-                label1.Text = count.ToString();
+                if (Page > 1) buttonFirst.Enabled = buttonPrevious.Enabled = true;
+                else buttonFirst.Enabled = buttonPrevious.Enabled = false;
 
-                if (count > pageSize)
-                {
-                    if (page > 1) buttonFirst.Enabled = buttonPrevious.Enabled = true;
-                    else buttonFirst.Enabled = buttonPrevious.Enabled = false;
-
-                    if (page == pages) buttonNext.Enabled = buttonLast.Enabled = false;
-                    else buttonNext.Enabled = buttonLast.Enabled = true;
-                }
-                else buttonFirst.Enabled = buttonPrevious.Enabled = buttonNext.Enabled = buttonLast.Enabled = false;
-
-                Act(count, page, pageSize, (value) => working = value, pageChange);
+                if (Page == pages) buttonNext.Enabled = buttonLast.Enabled = false;
+                else buttonNext.Enabled = buttonLast.Enabled = true;
             }
-            else working = false;
+            else buttonFirst.Enabled = buttonPrevious.Enabled = buttonNext.Enabled = buttonLast.Enabled = false;
+
+            if (!auto) ChangeFocus();
         }
 
         private void BrowserMenu_Load(object sender, EventArgs e)
@@ -72,18 +70,18 @@ namespace Dandaan.Forms
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if (checkBox1.Checked) button1_Click(null, null);
+            if (checkBox1.Checked) loadData(true);
         }
 
         private void buttonFirst_Click(object sender, EventArgs e)
         {
-            page = 1;
+            Page = 1;
             button1_Click(null, null);
         }
 
         private void buttonPrevious_Click(object sender, EventArgs e)
         {
-            page--;
+            Page--;
             button1_Click(null, null);
         }
 
@@ -94,13 +92,13 @@ namespace Dandaan.Forms
 
         private void buttonNext_Click(object sender, EventArgs e)
         {
-            page++;
+            Page++;
             button1_Click(null, null);
         }
 
         private void buttonLast_Click(object sender, EventArgs e)
         {
-            page = pages;
+            Page = pages;
             button1_Click(null, null);
         }
 
@@ -114,13 +112,13 @@ namespace Dandaan.Forms
                     if (p < 1) textBox2.Text = "1";
                     else if (p > pages) textBox2.Text = pages.ToString();
 
-                    page = int.Parse(textBox2.Text);
+                    Page = int.Parse(textBox2.Text);
                     button1_Click(null, null);
                 }
-                else textBox2.Text = page.ToString();
+                else textBox2.Text = Page.ToString();
             }
         }
 
-        private int pages => (lastCount / pageSize) + (lastCount % pageSize > 0 ? 1 : 0);
+        int pages => (count / PageSize) + (count % PageSize > 0 ? 1 : 0);
     }
 }

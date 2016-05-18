@@ -13,27 +13,25 @@ namespace Dandaan.Forms
 {
     public partial class TextBrowser : UserControl
     {
-        public Func<int, int, string> TextFunc; // can be null, because count is zero
+        public Func<string> TextFunc = () => "";
 
         public TextBrowser()
         {
             InitializeComponent();
 
-            browserMenu1.Act = (count, page, pageSize, setWorking, pageChange) =>
-            {
-                if (count == 0)
-                {
-                    textBox1.Text = "There are no records.";
-                    setWorking(false);
-                }
-                else
-                {
-                    var selection = textBox1.SelectedText;
-                    var selectionStart = textBox1.SelectionStart;
-                    textBox1.Text = "Please wait...";
+            browserMenu1.ChangeFocus = textBox1.Focus;
 
-                    new System.Threading.Thread(() =>
+            browserMenu1.Act = () =>
+            {
+                new System.Threading.Thread(() =>
+                {
+                    var str = TextFunc();
+
+                    Invoke(new Action(() =>
                     {
+                        if (str == "") textBox1.Text = "There are no records.";
+                        else
+                        {
 #if using_ef || using_sqlite
             DB.Run((context) =>
             {
@@ -43,35 +41,50 @@ namespace Dandaan.Forms
                 }
             });
 #else
-                        Invoke(new Action(() =>
-                        {
-                            textBox1.Text = TextFunc(page, pageSize);
-
-                            if (!pageChange)
+                            if (textBox1.Text != str)
                             {
-                                if (selection.Length == 0 && selectionStart < textBox1.Text.Length)
-                                    textBox1.SelectionStart = selectionStart;
-                                else
-                                {
-                                    var i = textBox1.Text.IndexOf(selection, selectionStart);
-                                    if (i > -1) textBox1.Select(i, selection.Length);
-                                }
-
-                                textBox1.ScrollToCaret();
+                                var beforeSelection = textBox1.Text.Substring(0, textBox1.SelectionStart);
+                                textBox1.Text = str;
+                                scroll(beforeSelection);
                             }
+                        }
 
-                            setWorking(false);
-                        }));
-                    }).Start();
-                }
+                        browserMenu1.Working = false;
+                    }));
 #endif
+                }).Start();
             };
         }
 
-        public void Close() => browserMenu1.Close();
+        void scroll(string beforeSelection)
+        {
+            if (textBox1.Text.IndexOf(beforeSelection) == 0)
+            {
+                textBox1.SelectionStart = beforeSelection.Length;
+                textBox1.ScrollToCaret();
+            }
 
-        public void SetWordWrap(bool value) => textBox1.WordWrap = value;
+            //Point point = new Point();
+            //GetCaretPos(out point);
+            //SetCaretPos(point.X, point.Y);            
+        }
 
-        public void SetCountFunc(Func<int> countFunc) => browserMenu1.CountFunc = countFunc;
+        string selectionLine()
+        {
+            var b = textBox1.Text.Substring(0, textBox1.SelectionStart).LastIndexOf("\r\n");
+            if (b < 0) b = 0;
+            else b += 2;
+
+            var e = textBox1.Text.IndexOf("\r\n", textBox1.SelectionStart);
+            if (e < 0) e = textBox1.Text.Length;
+
+            return textBox1.Text.Substring(b, e - b);
+        }
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        static extern bool SetCaretPos(int X, int Y);
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        static extern bool GetCaretPos(out Point lpPoint);
     }
 }

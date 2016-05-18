@@ -12,50 +12,65 @@ namespace Dandaan.Forms
 {
     public partial class ListBrowser : UserControl
     {
+        public Func<object[]> ArrayFunc = () => null;
+
         public ListBrowser()
         {
             InitializeComponent();
 
-            browserMenu1.Act = (count, page, pageSize, setWorking, pageChange) =>
-            {
-                if (count == 0)
-                {
-                    listBox1.Items.Clear();
-                    listBox1.Items.Add("رکوردی وجود ندارد.");
-                    setWorking(false);
-                }
-                else
-                {
-                    /*var selection = textBox1.SelectedText;
-                    var selectionStart = textBox1.SelectionStart;*/
-                    listBox1.Items.Clear();
-                    listBox1.Items.Add("لطفا صبر کنید.");
+            browserMenu1.ChangeFocus = listBox1.Focus;
 
-                    new System.Threading.Thread(() =>
+            // testing
+            //browserMenu1.CountFunc = () => 1000;
+            //var x = new List<object>(1000);
+            //for (int i = 0; i < 1000; i++) x.Add(i);
+            //ArrayFunc = () => { return x.Skip((browserMenu1.Page - 1) * browserMenu1.PageSize).Take(browserMenu1.PageSize).Select((k)=>(object)(((int)k)+DateTime.Now.Second)).ToArray(); };
+            
+            browserMenu1.Act = () =>
+            {
+                new System.Threading.Thread(() =>
+                {
+                    var objs = ArrayFunc();
+
+                    Invoke(new Action(() =>
                     {
-                        Invoke(new Action(() =>
+                        if (objs == null || objs.Length == 0)
                         {
                             listBox1.Items.Clear();
-                            /*textBox1.Text = TextFunc(page, pageSize);
-
-                            if (selection.Length == 0 && selectionStart < textBox1.Text.Length)
-                                textBox1.SelectionStart = selectionStart;
+                            listBox1.Items.Add("رکوردی وجود ندارد.");
+                        }
+                        else
+                        {
+                            if (listBox1.Items.Count == 0) listBox1.Items.AddRange(objs);
                             else
                             {
-                                var i = textBox1.Text.IndexOf(selection);
-                                if (i > -1) textBox1.Select(i, selection.Length + i < textBox1.Text.Length ? selection.Length : textBox1.Text.Length - i - 1);
-                            }
+                                for (int i = 0; i < listBox1.Items.Count; i++)
+                                    if (objs.Length > i)
+                                    {
+                                        if (listBox1.Items[i].ToString() != objs[i].ToString())
+                                        {
+                                            listBox1.Items[i] = objs[i];
 
-                            textBox1.ScrollToCaret();*/
-                            setWorking(false);
-                        }));
-                    }).Start();
-                }
+                                            if (listBox1.SelectedIndex == i) listBox1.ClearSelected();
+                                        }
+                                    }
+                                    else listBox1.Items.RemoveAt(i);
+
+                                for (int i = listBox1.Items.Count; i < objs.Length; i++)
+                                    listBox1.Items.Add(objs[i]);
+
+                                if (listBox1.SelectedIndex < 0)
+                                {
+                                    listBox1.SelectedIndex = 0;
+                                    listBox1.ClearSelected();
+                                }
+                            }
+                        }
+
+                        browserMenu1.Working = false;
+                    }));
+                }).Start();
             };
         }
-
-        public void Close() => browserMenu1.Close();
-
-        public void SetCountFunc(Func<int> countFunc) => browserMenu1.CountFunc = countFunc;
     }
 }

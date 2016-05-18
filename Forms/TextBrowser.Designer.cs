@@ -62,7 +62,7 @@
         }
 
         #endregion
-        private System.Windows.Forms.TextBox textBox1;
-        private BrowserMenu browserMenu1;
+        internal System.Windows.Forms.TextBox textBox1;
+        internal BrowserMenu browserMenu1;
     }
 }

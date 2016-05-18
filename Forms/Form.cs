@@ -20,7 +20,7 @@ namespace Dandaan.Forms
         {
             InitializeComponent();
 
-            //StartPosition = FormStartPosition.CenterScreen;
+            StartPosition = FormStartPosition.CenterScreen;
         }
 
         private void Form_Resize(object sender, EventArgs e)

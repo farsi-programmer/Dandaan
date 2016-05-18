@@ -42,7 +42,6 @@
             this.Name = "Logger";
             this.Text = "لاگ";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Logger_FormClosing);
-            this.Load += new System.EventHandler(this.FormLogger_Load);
             this.ResumeLayout(false);
 
         }

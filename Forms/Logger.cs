@@ -18,15 +18,15 @@ namespace Dandaan.Forms
         {
             InitializeComponent();
 
-            textBrowser1.SetCountFunc(SQL.Count<Tables.Log>);
+            textBrowser1.browserMenu1.CountFunc = SQL.Count<Tables.Log>;
 
-            textBrowser1.TextFunc = (page, pageSize) =>
+            textBrowser1.TextFunc = () =>
             {
-                var t = typeof(Tables.Log);
                 var sb = new StringBuilder();
                 //var str = "";
 
-                foreach (var item in Tables.Log.Select(page, pageSize))
+                foreach (var item in Tables.Log.Select(textBrowser1.browserMenu1.Page,
+                    textBrowser1.browserMenu1.PageSize))
                 {
                     // this is if we want to undo, but we don't, we have it in db
                     //str = Regex.Replace(item.Message, Regex.Escape(@"\r\n"), @"\\r\\n");
@@ -51,14 +51,9 @@ namespace Dandaan.Forms
     }
 #endif
 
-        private void FormLogger_Load(object sender, EventArgs e)
-        {
-            ;
-        }
-
         private void Logger_FormClosing(object sender, FormClosingEventArgs e)
         {
-            textBrowser1.Close();
+            textBrowser1.browserMenu1.Close();
         }
     }
 
