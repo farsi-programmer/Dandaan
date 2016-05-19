@@ -97,17 +97,35 @@
     <Compile Include="Forms\About.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\Browser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Browser.Designer.cs">
+      <DependentUpon>Browser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\BrowserMenu.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Forms\BrowserMenu.Designer.cs">
       <DependentUpon>BrowserMenu.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\CheckedListBoxBrowser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\CheckedListBoxBrowser.Designer.cs">
+      <DependentUpon>CheckedListBoxBrowser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Form.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\Form.Designer.cs">
       <DependentUpon>Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ListBoxBrowser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\ListBoxBrowser.Designer.cs">
+      <DependentUpon>ListBoxBrowser.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ListBrowser.cs">
       <SubType>UserControl</SubType>
@@ -177,14 +195,20 @@
     <EmbeddedResource Include="Forms\About.resx">
       <DependentUpon>About.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Browser.resx">
+      <DependentUpon>Browser.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\BrowserMenu.resx">
       <DependentUpon>BrowserMenu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\CheckedListBoxBrowser.resx">
+      <DependentUpon>CheckedListBoxBrowser.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Form.resx">
       <DependentUpon>Form.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ListBrowser.resx">
-      <DependentUpon>ListBrowser.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ListBoxBrowser.resx">
+      <DependentUpon>ListBoxBrowser.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Logger.resx">
       <DependentUpon>Logger.cs</DependentUpon>

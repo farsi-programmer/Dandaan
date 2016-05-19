@@ -31,7 +31,7 @@ namespace Dandaan
             return $@"if not exists (select * from sys.default_constraints where name=N'{name}')";
         }
 
-        internal static void CreateTable(Type t)
+        public static void CreateTable(Type t)
         {
             var ms = t.GetProperties();
             var sb = new StringBuilder();

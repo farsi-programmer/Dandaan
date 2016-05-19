@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class ListBrowser : UserControl
+    public partial class ListBrowser : Browser
     {
         public Func<object[]> ArrayFunc = () => null;
 
@@ -18,15 +18,16 @@ namespace Dandaan.Forms
         {
             InitializeComponent();
 
-            browserMenu1.ChangeFocus = listBox1.Focus;
-
             // testing
             //browserMenu1.CountFunc = () => 1000;
             //var x = new List<object>(1000);
             //for (int i = 0; i < 1000; i++) x.Add(i);
-            //ArrayFunc = () => { return x.Skip((browserMenu1.Page - 1) * browserMenu1.PageSize).Take(browserMenu1.PageSize).Select((k)=>(object)(((int)k)+DateTime.Now.Second)).ToArray(); };
-            
-            browserMenu1.Act = () =>
+            //ArrayFunc = () => { return x.Skip((browserMenu1.Page - 1) * browserMenu1.PageSize).Take(browserMenu1.PageSize).Select((k) => (object)(((int)k) + DateTime.Now.Second)).ToArray(); };
+        }
+
+        public Action Act(ListBox listBox)
+        {
+            return () =>
             {
                 new System.Threading.Thread(() =>
                 {
@@ -36,33 +37,36 @@ namespace Dandaan.Forms
                     {
                         if (objs == null || objs.Length == 0)
                         {
-                            listBox1.Items.Clear();
-                            listBox1.Items.Add("رکوردی وجود ندارد.");
+                            listBox.Items.Clear();
+                            listBox.Items.Add("رکوردی وجود ندارد.");
                         }
                         else
                         {
-                            if (listBox1.Items.Count == 0) listBox1.Items.AddRange(objs);
+                            if (listBox.Items.Count == 0) listBox.Items.AddRange(objs);
                             else
                             {
-                                for (int i = 0; i < listBox1.Items.Count; i++)
+                                for (int i = 0; i < listBox.Items.Count; i++)
                                     if (objs.Length > i)
                                     {
-                                        if (listBox1.Items[i].ToString() != objs[i].ToString())
+                                        if (listBox.Items[i].ToString() != objs[i].ToString())
                                         {
-                                            listBox1.Items[i] = objs[i];
+                                            listBox.Items[i] = objs[i];
 
-                                            if (listBox1.SelectedIndex == i) listBox1.ClearSelected();
+                                            if (listBox.SelectedIndex == i) listBox.ClearSelected();
+
+                                            if (listBox is CheckedListBox && ((CheckedListBox)listBox).GetItemChecked(i))
+                                                ((CheckedListBox)listBox).SetItemChecked(i, false);
                                         }
                                     }
-                                    else listBox1.Items.RemoveAt(i);
+                                    else listBox.Items.RemoveAt(i);
 
-                                for (int i = listBox1.Items.Count; i < objs.Length; i++)
-                                    listBox1.Items.Add(objs[i]);
+                                for (int i = listBox.Items.Count; i < objs.Length; i++)
+                                    listBox.Items.Add(objs[i]);
 
-                                if (listBox1.SelectedIndex < 0)
+                                if (listBox.SelectedIndex < 0)
                                 {
-                                    listBox1.SelectedIndex = 0;
-                                    listBox1.ClearSelected();
+                                    listBox.SelectedIndex = 0;
+                                    listBox.ClearSelected();
                                 }
                             }
                         }

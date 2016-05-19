@@ -46,7 +46,7 @@ CONSTRAINT [FK_" + nameof(Setting) + "_" + nameof(User) + @"] FOREIGN KEY REFERE
             SQL.Insert(setting, nameof(UserId));
         }
 
-        internal static void Update(Setting setting)
+        public static void Update(Setting setting)
         {
             using (var context = DB.DataContext)
             {

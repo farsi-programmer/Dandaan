@@ -50,13 +50,5 @@ namespace Dandaan.Forms
             });
     }
 #endif
-
-        private void Logger_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            textBrowser1.browserMenu1.Close();
-        }
     }
-
-
-
 }

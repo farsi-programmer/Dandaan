@@ -15,21 +15,24 @@ namespace Dandaan.Forms
         public BrowserMenu()
         {
             InitializeComponent();
+            Disposed += BrowserMenu_Disposed;
         }
 
-        internal void Close()
+        private void BrowserMenu_Disposed(object sender, EventArgs e)
         {
+            //MessageBox.Show(timer?.Enabled.ToString());
             timer?.Dispose();
+            //MessageBox.Show(timer?.Enabled.ToString());
         }
 
         Timer timer;
-        internal int Page = 1, PageSize = 100;
-        internal bool Working = false;
+        public int Page = 1, PageSize = 100;
+        public bool Working = false;
         int count = 0;
 
-        internal Func<int> CountFunc = () => 0;
-        internal Action Act = () => { };
-        internal Func<bool> ChangeFocus = () => { return true; };
+        public Func<int> CountFunc = () => 0;
+        public Action Act = () => { };
+        public Func<bool> ChangeFocus = () => { return true; };
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -70,7 +73,7 @@ namespace Dandaan.Forms
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if (checkBox1.Checked) loadData(true);
+            if (!checkBox1.IsDisposed && checkBox1.Checked) loadData(true);
         }
 
         private void buttonFirst_Click(object sender, EventArgs e)

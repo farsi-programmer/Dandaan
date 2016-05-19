@@ -1,6 +1,6 @@
 ﻿namespace Dandaan.Forms
 {
-    partial class TextBrowser
+    partial class CheckedListBrowser
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,31 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
             this.SuspendLayout();
             // 
-            // textBox1
+            // checkedListBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(12, 12);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(760, 495);
-            this.textBox1.TabIndex = 4;
+            this.checkedListBox1.FormattingEnabled = true;
+            this.checkedListBox1.HorizontalScrollbar = true;
+            this.checkedListBox1.Location = new System.Drawing.Point(14, 14);
+            this.checkedListBox1.Name = "checkedListBox1";
+            this.checkedListBox1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.checkedListBox1.Size = new System.Drawing.Size(756, 484);
+            this.checkedListBox1.TabIndex = 1;
             // 
-            // TextBrowser
+            // CheckedListBrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.browserMenu1);
-            this.Name = "TextBrowser";
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.checkedListBox1);
+            this.Name = "CheckedListBrowser";
+            this.Controls.SetChildIndex(this.browserMenu1, 0);
+            this.Controls.SetChildIndex(this.checkedListBox1, 0);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-        public System.Windows.Forms.TextBox textBox1;
+
+        private System.Windows.Forms.CheckedListBox checkedListBox1;
     }
 }

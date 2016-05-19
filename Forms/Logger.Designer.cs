@@ -41,7 +41,6 @@
             this.Controls.Add(this.textBrowser1);
             this.Name = "Logger";
             this.Text = "لاگ";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Logger_FormClosing);
             this.ResumeLayout(false);
 
         }

@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class TextBrowser : UserControl
+    public partial class TextBrowser : Browser
     {
         public Func<string> TextFunc = () => "";
 
