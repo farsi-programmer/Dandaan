@@ -1,6 +1,6 @@
 ﻿namespace Dandaan.Forms
 {
-    partial class CheckedListBoxBrowser
+    partial class ListViewBrowser
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,33 +28,34 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
+            this.listView1 = new System.Windows.Forms.ListView();
             this.SuspendLayout();
             // 
-            // checkedListBox1
+            // listView1
             // 
-            this.checkedListBox1.FormattingEnabled = true;
-            this.checkedListBox1.HorizontalScrollbar = true;
-            this.checkedListBox1.Location = new System.Drawing.Point(14, 14);
-            this.checkedListBox1.Name = "checkedListBox1";
-            this.checkedListBox1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.checkedListBox1.Size = new System.Drawing.Size(756, 484);
-            this.checkedListBox1.TabIndex = 1;
+            this.listView1.Location = new System.Drawing.Point(16, 15);
+            this.listView1.Name = "listView1";
+            this.listView1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.listView1.RightToLeftLayout = true;
+            this.listView1.Size = new System.Drawing.Size(753, 488);
+            this.listView1.TabIndex = 1;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.View = System.Windows.Forms.View.Details;
             // 
-            // CheckedListBoxBrowser
+            // ListViewBrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.checkedListBox1);
-            this.Name = "CheckedListBoxBrowser";
+            this.Controls.Add(this.listView1);
+            this.Name = "ListViewBrowser";
             this.Controls.SetChildIndex(this.browserMenu1, 0);
-            this.Controls.SetChildIndex(this.checkedListBox1, 0);
+            this.Controls.SetChildIndex(this.listView1, 0);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.CheckedListBox checkedListBox1;
+        public System.Windows.Forms.ListView listView1;
     }
 }

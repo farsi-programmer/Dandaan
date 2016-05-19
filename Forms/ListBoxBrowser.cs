@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class ListBoxBrowser : ListBrowser
+    public partial class ListBoxBrowser : ListBoxBrowserBase
     {
         public ListBoxBrowser()
         {

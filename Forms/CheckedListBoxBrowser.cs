@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class CheckedListBrowser : ListBrowser
+    public partial class CheckedListBoxBrowser : ListBoxBrowserBase
     {
-        public CheckedListBrowser()
+        public CheckedListBoxBrowser()
         {
             InitializeComponent();
 

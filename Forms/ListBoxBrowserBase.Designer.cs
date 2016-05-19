@@ -1,6 +1,6 @@
 ﻿namespace Dandaan.Forms
 {
-    partial class ListBrowser
+    partial class ListBoxBrowserBase
     {
         /// <summary> 
         /// Required designer variable.

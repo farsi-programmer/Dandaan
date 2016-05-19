@@ -20,9 +20,7 @@ namespace Dandaan.Forms
 
         private void BrowserMenu_Disposed(object sender, EventArgs e)
         {
-            //MessageBox.Show(timer?.Enabled.ToString());
             timer?.Dispose();
-            //MessageBox.Show(timer?.Enabled.ToString());
         }
 
         Timer timer;

@@ -127,11 +127,17 @@
     <Compile Include="Forms\ListBoxBrowser.Designer.cs">
       <DependentUpon>ListBoxBrowser.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ListBrowser.cs">
+    <Compile Include="Forms\ListBoxBrowserBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\ListBrowser.Designer.cs">
-      <DependentUpon>ListBrowser.cs</DependentUpon>
+    <Compile Include="Forms\ListBoxBrowserBase.Designer.cs">
+      <DependentUpon>ListBoxBrowserBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ListViewBrowser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\ListViewBrowser.Designer.cs">
+      <DependentUpon>ListViewBrowser.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Logger.cs">
       <SubType>Form</SubType>
@@ -209,6 +215,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ListBoxBrowser.resx">
       <DependentUpon>ListBoxBrowser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ListViewBrowser.resx">
+      <DependentUpon>ListViewBrowser.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Logger.resx">
       <DependentUpon>Logger.cs</DependentUpon>

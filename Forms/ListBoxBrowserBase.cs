@@ -10,11 +10,11 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class ListBrowser : Browser
+    public partial class ListBoxBrowserBase : Browser
     {
         public Func<object[]> ArrayFunc = () => null;
 
-        public ListBrowser()
+        public ListBoxBrowserBase()
         {
             InitializeComponent();
 
@@ -63,11 +63,11 @@ namespace Dandaan.Forms
                                 for (int i = listBox.Items.Count; i < objs.Length; i++)
                                     listBox.Items.Add(objs[i]);
 
-                                if (listBox.SelectedIndex < 0)
+                                /*if (listBox.SelectedIndex < 0)
                                 {
                                     listBox.SelectedIndex = 0;
                                     listBox.ClearSelected();
-                                }
+                                }*/
                             }
                         }
 
