@@ -19,11 +19,15 @@ namespace Dandaan.Forms
             InitializeComponent();
 
             // testing
-            //browserMenu1.CountFunc = () => 1000;
-            //var x = new List<ListViewItem>(1000);
-            //for (int i = 0; i < 1000; i++) x.Add(new ListViewItem(i.ToString()));
-            //ArrayFunc = () => { return x.Skip((browserMenu1.Page - 1) * browserMenu1.PageSize).Take(browserMenu1.PageSize).Select((k) => new ListViewItem(k.Text + DateTime.Now.Second)).ToArray(); };
-            //listView1.Columns.Add("test", 200);
+            browserMenu1.CountFunc = () => 1000;
+            var x = new List<ListViewItem>(1000);
+            for (int i = 0; i < 1000; i++) x.Add(new ListViewItem(i.ToString()));
+            ArrayFunc = () => { return x.Skip((browserMenu1.Page - 1) * browserMenu1.PageSize).Take(browserMenu1.PageSize).Select((k) => { Invoke(new Action(() => k.Text = k.Text + DateTime.Now.Second)); /*new ListViewItem(k.Text + DateTime.Now.Second)*/ return k; }).ToArray(); };
+            listView1.Columns.Add("test", 200);
+            //
+            // this is incomplete, are we going to create a new ListViewItem for each round or
+            // are we going to manipulate them?
+            //
 
             browserMenu1.ChangeFocus = listView1.Focus;
 

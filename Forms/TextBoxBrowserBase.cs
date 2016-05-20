@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -11,25 +10,34 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class TextBrowser : Browser
+    public partial class TextBoxBrowserBase : Browser
     {
         public Func<string> TextFunc = () => "";
 
-        public TextBrowser()
+        public TextBoxBrowserBase()
         {
             InitializeComponent();
 
-            browserMenu1.ChangeFocus = textBox1.Focus;
+            // testing
+            //browserMenu1.CountFunc = () => 1000;
+            //var x = new List<object>(1000);
+            //for (int i = 0; i < 1000; i++) x.Add(i);
+            //ArrayFunc = () => { return x.Skip((browserMenu1.Page - 1) * browserMenu1.PageSize).Take(browserMenu1.PageSize).Select((k) => (object)(((int)k) + DateTime.Now.Second)).ToArray(); };
+        }
 
-            browserMenu1.Act = () =>
+        public Action Act(TextBoxBase textBox)
+        {
+            return () =>
             {
                 new System.Threading.Thread(() =>
                 {
                     var str = TextFunc();
 
+                    if (textBox is RichTextBox) str = str.Replace("\r", "");
+
                     Invoke(new Action(() =>
                     {
-                        if (str == "") textBox1.Text = "There are no records.";
+                        if (str == "") textBox.Text = "There are no records.";
                         else
                         {
 #if using_ef || using_sqlite
@@ -41,11 +49,11 @@ namespace Dandaan.Forms
                 }
             });
 #else
-                            if (textBox1.Text != str)
+                            if (textBox.Text != str)
                             {
-                                var beforeSelection = textBox1.Text.Substring(0, textBox1.SelectionStart);
-                                textBox1.Text = str;
-                                scroll(beforeSelection);
+                                var beforeSelection = textBox.Text.Substring(0, textBox.SelectionStart);
+                                textBox.Text = str;
+                                scroll(textBox, beforeSelection);
                             }
                         }
 
@@ -56,12 +64,12 @@ namespace Dandaan.Forms
             };
         }
 
-        void scroll(string beforeSelection)
+        static void scroll(TextBoxBase textBox, string beforeSelection)
         {
-            if (textBox1.Text.IndexOf(beforeSelection) == 0)
+            if (textBox.Text.IndexOf(beforeSelection) == 0)
             {
-                textBox1.SelectionStart = beforeSelection.Length;
-                textBox1.ScrollToCaret();
+                textBox.SelectionStart = beforeSelection.Length;
+                textBox.ScrollToCaret();
             }
 
             //Point point = new Point();
@@ -69,16 +77,16 @@ namespace Dandaan.Forms
             //SetCaretPos(point.X, point.Y);            
         }
 
-        string selectionLine()
+        static string selectionLine(TextBoxBase textBox)
         {
-            var b = textBox1.Text.Substring(0, textBox1.SelectionStart).LastIndexOf("\r\n");
+            var b = textBox.Text.Substring(0, textBox.SelectionStart).LastIndexOf("\r\n");
             if (b < 0) b = 0;
             else b += 2;
 
-            var e = textBox1.Text.IndexOf("\r\n", textBox1.SelectionStart);
-            if (e < 0) e = textBox1.Text.Length;
+            var e = textBox.Text.IndexOf("\r\n", textBox.SelectionStart);
+            if (e < 0) e = textBox.Text.Length;
 
-            return textBox1.Text.Substring(b, e - b);
+            return textBox.Text.Substring(b, e - b);
         }
 
         [System.Runtime.InteropServices.DllImport("user32.dll")]

@@ -28,7 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBrowser1 = new Dandaan.Forms.TextBrowser();
+            //this.textBrowser1 = new Dandaan.Forms.TextBoxBrowser();
+            this.textBrowser1 = new Dandaan.Forms.RichTextBoxBrowser();
             this.SuspendLayout();
             // 
             // textBrowser1
@@ -47,6 +48,7 @@
 
         #endregion
 
-        private TextBrowser textBrowser1;
+        //private TextBoxBrowser textBrowser1;
+        private RichTextBoxBrowser textBrowser1;
     }
 }
