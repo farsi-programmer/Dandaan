@@ -67,8 +67,6 @@ namespace Dandaan.Forms
                                     listView1.EnsureVisible(0);*/
                             }
                         }
-
-                        browserMenu1.Working = false;
                     }));
                 }).Start();
             };

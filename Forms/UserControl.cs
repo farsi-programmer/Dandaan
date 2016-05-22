@@ -16,5 +16,7 @@ namespace Dandaan.Forms
         {
             InitializeComponent();
         }
+
+        public object Invoke(Action act) => base.Invoke(act);
     }
 }

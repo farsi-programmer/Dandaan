@@ -55,6 +55,8 @@
             this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.button10 = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.toolStrip2.SuspendLayout();
@@ -320,11 +322,30 @@
             this.toolStrip2.Text = "toolStrip2";
             this.toolStrip2.TextDirection = System.Windows.Forms.ToolStripTextDirection.Vertical90;
             // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Location = new System.Drawing.Point(369, 70);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(276, 297);
+            this.richTextBox1.TabIndex = 11;
+            // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(413, 374);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(99, 37);
+            this.button10.TabIndex = 12;
+            this.button10.Text = "button10";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 562);
+            this.Controls.Add(this.button10);
+            this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.button9);
             this.Controls.Add(this.button8);
             this.Controls.Add(this.button7);
@@ -383,6 +404,8 @@
         private System.Windows.Forms.ToolStripButton toolStripButton4;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStrip toolStrip2;
+        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.Button button10;
     }
 }
 

@@ -70,8 +70,6 @@ namespace Dandaan.Forms
                                     dataGridView1.Rows.Add(objs[i]);*/
                             }
                         }
-
-                        browserMenu1.Working = false;
                     }));
                 }).Start();
             };

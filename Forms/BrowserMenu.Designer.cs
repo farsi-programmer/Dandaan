@@ -28,25 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox2 = new System.Windows.Forms.TextBox();
             this.buttonLast = new System.Windows.Forms.Button();
             this.buttonNext = new System.Windows.Forms.Button();
             this.buttonPrevious = new System.Windows.Forms.Button();
             this.buttonFirst = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(444, 521);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(54, 29);
-            this.textBox2.TabIndex = 19;
-            this.textBox2.Text = "1";
-            this.textBox2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.textBox2_MouseClick);
-            this.textBox2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox2_KeyPress);
             // 
             // buttonLast
             // 
@@ -110,6 +100,29 @@
             this.label1.Text = "0";
             this.label1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.textBox2_MouseClick);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(661, 517);
+            this.button1.Margin = new System.Windows.Forms.Padding(6);
+            this.button1.Name = "button1";
+            this.button1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.button1.Size = new System.Drawing.Size(112, 38);
+            this.button1.TabIndex = 12;
+            this.button1.Text = "بازخوانی";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.textBox2_MouseClick);
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(444, 521);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(54, 29);
+            this.textBox2.TabIndex = 19;
+            this.textBox2.Text = "1";
+            this.textBox2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.textBox2_MouseClick);
+            this.textBox2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox2_KeyPress);
+            // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
@@ -122,18 +135,6 @@
             this.checkBox1.Text = "بازخوانی خودکار";
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.textBox2_MouseClick);
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(661, 517);
-            this.button1.Margin = new System.Windows.Forms.Padding(6);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(112, 38);
-            this.button1.TabIndex = 12;
-            this.button1.Text = "بازخوانی";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            this.button1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.textBox2_MouseClick);
             // 
             // BrowserMenu
             // 
@@ -154,14 +155,13 @@
         }
 
         #endregion
-
-        protected System.Windows.Forms.TextBox textBox2;
         protected System.Windows.Forms.Button buttonLast;
         protected System.Windows.Forms.Button buttonNext;
         protected System.Windows.Forms.Button buttonPrevious;
         protected System.Windows.Forms.Button buttonFirst;
         protected System.Windows.Forms.Label label1;
-        protected System.Windows.Forms.CheckBox checkBox1;
         protected System.Windows.Forms.Button button1;
+        protected System.Windows.Forms.TextBox textBox2;
+        protected System.Windows.Forms.CheckBox checkBox1;
     }
 }

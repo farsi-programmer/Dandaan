@@ -89,6 +89,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common.cs" />
     <Compile Include="DataContext.cs" />
     <Compile Include="DB.cs" />
     <Compile Include="Forms\About.Designer.cs">

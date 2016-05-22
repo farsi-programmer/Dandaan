@@ -54,7 +54,7 @@ namespace Dandaan.Forms
 
                     try
                     {
-                        Invoke((Action)delegate()
+                        Invoke(() =>//(Action)delegate()
                         {
                             // this is in the main thread
 

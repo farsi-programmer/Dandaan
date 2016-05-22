@@ -175,6 +175,18 @@ namespace Dandaan.Forms
         {
             throw new Exception("");
         }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            var rtb = new RichTextBox() { Location = new Point(Width, Height) };
+            rtb.SuspendLayout();
+            Controls.Add(rtb);
+            MessageBox.Show(rtb.Rtf);
+
+            MessageBox.Show((new RichTextBox() { Text = "" }.Rtf == richTextBox1.Rtf).ToString());
+            MessageBox.Show(new RichTextBox() { Text = "" }.Rtf);
+            MessageBox.Show(richTextBox1.Rtf);
+        }
     }
 
 }

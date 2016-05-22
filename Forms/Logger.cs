@@ -20,24 +20,15 @@ namespace Dandaan.Forms
 
             textBrowser1.browserMenu1.CountFunc = SQL.Count<Tables.Log>;
 
-            textBrowser1.TextFunc = () =>
-            {
-                var sb = new StringBuilder();
-                //var str = "";
+            textBrowser1.LinesFunc = () =>
+                Tables.Log.Select(textBrowser1.browserMenu1.Page,
+                    textBrowser1.browserMenu1.PageSize).Select((log) =>
+                    // replacing new lines is specially necessary if we want to get the id for edit or delete
+                    $"{log.Id}\t{log.DateTime}\t{Regex.Replace(log.Message, "[\r\n]+", " ")}");
 
-                foreach (var item in Tables.Log.Select(textBrowser1.browserMenu1.Page,
-                    textBrowser1.browserMenu1.PageSize))
-                {
-                    // this is if we want to undo, but we don't, we have it in db
-                    //str = Regex.Replace(item.Message, Regex.Escape(@"\r\n"), @"\\r\\n");
-                    //sb.Append($"{item.Id}\t{item.DateTime}\t{Regex.Replace(str, "\r\n", @"\r\n")}\r\n");
-
-                    // this is specially necessary if we want to get the id for edit or delete
-                    sb.Append($"{item.Id}\t{item.DateTime}\t{Regex.Replace(item.Message, "[\r\n]+", " ")}\r\n\r\n");
-                }
-
-                return sb.ToString();
-            };
+            // this is if we want to undo, but we don't, we have it in db
+            //str = Regex.Replace(log.Message, Regex.Escape(@"\r\n"), @"\\r\\n");
+            //sb.Append($"{log.Id}\t{log.DateTime}\t{Regex.Replace(str, "\r\n", @"\r\n")}\r\n");
         }
 
 #if using_ef || using_sqlite

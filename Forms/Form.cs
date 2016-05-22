@@ -28,6 +28,8 @@ namespace Dandaan.Forms
             if (lastFormWindowState != WindowState && WindowState != FormWindowState.Minimized)
                 lastFormWindowState = WindowState;
         }
+
+        public object Invoke(Action act) => base.Invoke(act);
     }
 }
 

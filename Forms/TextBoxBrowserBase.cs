@@ -12,10 +12,12 @@ namespace Dandaan.Forms
 {
     public partial class TextBoxBrowserBase : Browser
     {
-        public Func<string> TextFunc = () => "";
+        public Func<IEnumerable<string>> LinesFunc = () => new string[] { };
 
         public TextBoxBrowserBase()
         {
+            Disposed += TextBoxBrowserBase_Disposed;
+
             InitializeComponent();
 
             // testing
@@ -25,21 +27,17 @@ namespace Dandaan.Forms
             //ArrayFunc = () => { return x.Skip((browserMenu1.Page - 1) * browserMenu1.PageSize).Take(browserMenu1.PageSize).Select((k) => (object)(((int)k) + DateTime.Now.Second)).ToArray(); };
         }
 
+        private void TextBoxBrowserBase_Disposed(object sender, EventArgs e)
+        {
+            thread?.Abort();
+        }
+
+        System.Threading.Thread thread = null;
+
         public Action Act(TextBoxBase textBox)
         {
             return () =>
             {
-                new System.Threading.Thread(() =>
-                {
-                    var str = TextFunc();
-
-                    if (textBox is RichTextBox) str = str.Replace("\r", "");
-
-                    Invoke(new Action(() =>
-                    {
-                        if (str == "") textBox.Text = "There are no records.";
-                        else
-                        {
 #if using_ef || using_sqlite
             DB.Run((context) =>
             {
@@ -49,18 +47,59 @@ namespace Dandaan.Forms
                 }
             });
 #else
-                            if (textBox.Text != str)
+                thread = Common.Thread(() =>
+                {
+                    var sb = new StringBuilder();
+                    RichTextBox rtb = null;
+
+                    if (textBox is RichTextBox)
+                    {
+                        rtb = new RichTextBox() { Location = new Point(Width, Height) };
+                        rtb.SuspendLayout();
+                        Invoke(() => Controls.Add(rtb));
+                    }
+
+                    bool odd = false;
+                    foreach (var item in LinesFunc())
+                    {
+                        var s = textBox is RichTextBox ? item.Replace("\r", "") + "\n\n" : item + "\r\n\r\n";
+
+                        sb.Append(s);
+
+                        if (textBox is RichTextBox)
+                        {
+                            Invoke(() =>
                             {
-                                var beforeSelection = textBox.Text.Substring(0, textBox.SelectionStart);
-                                textBox.Text = str;
-                                scroll(textBox, beforeSelection);
-                            }
+                                rtb.AppendText(s);
+                                rtb.Select(rtb.Text.Length - s.Length, s.Length - 2);
+                                //rtb.SelectionBackColor = Color.FromArgb(0xdc, 0xdc, 0xdc);
+                                rtb.SelectionBackColor = odd ? Color.LightCyan : Color.FromArgb(0xcf, 0xff, 0xcf);
+                                odd = !odd;
+                            });
+                        }
+                    }
+
+                    var str = sb.ToString();
+
+                    Invoke(() =>
+                    {
+                        if (str == "") textBox.Text = "There are no records.";
+                        else if (textBox.Text != str)
+                        {
+                            var beforeSelection = textBox.Text.Substring(0, textBox.SelectionStart);
+
+                            if (textBox is RichTextBox) ((RichTextBox)textBox).Rtf = rtb.Rtf;
+                            else textBox.Text = str;
+
+                            scroll(textBox, beforeSelection);
                         }
 
-                        browserMenu1.Working = false;
-                    }));
+                        if (textBox is RichTextBox) Controls.Remove(rtb);
+                    });
+                });
+                
+                thread.Start();
 #endif
-                }).Start();
             };
         }
 
@@ -77,7 +116,7 @@ namespace Dandaan.Forms
             //SetCaretPos(point.X, point.Y);            
         }
 
-        static string selectionLine(TextBoxBase textBox)
+        static string getLine(TextBoxBase textBox)
         {
             var b = textBox.Text.Substring(0, textBox.SelectionStart).LastIndexOf("\r\n");
             if (b < 0) b = 0;

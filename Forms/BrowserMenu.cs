@@ -25,7 +25,7 @@ namespace Dandaan.Forms
 
         Timer timer;
         public int Page = 1, PageSize = 100;
-        public bool Working = false;
+        bool Working = false;
         int count = 0;
 
         public Func<int> CountFunc = () => 0;
@@ -34,31 +34,33 @@ namespace Dandaan.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
-            loadData(false);
+            loadData(Page);
         }
 
-        void loadData(bool auto)
-        { 
-            if (Working) return;
-            Working = true;
-
-            Act();
-            count = CountFunc(); // this can be wrong in high loads
-
-            if (!auto || (auto && !textBox2.Focused)) textBox2.Text = Page.ToString();
-            if (label1.Text != count.ToString()) label1.Text = count.ToString();
-
-            if (count > PageSize)
+        void loadData(int page)
+        {
+            if (!Working)
             {
-                if (Page > 1) buttonFirst.Enabled = buttonPrevious.Enabled = true;
-                else buttonFirst.Enabled = buttonPrevious.Enabled = false;
+                Working = true;
+                if (Page != page) textBox2.Text = page.ToString();
+                Page = page;
 
-                if (Page == pages) buttonNext.Enabled = buttonLast.Enabled = false;
-                else buttonNext.Enabled = buttonLast.Enabled = true;
+                Act();
+                count = CountFunc(); // this can be wrong under high loads
+                if (label1.Text != count.ToString()) label1.Text = count.ToString();
+
+                if (count > PageSize)
+                {
+                    if (Page > 1) buttonFirst.Enabled = buttonPrevious.Enabled = true;
+                    else buttonFirst.Enabled = buttonPrevious.Enabled = false;
+
+                    if (Page == pages) buttonNext.Enabled = buttonLast.Enabled = false;
+                    else buttonNext.Enabled = buttonLast.Enabled = true;
+                }
+                else buttonFirst.Enabled = buttonPrevious.Enabled = buttonNext.Enabled = buttonLast.Enabled = false;
+
+                Working = false;
             }
-            else buttonFirst.Enabled = buttonPrevious.Enabled = buttonNext.Enabled = buttonLast.Enabled = false;
-
-            if (!auto) ChangeFocus();
         }
 
         private void BrowserMenu_Load(object sender, EventArgs e)
@@ -71,19 +73,17 @@ namespace Dandaan.Forms
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if (!checkBox1.IsDisposed && checkBox1.Checked) loadData(true);
+            if (!checkBox1.IsDisposed && checkBox1.Checked) button1_Click(null, null);
         }
 
         private void buttonFirst_Click(object sender, EventArgs e)
         {
-            Page = 1;
-            button1_Click(null, null);
+            loadData(1);
         }
 
         private void buttonPrevious_Click(object sender, EventArgs e)
         {
-            Page--;
-            button1_Click(null, null);
+            loadData(Page - 1);
         }
 
         private void textBox2_MouseClick(object sender, MouseEventArgs e)
@@ -93,14 +93,12 @@ namespace Dandaan.Forms
 
         private void buttonNext_Click(object sender, EventArgs e)
         {
-            Page++;
-            button1_Click(null, null);
+            loadData(Page + 1);
         }
 
         private void buttonLast_Click(object sender, EventArgs e)
         {
-            Page = pages;
-            button1_Click(null, null);
+            loadData(pages);
         }
 
         private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
@@ -113,8 +111,7 @@ namespace Dandaan.Forms
                     if (p < 1) textBox2.Text = "1";
                     else if (p > pages) textBox2.Text = pages.ToString();
 
-                    Page = int.Parse(textBox2.Text);
-                    button1_Click(null, null);
+                    loadData(int.Parse(textBox2.Text));
                 }
                 else textBox2.Text = Page.ToString();
             }

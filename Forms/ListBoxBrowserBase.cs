@@ -70,8 +70,6 @@ namespace Dandaan.Forms
                                 }*/
                             }
                         }
-
-                        browserMenu1.Working = false;
                     }));
                 }).Start();
             };
