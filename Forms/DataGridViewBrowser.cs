@@ -29,8 +29,6 @@ namespace Dandaan.Forms
             // datagridview is complicated, this is incomplete!
             //
 
-            browserMenu1.ChangeFocus = dataGridView1.Focus;
-
             browserMenu1.Act = () =>
             {
                 new System.Threading.Thread(() =>

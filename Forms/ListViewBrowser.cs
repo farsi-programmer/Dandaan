@@ -29,8 +29,6 @@ namespace Dandaan.Forms
             // are we going to manipulate them?
             //
 
-            browserMenu1.ChangeFocus = listView1.Focus;
-
             browserMenu1.Act = () =>
             {
                 new System.Threading.Thread(() =>

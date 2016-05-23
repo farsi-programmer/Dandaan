@@ -15,6 +15,7 @@ namespace Dandaan.Forms
         public BrowserMenu()
         {
             InitializeComponent();
+
             Disposed += BrowserMenu_Disposed;
         }
 
@@ -25,28 +26,32 @@ namespace Dandaan.Forms
 
         Timer timer;
         public int Page = 1, PageSize = 100;
-        bool Working = false;
+        bool working = false;
         int count = 0;
 
         public Func<int> CountFunc = () => 0;
         public Action Act = () => { };
-        public Func<bool> ChangeFocus = () => { return true; };
 
         private void button1_Click(object sender, EventArgs e)
         {
-            loadData(Page);
+            loadData(() => Page);
         }
 
-        void loadData(int page)
+        Queue<Func<int>> que = new Queue<Func<int>>();
+
+        void loadData(Func<int> func)
         {
-            if (!Working)
+            if (working) { if (Page != func()) que.Enqueue(func); }
+            else
             {
-                Working = true;
+                working = true;
+                int page = func();
+
                 if (Page != page) textBox2.Text = page.ToString();
                 Page = page;
 
                 Act();
-                count = CountFunc(); // this can be wrong under high loads
+                count = CountFunc(); // this can be wrong under high load
                 if (label1.Text != count.ToString()) label1.Text = count.ToString();
 
                 if (count > PageSize)
@@ -59,7 +64,9 @@ namespace Dandaan.Forms
                 }
                 else buttonFirst.Enabled = buttonPrevious.Enabled = buttonNext.Enabled = buttonLast.Enabled = false;
 
-                Working = false;
+                working = false;
+
+                while (que.Count > 0) loadData(que.Dequeue());
             }
         }
 
@@ -78,12 +85,12 @@ namespace Dandaan.Forms
 
         private void buttonFirst_Click(object sender, EventArgs e)
         {
-            loadData(1);
+            loadData(() => 1);
         }
 
         private void buttonPrevious_Click(object sender, EventArgs e)
         {
-            loadData(Page - 1);
+            loadData(() => Page - 1);
         }
 
         private void textBox2_MouseClick(object sender, MouseEventArgs e)
@@ -93,12 +100,12 @@ namespace Dandaan.Forms
 
         private void buttonNext_Click(object sender, EventArgs e)
         {
-            loadData(Page + 1);
+            loadData(() => Page + 1);
         }
 
         private void buttonLast_Click(object sender, EventArgs e)
         {
-            loadData(pages);
+            loadData(() => pages);
         }
 
         private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
@@ -108,10 +115,10 @@ namespace Dandaan.Forms
                 var p = 0;
                 if (int.TryParse(textBox2.Text, out p))
                 {
-                    if (p < 1) textBox2.Text = "1";
-                    else if (p > pages) textBox2.Text = pages.ToString();
+                    if (p < 1) { textBox2.Text = "1"; p = 1; }
+                    else if (p > pages) { textBox2.Text = pages.ToString(); p = pages; }
 
-                    loadData(int.Parse(textBox2.Text));
+                    loadData(() => p);
                 }
                 else textBox2.Text = Page.ToString();
             }

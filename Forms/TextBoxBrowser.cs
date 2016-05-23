@@ -17,8 +17,6 @@ namespace Dandaan.Forms
         {
             InitializeComponent();
 
-            browserMenu1.ChangeFocus = textBox1.Focus;
-
             browserMenu1.Act = Act(textBox1);
         }
     }
