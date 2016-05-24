@@ -28,10 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            //this.listBrowser1 = new Dandaan.Forms.ListBoxBrowser();
+            this.listBrowser1 = new Dandaan.Forms.ListBoxBrowser();
             //this.listBrowser1 = new Dandaan.Forms.CheckedListBoxBrowser();
             //this.listBrowser1 = new Dandaan.Forms.ListViewBrowser();
-            this.listBrowser1 = new Dandaan.Forms.DataGridViewBrowser();
             this.SuspendLayout();
             // 
             // listBrowser1
@@ -54,9 +53,8 @@
         }
 
         #endregion
-        //private ListBoxBrowser listBrowser1;
+        private ListBoxBrowser listBrowser1;
         //private CheckedListBoxBrowser listBrowser1;
         //private ListViewBrowser listBrowser1;
-        private DataGridViewBrowser listBrowser1;
-    }
+     }
 }

@@ -55,7 +55,7 @@ namespace Dandaan.Forms
                     if (textBox is RichTextBox)
                     {
                         rtb = new RichTextBox() { Location = new Point(Width, Height) };
-                        rtb.SuspendLayout();
+                        rtb.Hide();
                         Invoke(() => Controls.Add(rtb));
                     }
 
@@ -87,14 +87,18 @@ namespace Dandaan.Forms
                         else if (textBox.Text != str)
                         {
                             var beforeSelection = textBox.Text.Substring(0, textBox.SelectionStart);
+                            //textBox.Hide();
 
                             if (textBox is RichTextBox) ((RichTextBox)textBox).Rtf = rtb.Rtf;
                             else textBox.Text = str;
 
                             scroll(textBox, beforeSelection);
+                            //textBox.Show();
                         }
 
                         if (textBox is RichTextBox) Controls.Remove(rtb);
+
+                        browserMenu1.enable();
                     });
                 });
                 
@@ -110,6 +114,7 @@ namespace Dandaan.Forms
                 textBox.SelectionStart = beforeSelection.Length;
                 textBox.ScrollToCaret();
             }
+            else textBox.ScrollToCaret();
 
             //Point point = new Point();
             //GetCaretPos(out point);

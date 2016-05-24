@@ -26,7 +26,6 @@ namespace Dandaan.Forms
 
         Timer timer;
         public int Page = 1, PageSize = 100;
-        bool working = false;
         int count = 0;
 
         public Func<int> CountFunc = () => 0;
@@ -34,63 +33,56 @@ namespace Dandaan.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
-            loadData(() => Page);
+            if (button1.Enabled) loadData(Page);
         }
 
-        Queue<Func<int>> que = new Queue<Func<int>>();
-
-        void loadData(Func<int> func)
+        void loadData(int page)
         {
-            if (working) { if (Page != func()) que.Enqueue(func); }
-            else
+            disable();
+            Page = page;
+            if (textBox2.Text != Page.ToString()) textBox2.Text = Page.ToString();
+
+            Act();
+            count = CountFunc(); // this can be wrong under high load
+            if (label1.Text != count.ToString()) label1.Text = count.ToString();
+        }
+
+        public void enable()
+        {
+            if (count > PageSize)
             {
-                working = true;
-                int page = func();
+                if (Page > 1) buttonFirst.Enabled = buttonPrevious.Enabled = true;
+                else buttonFirst.Enabled = buttonPrevious.Enabled = false;
 
-                if (Page != page) textBox2.Text = page.ToString();
-                Page = page;
-
-                Act();
-                count = CountFunc(); // this can be wrong under high load
-                if (label1.Text != count.ToString()) label1.Text = count.ToString();
-
-                if (count > PageSize)
-                {
-                    if (Page > 1) buttonFirst.Enabled = buttonPrevious.Enabled = true;
-                    else buttonFirst.Enabled = buttonPrevious.Enabled = false;
-
-                    if (Page == pages) buttonNext.Enabled = buttonLast.Enabled = false;
-                    else buttonNext.Enabled = buttonLast.Enabled = true;
-                }
-                else buttonFirst.Enabled = buttonPrevious.Enabled = buttonNext.Enabled = buttonLast.Enabled = false;
-
-                working = false;
-
-                while (que.Count > 0) loadData(que.Dequeue());
+                if (Page == pages) buttonNext.Enabled = buttonLast.Enabled = false;
+                else buttonNext.Enabled = buttonLast.Enabled = true;
             }
+            else buttonFirst.Enabled = buttonPrevious.Enabled = buttonNext.Enabled = buttonLast.Enabled = false;
+
+            button1.Enabled = textBox2.Enabled = true;
         }
 
         private void BrowserMenu_Load(object sender, EventArgs e)
         {
             button1_Click(null, null);
 
-            timer = new Timer() { Interval = 2000, Enabled = true };
+            timer = new Timer() { Interval = 3000, Enabled = true };
             timer.Tick += Timer_Tick;
         }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if (!checkBox1.IsDisposed && checkBox1.Checked) button1_Click(null, null);
+            if (checkBox1.Checked) button1_Click(null, null);
         }
 
         private void buttonFirst_Click(object sender, EventArgs e)
         {
-            loadData(() => 1);
+            loadData(1);
         }
 
         private void buttonPrevious_Click(object sender, EventArgs e)
         {
-            loadData(() => Page - 1);
+            loadData(Page - 1);
         }
 
         private void textBox2_MouseClick(object sender, MouseEventArgs e)
@@ -100,12 +92,12 @@ namespace Dandaan.Forms
 
         private void buttonNext_Click(object sender, EventArgs e)
         {
-            loadData(() => Page + 1);
+            loadData(Page + 1);
         }
 
         private void buttonLast_Click(object sender, EventArgs e)
         {
-            loadData(() => pages);
+            loadData(pages);
         }
 
         private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
@@ -115,13 +107,19 @@ namespace Dandaan.Forms
                 var p = 0;
                 if (int.TryParse(textBox2.Text, out p))
                 {
-                    if (p < 1) { textBox2.Text = "1"; p = 1; }
-                    else if (p > pages) { textBox2.Text = pages.ToString(); p = pages; }
+                    if (p < 1) textBox2.Text = "1";
+                    else if (p > pages) textBox2.Text = pages.ToString();
 
-                    loadData(() => p);
+                    loadData(int.Parse(textBox2.Text));
                 }
                 else textBox2.Text = Page.ToString();
             }
+        }
+
+        void disable()
+        {
+            button1.Enabled = buttonFirst.Enabled = buttonLast.Enabled = buttonNext.Enabled
+            = buttonPrevious.Enabled = textBox2.Enabled = false;
         }
 
         int pages => (count / PageSize) + (count % PageSize > 0 ? 1 : 0);

@@ -37,6 +37,10 @@ namespace Dandaan.Forms
 
             textBox1.AppendText("در حال اتصال به دیتابیس، لطفا اندکی صبر کنید...\r\n");
 
+            // we use threads when we don't want to block the UI thread,
+            // or when we can speed up a task by using multiple threads
+            // (splitting it between multiple threads)
+
             threadDB = new Thread(() =>
             {
                 try

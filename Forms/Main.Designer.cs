@@ -328,6 +328,7 @@
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.Size = new System.Drawing.Size(276, 297);
             this.richTextBox1.TabIndex = 11;
+            this.richTextBox1.Text = "";
             // 
             // button10
             // 

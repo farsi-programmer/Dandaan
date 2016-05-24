@@ -12,7 +12,7 @@ namespace Dandaan.Forms
 {
     public partial class ListBoxBrowserBase : Browser
     {
-        public Func<object[]> ArrayFunc = () => null;
+        public Func<IEnumerable<object>> ObjsFunc = () => new object[] { };
 
         public ListBoxBrowserBase()
         {
@@ -31,8 +31,8 @@ namespace Dandaan.Forms
             {
                 new System.Threading.Thread(() =>
                 {
-                    var objs = ArrayFunc();
-
+                    var objs = ObjsFunc().ToArray();
+                    
                     Invoke(new Action(() =>
                     {
                         if (objs == null || objs.Length == 0)
@@ -50,6 +50,8 @@ namespace Dandaan.Forms
                                     {
                                         if (listBox.Items[i].ToString() != objs[i].ToString())
                                         {
+                                            if (listBox.Visible) listBox.Hide();
+                                            
                                             listBox.Items[i] = objs[i];
 
                                             if (listBox.SelectedIndex == i) listBox.ClearSelected();
@@ -58,18 +60,31 @@ namespace Dandaan.Forms
                                                 ((CheckedListBox)listBox).SetItemChecked(i, false);
                                         }
                                     }
-                                    else listBox.Items.RemoveAt(i);
+                                    else
+                                    {
+                                        if (listBox.Visible) listBox.Hide();
+                                        while (listBox.Items.Count > i) listBox.Items.RemoveAt(i);
+                                        break;
+                                    }
 
-                                for (int i = listBox.Items.Count; i < objs.Length; i++)
-                                    listBox.Items.Add(objs[i]);
+                                if (listBox.Items.Count < objs.Length)
+                                {
+                                    if (listBox.Visible) listBox.Hide();
+                                    for (int i = listBox.Items.Count; i < objs.Length; i++)
+                                        listBox.Items.Add(objs[i]);
+                                }
 
                                 /*if (listBox.SelectedIndex < 0)
                                 {
                                     listBox.SelectedIndex = 0;
                                     listBox.ClearSelected();
                                 }*/
+
+                                if (!listBox.Visible) listBox.Show();
                             }
                         }
+
+                        browserMenu1.enable();
                     }));
                 }).Start();
             };

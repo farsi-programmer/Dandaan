@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,6 +16,14 @@ namespace Dandaan.Forms
         public Patients()
         {
             InitializeComponent();
+
+            listBrowser1.browserMenu1.CountFunc = SQL.Count<Tables.Log>;
+
+            listBrowser1.ObjsFunc = () =>
+                Tables.Log.Select(listBrowser1.browserMenu1.Page,
+                    listBrowser1.browserMenu1.PageSize).Select((log) =>
+                    // replacing new lines is specially necessary if we want to get the id for edit or delete
+                    $"{log.Id}\t{log.DateTime}\t{Regex.Replace(log.Message, "[\r\n]+", " ")}");
         }
 
         private void Patients_ResizeBegin(object sender, EventArgs e)
