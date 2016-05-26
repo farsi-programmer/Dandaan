@@ -36,6 +36,8 @@
             this.button1 = new System.Windows.Forms.Button();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // buttonLast
@@ -136,9 +138,32 @@
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.textBox2_MouseClick);
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(658, 22);
+            this.label2.Name = "label2";
+            this.label2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.label2.Size = new System.Drawing.Size(112, 24);
+            this.label2.TabIndex = 16;
+            this.label2.Text = "لطفا صبر کنید...";
+            this.label2.Visible = false;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(14, 22);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(119, 24);
+            this.label3.TabIndex = 15;
+            this.label3.Text = "Please wait...";
+            this.label3.Visible = false;
+            // 
             // BrowserMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.buttonLast);
             this.Controls.Add(this.buttonNext);
@@ -163,5 +188,7 @@
         protected System.Windows.Forms.Button button1;
         protected System.Windows.Forms.TextBox textBox2;
         protected System.Windows.Forms.CheckBox checkBox1;
+        public System.Windows.Forms.Label label2;
+        public System.Windows.Forms.Label label3;
     }
 }

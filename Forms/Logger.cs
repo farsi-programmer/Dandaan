@@ -21,7 +21,7 @@ namespace Dandaan.Forms
             textBrowser1.browserMenu1.CountFunc = SQL.Count<Tables.Log>;
 
             textBrowser1.LinesFunc = () =>
-                Tables.Log.Select(textBrowser1.browserMenu1.Page,
+                SQL.Select<Tables.Log>(textBrowser1.browserMenu1.Page,
                     textBrowser1.browserMenu1.PageSize).Select((log) =>
                     // replacing new lines is specially necessary if we want to get the id for edit or delete
                     $"{log.Id}\t{log.DateTime}\t{Regex.Replace(log.Message, "[\r\n]+", " ")}");

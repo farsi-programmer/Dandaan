@@ -107,7 +107,7 @@ namespace Dandaan.Forms
                 var p = 0;
                 if (int.TryParse(textBox2.Text, out p))
                 {
-                    if (p < 1) textBox2.Text = "1";
+                    if (p < 1 || pages == 0) textBox2.Text = "1";
                     else if (p > pages) textBox2.Text = pages.ToString();
 
                     loadData(int.Parse(textBox2.Text));

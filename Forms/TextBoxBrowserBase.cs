@@ -16,8 +16,6 @@ namespace Dandaan.Forms
 
         public TextBoxBrowserBase()
         {
-            Disposed += TextBoxBrowserBase_Disposed;
-
             InitializeComponent();
 
             // testing
@@ -26,13 +24,6 @@ namespace Dandaan.Forms
             //for (int i = 0; i < 1000; i++) x.Add(i);
             //ArrayFunc = () => { return x.Skip((browserMenu1.Page - 1) * browserMenu1.PageSize).Take(browserMenu1.PageSize).Select((k) => (object)(((int)k) + DateTime.Now.Second)).ToArray(); };
         }
-
-        private void TextBoxBrowserBase_Disposed(object sender, EventArgs e)
-        {
-            thread?.Abort();
-        }
-
-        System.Threading.Thread thread = null;
 
         public Action Act(TextBoxBase textBox)
         {
@@ -89,7 +80,7 @@ namespace Dandaan.Forms
                             var beforeSelection = textBox.Text.Substring(0, textBox.SelectionStart);
                             //textBox.Hide();
 
-                            if (textBox is RichTextBox) ((RichTextBox)textBox).Rtf = rtb.Rtf;
+                            if (textBox is RichTextBox) (textBox as RichTextBox).Rtf = rtb.Rtf;
                             else textBox.Text = str;
 
                             scroll(textBox, beforeSelection);

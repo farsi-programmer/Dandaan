@@ -28,18 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.browserMenu1 = new Dandaan.Forms.BrowserMenu();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
-            // 
-            // browserMenu1
-            // 
-            this.browserMenu1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(178)));
-            this.browserMenu1.Location = new System.Drawing.Point(0, 0);
-            this.browserMenu1.Name = "browserMenu1";
-            this.browserMenu1.Size = new System.Drawing.Size(784, 562);
-            this.browserMenu1.TabIndex = 0;
             // 
             // dataGridView1
             // 
@@ -64,7 +55,6 @@
 
         #endregion
 
-        private BrowserMenu browserMenu1;
         public System.Windows.Forms.DataGridView dataGridView1;
     }
 }

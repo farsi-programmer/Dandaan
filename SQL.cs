@@ -33,15 +33,15 @@ namespace Dandaan
 
         public static void CreateTable(Type t)
         {
-            var ms = t.GetProperties();
+            var ps = t.GetProperties();
             var sb = new StringBuilder();
             sb.AppendLine(IfNotExistsTable(t.Name));
             sb.AppendLine($"CREATE TABLE [dbo].[{t.Name}] (");
 
-            foreach (var m in ms)
+            foreach (var item in ps)
             {
-                var desc = GetDandaanAttribute(m).Sql;
-                sb.AppendLine($"[{m.Name}] {desc},");
+                var desc = Reflection.GetDandaanAttribute(item).Sql;
+                sb.AppendLine($"[{item.Name}] {desc},");
             }
 
             sb.AppendLine(");");
@@ -203,6 +203,13 @@ end;");
             return IfNotExists.Length > 0 ? Transaction(sb.ToString()) : sb.ToString();
         }
 
+        /*DB.DataContextRun((context) =>
+        {
+            if (log.Message.Length > 800) log.Message = log.Message.Substring(0, 800);
+            context.Logs.InsertOnSubmit(log);
+            context.SubmitChanges();
+        });*/
+
         public static int Insert(object obj, params string[] IfNotExists)
         {
             var p1 = new List<string>();
@@ -213,10 +220,10 @@ end;");
 
             foreach (var m in ms)
             {
-                var desc = GetDandaanAttribute(m).Sql;
+                var desc = Reflection.GetDandaanAttribute(m).Sql;
 
-                if(!IsMatch(desc, @"[\s]+identity[\s]+")
-                    && !IsMatch(desc, @"[\s]+default[\(\s]+"))
+                if(!Common.IsMatch(desc, @"[\s]+identity[\s]+")
+                    && !Common.IsMatch(desc, @"[\s]+default[\(\s]+"))
                 {
                     p1.Add(m.Name);
                     p2.Add(SqlParameter(m.Name, t.GetProperty(m.Name).GetValue(obj), desc));
@@ -237,7 +244,7 @@ end;");
 
             if (desc.Contains("[nvarchar]"))
             {
-                var len = Match(desc, $@"\[nvarchar][\s]*\(([\d]+)\)").Groups[1].Value;
+                var len = Common.Match(desc, $@"\[nvarchar][\s]*\(([\d]+)\)").Groups[1].Value;
                 p = new SqlParameter($"@{name}", SqlDbType.NVarChar, int.Parse(len)) { Value = value };
             }
             else if (desc.Contains("[int]"))
@@ -253,54 +260,6 @@ end;");
             return p;
         }
 
-        public static Match Match(string input, string pattern)
-        {
-            return Regex.Match(input, pattern, RegexOptions.IgnoreCase);
-        }
-
-        public static bool IsMatch(string input, string pattern)
-        {
-            return Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
-        }
-
-        public static Tables.DandaanAttribute GetDandaanAttribute(MemberInfo m)
-        {
-            var attributes = (Tables.DandaanAttribute[])m.GetCustomAttributes<Tables.DandaanAttribute>();
-
-            return attributes[0];
-        }
-
-        public static Tables.DandaanAttribute GetDandaanAttribute(Type t)
-        {
-            var attributes = (Tables.DandaanAttribute[])t.GetCustomAttributes<Tables.DandaanAttribute>();
-
-            return attributes[0];
-        }
-
-        public static string GetDescriptionAttribute(MemberInfo m, bool shouldHave = true) 
-        {
-            var attributes = (DescriptionAttribute[])m.GetCustomAttributes<DescriptionAttribute>();
-
-            return GetFirstDescription(attributes, shouldHave);
-        }
-
-        public static string GetDescriptionAttribute(Type t, bool shouldHave = true) 
-        {
-            var attributes = (DescriptionAttribute[])t.GetCustomAttributes<DescriptionAttribute>();
-
-            return GetFirstDescription(attributes, shouldHave);
-        }
-
-        private static string GetFirstDescription(DescriptionAttribute[] attributes, bool shouldHave)
-        {
-            if (shouldHave)
-                return attributes[0].Description;
-            else if (attributes != null && attributes.Length > 0)
-                return attributes[0].Description;
-
-            return "";
-        }
-
         public static int Count<T>() where T : class
         {
             using (var context = DB.DataContext)
@@ -308,6 +267,36 @@ end;");
                 var pi = context.GetType().GetField(typeof(T).Name + "s");
 
                 return ((System.Data.Linq.Table<T>)(pi.GetValue(context))).Count();
+            }
+        }
+
+        public static IEnumerable<T> Select<T>(int page, int pageSize) where T : class
+        {
+            /*using (var connection = DB.Connection)
+            using (var cmd = connection.CreateCommand())
+            {
+                cmd.CommandText = @"select * from [Log] order by id";
+                var sdr = cmd.ExecuteReader();
+                while (sdr.Read())
+                {
+                    yield return new Log()
+                    {
+                        Id = (int)sdr[nameof(Id)],
+                        DateTime = (DateTime)sdr[nameof(DateTime)],
+                        Message = (string)sdr[nameof(Message)]
+                    };
+                }
+                sdr.Close();
+            }*/
+
+            using (var context = DB.DataContext)
+            {
+                var t = (System.Data.Linq.Table<T>)context.GetType().GetField(typeof(T).Name + "s")
+                    .GetValue(context);
+
+                using (var en = t.Skip((page - 1) * pageSize).Take(pageSize).GetEnumerator())
+                    while (en.MoveNext())
+                        yield return en.Current;
             }
         }
     }

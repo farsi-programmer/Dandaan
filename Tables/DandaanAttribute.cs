@@ -11,7 +11,5 @@ namespace Dandaan.Tables
         public string Sql { get; set; }
 
         public string Label { get; set; }
-
-        public Action a { get; set; }
     }
 }

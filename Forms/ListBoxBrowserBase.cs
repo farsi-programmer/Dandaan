@@ -29,10 +29,10 @@ namespace Dandaan.Forms
         {
             return () =>
             {
-                new System.Threading.Thread(() =>
+                thread = Common.Thread(() =>
                 {
                     var objs = ObjsFunc().ToArray();
-                    
+
                     Invoke(new Action(() =>
                     {
                         if (objs == null || objs.Length == 0)
@@ -50,14 +50,19 @@ namespace Dandaan.Forms
                                     {
                                         if (listBox.Items[i].ToString() != objs[i].ToString())
                                         {
-                                            if (listBox.Visible) listBox.Hide();
-                                            
+                                            if (listBox.Visible)
+                                            {
+                                                listBox.Hide();
+                                                //browserMenu1.label2.Refresh();
+                                                //browserMenu1.label3.Refresh();
+                                            }
+
                                             listBox.Items[i] = objs[i];
 
                                             if (listBox.SelectedIndex == i) listBox.ClearSelected();
 
-                                            if (listBox is CheckedListBox && ((CheckedListBox)listBox).GetItemChecked(i))
-                                                ((CheckedListBox)listBox).SetItemChecked(i, false);
+                                            if (listBox is CheckedListBox && (listBox as CheckedListBox).GetItemChecked(i))
+                                                (listBox as CheckedListBox).SetItemChecked(i, false);
                                         }
                                     }
                                     else
@@ -86,7 +91,9 @@ namespace Dandaan.Forms
 
                         browserMenu1.enable();
                     }));
-                }).Start();
+                });
+                
+                thread.Start();
             };
         }
     }

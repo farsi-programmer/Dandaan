@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class DataGridViewBrowser : UserControl
+    public partial class DataGridViewBrowser : Browser
     {
         public Func<DataGridViewRow[]> ArrayFunc = () => null;
 
@@ -31,7 +31,7 @@ namespace Dandaan.Forms
 
             browserMenu1.Act = () =>
             {
-                new System.Threading.Thread(() =>
+                thread = Common.Thread(() =>
                 {
                     var objs = ArrayFunc();
 
@@ -48,7 +48,7 @@ namespace Dandaan.Forms
                         else
                         {
                             if (dataGridView1.Rows.Count == 0 || (dataGridView1.Rows.Count == 1
-                            && dataGridView1.Rows[0].Cells.Count == 1 
+                            && dataGridView1.Rows[0].Cells.Count == 1
                             && dataGridView1.Rows[0].Cells[0].Value == null))
                                 dataGridView1.Rows.AddRange(objs);
                             else
@@ -68,8 +68,12 @@ namespace Dandaan.Forms
                                     dataGridView1.Rows.Add(objs[i]);*/
                             }
                         }
+
+                        browserMenu1.enable();
                     }));
-                }).Start();
+                });
+                
+                thread.Start();
             };
         }
     }

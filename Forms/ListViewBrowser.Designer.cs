@@ -33,7 +33,9 @@
             // 
             // listView1
             // 
+            this.listView1.FullRowSelect = true;
             this.listView1.Location = new System.Drawing.Point(16, 15);
+            this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
             this.listView1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.listView1.RightToLeftLayout = true;

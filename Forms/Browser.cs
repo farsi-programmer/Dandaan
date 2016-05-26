@@ -14,7 +14,16 @@ namespace Dandaan.Forms
     {
         public Browser()
         {
+            Disposed += Browser_Disposed; ;
+
             InitializeComponent();
         }
+
+        private void Browser_Disposed(object sender, EventArgs e)
+        {
+            thread?.Abort();
+        }
+
+        protected System.Threading.Thread thread = null;
     }
 }
