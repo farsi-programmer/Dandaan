@@ -1,6 +1,6 @@
-﻿namespace Dandaan.Forms
+﻿namespace Dandaan.UserControls
 {
-    partial class DataGridViewBrowser
+    partial class ListBoxBrowserBase
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,33 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
-            // dataGridView1
-            // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(12, 16);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.dataGridView1.Size = new System.Drawing.Size(759, 485);
-            this.dataGridView1.TabIndex = 1;
-            // 
-            // DataGridViewBrowser
+            // ListBoxBrowserBase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.dataGridView1);
-            this.Controls.Add(this.browserMenu1);
-            this.Name = "DataGridViewBrowser";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.Name = "ListBoxBrowserBase";
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        public System.Windows.Forms.DataGridView dataGridView1;
     }
 }

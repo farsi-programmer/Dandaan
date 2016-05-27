@@ -98,28 +98,40 @@
     <Compile Include="Forms\About.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Browser.cs">
+    <Compile Include="Forms\ListViewBrowser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ListViewBrowser.Designer.cs">
+      <DependentUpon>ListViewBrowser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\RichTextBoxBrowser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\RichTextBoxBrowser.Designer.cs">
+      <DependentUpon>RichTextBoxBrowser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Browser.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Browser.Designer.cs">
+    <Compile Include="UserControls\Browser.Designer.cs">
       <DependentUpon>Browser.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\BrowserMenu.cs">
+    <Compile Include="UserControls\BrowserMenu.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\BrowserMenu.Designer.cs">
+    <Compile Include="UserControls\BrowserMenu.Designer.cs">
       <DependentUpon>BrowserMenu.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\CheckedListBoxBrowser.cs">
+    <Compile Include="UserControls\CheckedListBoxBrowser.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\CheckedListBoxBrowser.Designer.cs">
+    <Compile Include="UserControls\CheckedListBoxBrowser.Designer.cs">
       <DependentUpon>CheckedListBoxBrowser.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\DataGridViewBrowser.cs">
+    <Compile Include="UserControls\DataGridViewBrowser.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\DataGridViewBrowser.Designer.cs">
+    <Compile Include="UserControls\DataGridViewBrowser.Designer.cs">
       <DependentUpon>DataGridViewBrowser.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Form.cs">
@@ -128,29 +140,23 @@
     <Compile Include="Forms\Form.Designer.cs">
       <DependentUpon>Form.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ListBoxBrowser.cs">
+    <Compile Include="UserControls\ListBoxBrowser.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\ListBoxBrowser.Designer.cs">
+    <Compile Include="UserControls\ListBoxBrowser.Designer.cs">
       <DependentUpon>ListBoxBrowser.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ListBoxBrowserBase.cs">
+    <Compile Include="UserControls\ListBoxBrowserBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\ListBoxBrowserBase.Designer.cs">
+    <Compile Include="UserControls\ListBoxBrowserBase.Designer.cs">
       <DependentUpon>ListBoxBrowserBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ListViewBrowser.cs">
+    <Compile Include="UserControls\ListViewBrowser.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\ListViewBrowser.Designer.cs">
+    <Compile Include="UserControls\ListViewBrowser.Designer.cs">
       <DependentUpon>ListViewBrowser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Logger.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Logger.Designer.cs">
-      <DependentUpon>Logger.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Login.cs">
       <SubType>Form</SubType>
@@ -170,40 +176,28 @@
     <Compile Include="Forms\ConnectDB.Designer.cs">
       <DependentUpon>ConnectDB.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Patient.cs">
+    <Compile Include="UserControls\RichTextBoxBrowser.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Patient.Designer.cs">
-      <DependentUpon>Patient.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Patients.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Patients.Designer.cs">
-      <DependentUpon>Patients.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\RichTextBoxBrowser.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\RichTextBoxBrowser.Designer.cs">
+    <Compile Include="UserControls\RichTextBoxBrowser.Designer.cs">
       <DependentUpon>RichTextBoxBrowser.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\TextBoxBrowser.cs">
+    <Compile Include="UserControls\TextBoxBrowser.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\TextBoxBrowser.Designer.cs">
+    <Compile Include="UserControls\TextBoxBrowser.Designer.cs">
       <DependentUpon>TextBoxBrowser.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\TextBoxBrowserBase.cs">
+    <Compile Include="UserControls\TextBoxBrowserBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\TextBoxBrowserBase.Designer.cs">
+    <Compile Include="UserControls\TextBoxBrowserBase.Designer.cs">
       <DependentUpon>TextBoxBrowserBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\UserControl.cs">
+    <Compile Include="UserControls\UserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\UserControl.Designer.cs">
+    <Compile Include="UserControls\UserControl.Designer.cs">
       <DependentUpon>UserControl.cs</DependentUpon>
     </Compile>
     <Compile Include="LocalSettings.cs" />
@@ -221,32 +215,35 @@
     <EmbeddedResource Include="Forms\About.resx">
       <DependentUpon>About.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Browser.resx">
+    <EmbeddedResource Include="Forms\ListViewBrowser.resx">
+      <DependentUpon>ListViewBrowser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\RichTextBoxBrowser.resx">
+      <DependentUpon>RichTextBoxBrowser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\Browser.resx">
       <DependentUpon>Browser.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\BrowserMenu.resx">
+    <EmbeddedResource Include="UserControls\BrowserMenu.resx">
       <DependentUpon>BrowserMenu.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\CheckedListBoxBrowser.resx">
+    <EmbeddedResource Include="UserControls\CheckedListBoxBrowser.resx">
       <DependentUpon>CheckedListBoxBrowser.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\DataGridViewBrowser.resx">
+    <EmbeddedResource Include="UserControls\DataGridViewBrowser.resx">
       <DependentUpon>DataGridViewBrowser.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Form.resx">
       <DependentUpon>Form.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ListBoxBrowser.resx">
+    <EmbeddedResource Include="UserControls\ListBoxBrowser.resx">
       <DependentUpon>ListBoxBrowser.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ListBoxBrowserBase.resx">
+    <EmbeddedResource Include="UserControls\ListBoxBrowserBase.resx">
       <DependentUpon>ListBoxBrowserBase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ListViewBrowser.resx">
+    <EmbeddedResource Include="UserControls\ListViewBrowser.resx">
       <DependentUpon>ListViewBrowser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Logger.resx">
-      <DependentUpon>Logger.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Login.resx">
       <DependentUpon>Login.cs</DependentUpon>
@@ -257,23 +254,17 @@
     <EmbeddedResource Include="Forms\ConnectDB.resx">
       <DependentUpon>ConnectDB.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Patient.resx">
-      <DependentUpon>Patient.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Patients.resx">
-      <DependentUpon>Patients.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\RichTextBoxBrowser.resx">
+    <EmbeddedResource Include="UserControls\RichTextBoxBrowser.resx">
       <DependentUpon>RichTextBoxBrowser.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\TextBoxBrowser.resx">
+    <EmbeddedResource Include="UserControls\TextBoxBrowser.resx">
       <DependentUpon>TextBoxBrowser.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\TextBoxBrowserBase.resx">
+    <EmbeddedResource Include="UserControls\TextBoxBrowserBase.resx">
       <DependentUpon>TextBoxBrowserBase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\UserControl.resx">
+    <EmbeddedResource Include="UserControls\UserControl.resx">
       <DependentUpon>UserControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

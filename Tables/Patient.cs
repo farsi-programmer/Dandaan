@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 namespace Dandaan.Tables
 {
     [Table(Name = nameof(Patient))]
+    [Dandaan(Label = "بیماران")]
     public class Patient
     {
         [Column]

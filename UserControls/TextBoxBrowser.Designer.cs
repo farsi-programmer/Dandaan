@@ -1,6 +1,6 @@
-﻿namespace Dandaan.Forms
+﻿namespace Dandaan.UserControls
 {
-    partial class ListBoxBrowser
+    partial class TextBoxBrowser
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,32 +28,32 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
-            // listBox1
+            // textBox1
             // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.ItemHeight = 24;
-            this.listBox1.Location = new System.Drawing.Point(15, 17);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.listBox1.Size = new System.Drawing.Size(756, 484);
-            this.listBox1.TabIndex = 1;
+            this.textBox1.Location = new System.Drawing.Point(12, 12);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.textBox1.Size = new System.Drawing.Size(760, 495);
+            this.textBox1.TabIndex = 4;
             // 
-            // ListBoxBrowser
+            // TextBoxBrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
-            this.Controls.Add(this.listBox1);
-            this.Name = "ListBoxBrowser";
+            this.Controls.Add(this.textBox1);
+            this.Name = "TextBoxBrowser";
             this.Controls.SetChildIndex(this.browserMenu1, 0);
-            this.Controls.SetChildIndex(this.listBox1, 0);
+            this.Controls.SetChildIndex(this.textBox1, 0);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-
-        public System.Windows.Forms.ListBox listBox1;
+        public System.Windows.Forms.TextBox textBox1;
     }
 }

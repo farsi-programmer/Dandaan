@@ -8,13 +8,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Dandaan.Forms
+namespace Dandaan.UserControls
 {
-    public partial class Patient : UserControl
+    public partial class RichTextBoxBrowser : TextBoxBrowserBase
     {
-        public Patient()
+        public RichTextBoxBrowser()
         {
             InitializeComponent();
+
+            browserMenu1.Act = Act(richTextBox1);
         }
     }
 }

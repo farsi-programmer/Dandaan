@@ -1,4 +1,4 @@
-﻿namespace Dandaan.Forms
+﻿namespace Dandaan.UserControls
 {
     partial class BrowserMenu
     {
@@ -36,14 +36,12 @@
             this.button1 = new System.Windows.Forms.Button();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // buttonLast
             // 
             this.buttonLast.Enabled = false;
-            this.buttonLast.Location = new System.Drawing.Point(87, 518);
+            this.buttonLast.Location = new System.Drawing.Point(86, 8);
             this.buttonLast.Margin = new System.Windows.Forms.Padding(6);
             this.buttonLast.Name = "buttonLast";
             this.buttonLast.Size = new System.Drawing.Size(77, 35);
@@ -56,7 +54,7 @@
             // buttonNext
             // 
             this.buttonNext.Enabled = false;
-            this.buttonNext.Location = new System.Drawing.Point(176, 518);
+            this.buttonNext.Location = new System.Drawing.Point(175, 8);
             this.buttonNext.Margin = new System.Windows.Forms.Padding(6);
             this.buttonNext.Name = "buttonNext";
             this.buttonNext.Size = new System.Drawing.Size(77, 35);
@@ -69,7 +67,7 @@
             // buttonPrevious
             // 
             this.buttonPrevious.Enabled = false;
-            this.buttonPrevious.Location = new System.Drawing.Point(265, 518);
+            this.buttonPrevious.Location = new System.Drawing.Point(264, 8);
             this.buttonPrevious.Margin = new System.Windows.Forms.Padding(6);
             this.buttonPrevious.Name = "buttonPrevious";
             this.buttonPrevious.Size = new System.Drawing.Size(77, 35);
@@ -82,7 +80,7 @@
             // buttonFirst
             // 
             this.buttonFirst.Enabled = false;
-            this.buttonFirst.Location = new System.Drawing.Point(354, 518);
+            this.buttonFirst.Location = new System.Drawing.Point(353, 8);
             this.buttonFirst.Margin = new System.Windows.Forms.Padding(6);
             this.buttonFirst.Name = "buttonFirst";
             this.buttonFirst.Size = new System.Drawing.Size(77, 35);
@@ -95,7 +93,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 523);
+            this.label1.Location = new System.Drawing.Point(11, 13);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(20, 24);
             this.label1.TabIndex = 14;
@@ -104,7 +102,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(659, 518);
+            this.button1.Location = new System.Drawing.Point(658, 8);
             this.button1.Margin = new System.Windows.Forms.Padding(6);
             this.button1.Name = "button1";
             this.button1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
@@ -117,7 +115,7 @@
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(440, 521);
+            this.textBox2.Location = new System.Drawing.Point(439, 11);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(54, 29);
             this.textBox2.TabIndex = 2;
@@ -130,7 +128,7 @@
             this.checkBox1.AutoSize = true;
             this.checkBox1.Checked = true;
             this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(516, 521);
+            this.checkBox1.Location = new System.Drawing.Point(515, 11);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(134, 28);
             this.checkBox1.TabIndex = 1;
@@ -138,32 +136,9 @@
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.textBox2_MouseClick);
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(658, 22);
-            this.label2.Name = "label2";
-            this.label2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.label2.Size = new System.Drawing.Size(112, 24);
-            this.label2.TabIndex = 16;
-            this.label2.Text = "لطفا صبر کنید...";
-            this.label2.Visible = false;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(14, 22);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(119, 24);
-            this.label3.TabIndex = 15;
-            this.label3.Text = "Please wait...";
-            this.label3.Visible = false;
-            // 
             // BrowserMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label3);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.buttonLast);
             this.Controls.Add(this.buttonNext);
@@ -173,6 +148,7 @@
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.button1);
             this.Name = "BrowserMenu";
+            this.Size = new System.Drawing.Size(784, 52);
             this.Load += new System.EventHandler(this.BrowserMenu_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -188,7 +164,5 @@
         protected System.Windows.Forms.Button button1;
         protected System.Windows.Forms.TextBox textBox2;
         protected System.Windows.Forms.CheckBox checkBox1;
-        public System.Windows.Forms.Label label2;
-        public System.Windows.Forms.Label label3;
     }
 }

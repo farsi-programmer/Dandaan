@@ -1,4 +1,4 @@
-﻿namespace Dandaan.Forms
+﻿namespace Dandaan.UserControls
 {
     partial class CheckedListBoxBrowser
     {

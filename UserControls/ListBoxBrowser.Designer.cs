@@ -1,6 +1,6 @@
-﻿namespace Dandaan.Forms
+﻿namespace Dandaan.UserControls
 {
-    partial class ListBoxBrowserBase
+    partial class ListBoxBrowser
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,17 +28,32 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.listBox1 = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
-            // ListBoxBrowserBase
+            // listBox1
+            // 
+            this.listBox1.FormattingEnabled = true;
+            this.listBox1.ItemHeight = 24;
+            this.listBox1.Location = new System.Drawing.Point(15, 17);
+            this.listBox1.Name = "listBox1";
+            this.listBox1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.listBox1.Size = new System.Drawing.Size(756, 484);
+            this.listBox1.TabIndex = 1;
+            // 
+            // ListBoxBrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "ListBoxBrowserBase";
+            this.Controls.Add(this.listBox1);
+            this.Name = "ListBoxBrowser";
+            this.Controls.SetChildIndex(this.browserMenu1, 0);
+            this.Controls.SetChildIndex(this.listBox1, 0);
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        public System.Windows.Forms.ListBox listBox1;
     }
 }

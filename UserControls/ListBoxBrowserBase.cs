@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Dandaan.Forms
+namespace Dandaan.UserControls
 {
     public partial class ListBoxBrowserBase : Browser
     {
@@ -50,12 +50,7 @@ namespace Dandaan.Forms
                                     {
                                         if (listBox.Items[i].ToString() != objs[i].ToString())
                                         {
-                                            if (listBox.Visible)
-                                            {
-                                                listBox.Hide();
-                                                //browserMenu1.label2.Refresh();
-                                                //browserMenu1.label3.Refresh();
-                                            }
+                                            if (listBox.Visible) listBox.Hide();
 
                                             listBox.Items[i] = objs[i];
 

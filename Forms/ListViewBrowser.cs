@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,83 +10,50 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class ListViewBrowser : Browser
+    public partial class ListViewBrowser<T> : Form where T : class
     {
-        public Func<IEnumerable<ListViewItem>> ItemsFunc = () => new ListViewItem[] { };
-
         public ListViewBrowser()
         {
             InitializeComponent();
 
-            // testing
-            //browserMenu1.CountFunc = () => 1000;
-            //var x = new List<ListViewItem>(1000);
-            //for (int i = 0; i < 1000; i++) x.Add(new ListViewItem(i.ToString()));
-            //ItemsFunc = () => { return x.Skip((browserMenu1.Page - 1) * browserMenu1.PageSize).Take(browserMenu1.PageSize).Select((k) => { Invoke(new Action(() => k.Text = k.Text + DateTime.Now.Second)); /*new ListViewItem(k.Text + DateTime.Now.Second)*/ return k; }).ToArray(); };
-            //listView1.Columns.Add("test", 200);
+            listViewBrowser1.browserMenu1.CountFunc = SQL.Count<T>;
 
-            browserMenu1.Act = () =>
+            var ps = typeof(T).GetProperties();
+
+            using (var g = CreateGraphics())
             {
-                thread = Common.Thread(() =>
+                int sum = 0;
+                SizeF size;
+                foreach (var item in ps)
                 {
-                    var items = ItemsFunc().ToArray();
+                    var label = Reflection.GetDandaanAttribute(item).Label;
 
-                    Invoke(new Action(() =>
-                    {
-                        if (items == null || items.Length == 0)
-                        {
-                            listView1.Columns.Clear();
-                            listView1.Columns.Add("");
+                    size = g.MeasureString(label, Font);
 
-                            listView1.Items.Clear();
-                            listView1.Items.Add("رکوردی وجود ندارد.");
+                    listViewBrowser1.listView1.Columns.Add(label).Width = (int)size.Width + 10;
 
-                            listView1.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-                        }
-                        else
-                        {
-                            if (listView1.Items.Count == 0) listView1.Items.AddRange(items);
-                            else
-                            {
-                                for (int i = 0; i < listView1.Items.Count; i++)
-                                    if (items.Length > i)
-                                    {
-                                        //if (listView1.Items[i].Text != items[i].Text)
-                                        //listView1.Items[i] = items[i];
+                    sum += (int)size.Width + 10;
+                }
 
-                                        for (int j = 0; j < listView1.Items[i].SubItems.Count; j++)
-                                            if (listView1.Items[i].SubItems[j].Text != items[i].SubItems[j].Text)
-                                            {
-                                                // we can create a new ListViewItem for each round or
-                                                // we can manipulate the existing one
+                if (listViewBrowser1.listView1.Width > sum && (listViewBrowser1.listView1.Width - sum) / ps.Length > 1)
+                {
+                    var x = (listViewBrowser1.listView1.Width - sum) / ps.Length;
 
-                                                listView1.Items[i] = items[i];
-                                                break;
-                                            }
-                                    }
-                                    else
-                                    {
-                                        if (listView1.Visible) listView1.Hide();
-                                        while (listView1.Items.Count > i) listView1.Items.RemoveAt(i);
-                                        break;
-                                    }
+                    for (int i = 0; i < listViewBrowser1.listView1.Columns.Count; i++)
+                        listViewBrowser1.listView1.Columns[i].Width = listViewBrowser1.listView1.Columns[i].Width
+                            + ((ps[i].PropertyType == typeof(int)) ? 0 : x--);
+                }
+            }
 
-                                for (int i = listView1.Items.Count; i < items.Length; i++)
-                                    listView1.Items.Add(items[i]);
-
-                                /*if (listView1.SelectedIndices.Count == 0)
-                                    listView1.EnsureVisible(0);*/
-
-                                if (!listView1.Visible) listView1.Show();
-                            }
-                        }
-
-                        browserMenu1.enable();
-                    }));
-                });
-                
-                thread.Start();
-            };
+            bool odd = true;
+            listViewBrowser1.ItemsFunc = () =>
+            SQL.Select<T>(listViewBrowser1.browserMenu1.Page, listViewBrowser1.browserMenu1.PageSize)
+            .Select((row) =>
+            {
+                odd = !odd;
+                return new ListViewItem(ps.Select(item => item.GetValue(row).ToString()).ToArray())
+                { BackColor = odd ? Color.LightCyan : Color.FromArgb(0xcf, 0xff, 0xcf) };
+            });
         }
     }
 }

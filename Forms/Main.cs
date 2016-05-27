@@ -93,11 +93,11 @@ namespace Dandaan.Forms
             })))).Start();
         }
 
-        Logger logger = null;
+        RichTextBoxBrowser<Tables.Log> log = null;
 
         private void لاگToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            showForm(ref logger);
+            showForm(ref log);
         }
 
         About about = null;
@@ -151,7 +151,7 @@ namespace Dandaan.Forms
 
         }
 
-        Patients patients = null;
+        ListViewBrowser<Tables.Patient> patients = null;
 
         private void button8_Click(object sender, EventArgs e)
         {

@@ -13,18 +13,22 @@ using System.Threading.Tasks;
 namespace Dandaan.Tables
 {
     [Table(Name = nameof(Log))]
+    [Dandaan(Label = "لاگها")]
     public class Log
     {
         [Column]//(IsPrimaryKey = true, IsDbGenerated = true)]
-        [Dandaan(Sql = "[int] IDENTITY NOT NULL CONSTRAINT [PK_" + nameof(Log) + "] PRIMARY KEY CLUSTERED (Id DESC)")]
+        [Dandaan(Sql = "[int] IDENTITY NOT NULL CONSTRAINT [PK_" + nameof(Log) + "] PRIMARY KEY CLUSTERED (Id DESC)",
+            Label = "شماره")]
         public int Id { get; set; }
 
-        [Column]
-        [Dandaan(Sql = "[nvarchar](1000) NOT NULL")]
-        public string Message { get; set; }
-
         [Column]//(IsDbGenerated = true)]
-        [Dandaan(Sql = "[smalldatetime] NOT NULL CONSTRAINT [DF_" + nameof(Log) + "_" + nameof(DateTime) + "] DEFAULT (getdate())")]
+        [Dandaan(Sql = "[smalldatetime] NOT NULL CONSTRAINT [DF_" + nameof(Log) + "_" + nameof(DateTime) + "] DEFAULT (getdate())",
+            Label = "تاریخ")]
         public DateTime DateTime { get; set; }
+
+        [Column]
+        [Dandaan(Sql = "[nvarchar](1000) NOT NULL",
+            Label = "پیام")]
+        public string Message { get; set; }
     }
 }

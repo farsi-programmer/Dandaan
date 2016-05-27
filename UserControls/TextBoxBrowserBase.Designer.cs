@@ -1,6 +1,6 @@
-﻿namespace Dandaan.Forms
+﻿namespace Dandaan.UserControls
 {
-    partial class Patient
+    partial class TextBoxBrowserBase
     {
         /// <summary> 
         /// Required designer variable.
@@ -30,13 +30,16 @@
         {
             this.SuspendLayout();
             // 
-            // Patient
+            // TextBoxBrowserBase
             // 
-            this.Name = "Patient";
+            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Name = "TextBoxBrowserBase";
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
     }
 }

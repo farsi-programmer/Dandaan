@@ -1,4 +1,4 @@
-﻿namespace Dandaan.Forms
+﻿namespace Dandaan.UserControls
 {
     partial class Browser
     {
@@ -28,15 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.browserMenu1 = new Dandaan.Forms.BrowserMenu();
+            this.browserMenu1 = new Dandaan.UserControls.BrowserMenu();
             this.SuspendLayout();
             // 
             // browserMenu1
             // 
+            this.browserMenu1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.browserMenu1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(178)));
-            this.browserMenu1.Location = new System.Drawing.Point(0, 0);
+            this.browserMenu1.Location = new System.Drawing.Point(0, 510);
             this.browserMenu1.Name = "browserMenu1";
-            this.browserMenu1.Size = new System.Drawing.Size(784, 562);
+            this.browserMenu1.Size = new System.Drawing.Size(784, 52);
             this.browserMenu1.TabIndex = 0;
             // 
             // Browser

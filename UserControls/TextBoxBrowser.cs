@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -8,15 +9,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Dandaan.Forms
+namespace Dandaan.UserControls
 {
-    public partial class CheckedListBoxBrowser : ListBoxBrowserBase
+    public partial class TextBoxBrowser : TextBoxBrowserBase
     {
-        public CheckedListBoxBrowser()
+        public TextBoxBrowser()
         {
             InitializeComponent();
 
-            browserMenu1.Act = Act(checkedListBox1);
+            browserMenu1.Act = Act(textBox1);
         }
     }
 }

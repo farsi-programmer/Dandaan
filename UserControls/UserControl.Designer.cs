@@ -1,6 +1,6 @@
-﻿namespace Dandaan.Forms
+﻿namespace Dandaan.UserControls
 {
-    partial class TextBoxBrowser
+    partial class UserControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,32 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(12, 12);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(760, 495);
-            this.textBox1.TabIndex = 4;
-            // 
-            // TextBoxBrowser
+            // UserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
-            this.Controls.Add(this.textBox1);
-            this.Name = "TextBoxBrowser";
-            this.Controls.SetChildIndex(this.browserMenu1, 0);
-            this.Controls.SetChildIndex(this.textBox1, 0);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(178)));
+            this.Name = "UserControl";
+            this.Size = new System.Drawing.Size(784, 562);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-        public System.Windows.Forms.TextBox textBox1;
     }
 }
