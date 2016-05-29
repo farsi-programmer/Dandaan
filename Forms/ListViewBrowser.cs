@@ -16,6 +16,8 @@ namespace Dandaan.Forms
         {
             InitializeComponent();
 
+            Text = Reflection.GetDandaanAttribute(typeof(T)).Label;
+
             listViewBrowser1.browserMenu1.CountFunc = SQL.Count<T>;
 
             var ps = typeof(T).GetProperties();
@@ -54,6 +56,11 @@ namespace Dandaan.Forms
                 return new ListViewItem(ps.Select(item => item.GetValue(row).ToString()).ToArray())
                 { BackColor = odd ? Color.LightCyan : Color.FromArgb(0xcf, 0xff, 0xcf) };
             });
+
+            listViewBrowser1.browserMenu1.AddAct = () =>
+            {
+                ;
+            };
         }
     }
 }

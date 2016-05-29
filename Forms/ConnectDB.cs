@@ -43,6 +43,8 @@ namespace Dandaan.Forms
 
             threadDB = new Thread(() =>
             {
+                int tries = 0;
+                go:
                 try
                 {
                     DB.Init();
@@ -86,6 +88,9 @@ namespace Dandaan.Forms
                 catch (Exception ex)
                 {
                     while (ex.InnerException != null) ex = ex.InnerException;
+
+                    // System.Data.SqlClient.SqlException (0x80131904)
+                    if (tries < 1 && ex.Message.Contains("Login failed for user")) { tries++; goto go; }
 
                     try
                     {

@@ -92,12 +92,6 @@
     <Compile Include="Common.cs" />
     <Compile Include="DataContext.cs" />
     <Compile Include="DB.cs" />
-    <Compile Include="Forms\About.Designer.cs">
-      <DependentUpon>About.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\About.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Forms\ListViewBrowser.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -212,9 +206,6 @@
     <Compile Include="Tables\Table.cs" />
     <Compile Include="Tables\User.cs" />
     <Compile Include="Tables\Log.cs" />
-    <EmbeddedResource Include="Forms\About.resx">
-      <DependentUpon>About.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\ListViewBrowser.resx">
       <DependentUpon>ListViewBrowser.cs</DependentUpon>
     </EmbeddedResource>

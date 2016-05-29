@@ -31,9 +31,9 @@ namespace Dandaan.UserControls
         public Func<int> CountFunc = () => 0;
         public Action Act = () => { };
 
-        private void button1_Click(object sender, EventArgs e)
+        private void buttonRefresh_Click(object sender, EventArgs e)
         {
-            if (button1.Enabled) loadData(Page);
+            if (buttonRefresh.Enabled) loadData(Page);
         }
 
         void loadData(int page)
@@ -59,12 +59,12 @@ namespace Dandaan.UserControls
             }
             else buttonFirst.Enabled = buttonPrevious.Enabled = buttonNext.Enabled = buttonLast.Enabled = false;
 
-            button1.Enabled = textBox2.Enabled = true;
+            buttonRefresh.Enabled = textBox2.Enabled = true;
         }
 
         private void BrowserMenu_Load(object sender, EventArgs e)
         {
-            button1_Click(null, null);
+            buttonRefresh_Click(null, null);
 
             timer = new Timer() { Interval = 3000, Enabled = true };
             timer.Tick += Timer_Tick;
@@ -72,7 +72,7 @@ namespace Dandaan.UserControls
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if (checkBox1.Checked) button1_Click(null, null);
+            if (checkBox1.Checked) buttonRefresh_Click(null, null);
         }
 
         private void buttonFirst_Click(object sender, EventArgs e)
@@ -118,8 +118,29 @@ namespace Dandaan.UserControls
 
         void disable()
         {
-            button1.Enabled = buttonFirst.Enabled = buttonLast.Enabled = buttonNext.Enabled
-            = buttonPrevious.Enabled = textBox2.Enabled = false;
+            buttonRefresh.Enabled = buttonFirst.Enabled = buttonLast.Enabled = buttonNext.Enabled
+            = buttonPrevious.Enabled = textBox2.Enabled = buttonDelete.Enabled = buttonEdit.Enabled = false;
+        }
+
+        public Action DeleteAct = () => { };
+
+        private void buttonDelete_Click(object sender, EventArgs e)
+        {
+            bool isChecked = checkBox1.Checked;
+            if (isChecked) checkBox1.Checked = false;
+
+            if (MessageBox.Show("آیا مطمئن هستید که میخواهید این رکورد را حذف کنید؟",
+                Program.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Stop, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+                DeleteAct();
+
+            checkBox1.Checked = isChecked;
+        }
+
+        public Action AddAct = () => { };
+
+        private void buttonAdd_Click(object sender, EventArgs e)
+        {
+            AddAct();
         }
 
         int pages => (count / PageSize) + (count % PageSize > 0 ? 1 : 0);

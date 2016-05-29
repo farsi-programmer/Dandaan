@@ -8,6 +8,8 @@ namespace Dandaan
     {
         public static readonly string DataDirectory = Application.StartupPath;
 
+        public const string Title = "مدیریت دندانپزشکی";
+
         public static int UserId { get; set; }
 
         public static LocalSettings LocalSettings = new LocalSettings();
@@ -59,7 +61,7 @@ namespace Dandaan
 
             DB.Log(str);
 
-            MessageBox.Show("برنامه با مشکل مواجه شده است\r\n" + str, "دندانپزشکی");
+            MessageBox.Show("برنامه با مشکل مواجه شده است\r\n" + str, Title);
         }
 
         private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
@@ -70,7 +72,7 @@ namespace Dandaan
 
             DB.Log(ex.ToString());
 
-            MessageBox.Show("برنامه با مشکل مواجه شده است\r\n" + ex.ToString(), "دندانپزشکی");
+            MessageBox.Show("برنامه با مشکل مواجه شده است\r\n" + ex.ToString(), Title);
         }
 
         private static void Application_ApplicationExit(object sender, EventArgs e)

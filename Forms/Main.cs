@@ -1,6 +1,7 @@
 ﻿// http://offtopic.blog.ir/
 
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -100,6 +101,64 @@ namespace Dandaan.Forms
             showForm(ref log);
         }
 
+        class About : Form
+        {
+            public About()
+            {
+                Text = "درباره";
+
+                int y = 20, z = 20;
+
+                using (var g = CreateGraphics())
+                {
+                    Action<Label> act = (label) =>
+                    {
+                        label.Size = g.MeasureString(label.Text, Font).ToSize();
+
+                        label.Location = new Point(z, y);
+
+                        Controls.Add(label);
+
+                        y += label.Size.Height + 20;
+                    };
+
+                    //
+
+                    var label1 = new Label() { Text = "نرم افزار مدیریت دندانپزشکی متن باز" };
+                    act(label1);
+
+                    //
+
+                    var linkLabel1 = new LinkLabel() { Text = "http://offtopic.blog.ir/", TabStop = true };
+                    act(linkLabel1);
+                    linkLabel1.LinkClicked += (_, __) => Process.Start(linkLabel1.Text);
+
+                    //
+
+                    var linkLabel2 = new LinkLabel()
+                    {
+                        Text = "https://github.com/farsi-programmer/Dandaan",
+                        TabStop = true
+                    };
+                    act(linkLabel2);
+                    linkLabel2.LinkClicked += (_, __) => Process.Start(linkLabel2.Text);
+
+                    //
+
+                    var w = 0;
+                    foreach (Control item in Controls) if (item.Size.Width > w) w = item.Size.Width;
+
+                    foreach (Control item in Controls)
+                        if (w > item.Size.Width)
+                            item.Location = new Point(item.Location.X + (w - item.Size.Width) / 2, item.Location.Y);
+
+                    //
+
+                    ClientSize = new Size(w + z, y + 5);
+                }
+            }
+        }
+
         About about = null;
 
         private void دربارهToolStripMenuItem_Click(object sender, EventArgs e)
@@ -138,12 +197,68 @@ namespace Dandaan.Forms
 
         private void button3_Click(object sender, EventArgs e)
         {
-
+            ;
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(Dandaan.DB.Connection.Database);
+            var f = new Form() { AutoScroll = true };
+
+            var ps = typeof(Tables.Patient).GetProperties();
+
+            int y = 10, x = ClientSize.Width, z = 350, m = 2;
+
+            using (var g = CreateGraphics())
+                foreach (var item in ps)
+                {
+                    var da = Reflection.GetDandaanAttribute(item);
+
+                    if (item.PropertyType == typeof(string))
+                    {
+                        var label = da.Label + ":";
+
+                        var s = g.MeasureString(label, Font).ToSize();
+
+                        var l = new Label()
+                        {
+                            Text = label,
+                            TextAlign = ContentAlignment.TopRight,
+                            //BorderStyle = BorderStyle.FixedSingle,
+                            Margin = new Padding(0),
+                            Padding = new Padding(0),
+                            Size = new Size(s.Width + 5, s.Height),
+                            RightToLeft = RightToLeft.Yes,
+                        };
+
+                        l.Location = new Point(ClientSize.Width - l.Size.Width, y);
+
+                        if (x > l.Location.X) x = l.Location.X;
+
+                        var tb = new TextBox()
+                        {
+                            Width = z,
+                            Margin = new Padding(0),
+                            Padding = new Padding(0),
+                            Location = new Point(x - z - m, y),
+                            RightToLeft = RightToLeft.Yes,
+                        };
+
+                        if (l.Height > tb.Height) tb.Location = new Point(tb.Location.X, tb.Location.Y
+                            + (l.Height - tb.Height) / 2);
+                        else if (tb.Height > l.Height) l.Location = new Point(l.Location.X, l.Location.Y
+                            + (tb.Height - l.Height) / 2);
+
+                        f.Controls.Add(l);
+                        f.Controls.Add(tb);
+                        y += (l.Height > tb.Height ? l.Height : tb.Height) + 8;
+                    }
+                }
+
+            foreach (Control item in f.Controls)
+                if (item is Label) { if (item.Location.X > x) item.Location = new Point(x, item.Location.Y); }
+                else if (item.Location.X > x - z - m) item.Location = new Point(x - z - m, item.Location.Y);
+
+            f.Show();
         }
 
         private void button4_Click(object sender, EventArgs e)

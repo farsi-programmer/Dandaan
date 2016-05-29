@@ -110,7 +110,7 @@
             // دربارهToolStripMenuItem
             // 
             this.دربارهToolStripMenuItem.Name = "دربارهToolStripMenuItem";
-            this.دربارهToolStripMenuItem.Size = new System.Drawing.Size(123, 30);
+            this.دربارهToolStripMenuItem.Size = new System.Drawing.Size(152, 30);
             this.دربارهToolStripMenuItem.Text = "درباره";
             this.دربارهToolStripMenuItem.Click += new System.EventHandler(this.دربارهToolStripMenuItem_Click);
             // 
