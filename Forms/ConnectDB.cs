@@ -1,105 +1,38 @@
 ﻿using System;
-using System.IO;
+using System.Threading;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    class _ConnectDB : ConnectDB { }
+    // for designer
+    //public class _ConnectDB : ConnectDB { }
 
-    class ConnectDB : Form
+    public partial class ConnectDB : Form
     {
-        TextBox textBox1, textBox2;
-        Button button1;
-
         public ConnectDB()
         {
-            //MessageBox.Show((LicenseManager.UsageMode == LicenseUsageMode.Designtime).ToString());
-
-            Text = "اتصال به دیتابیس";
-
-            ClientSize = new Size((int)(ClientSize.Width / 1.2), (int)(ClientSize.Height / 1.2));
-
-            //
-
-            int y = 8, z = 8, x = 8;
-
-            textBox1 = new TextBox()
-            {
-                Multiline = true,
-                ReadOnly = true,
-                RightToLeft = RightToLeft.Yes,
-                ScrollBars = ScrollBars.Both,
-                Location = new Point(x, y),
-                ClientSize = new Size(Width - (2 * x), 100),
-            };
-
-            y += textBox1.Size.Height + z;
-
-            Controls.Add(textBox1);
-
-            //
-
-            textBox2 = new TextBox()
-            {
-                Multiline = true,
-                ReadOnly = true,
-                ScrollBars = ScrollBars.Both,
-                Size = new Size(Width - 20, 150),
-                Location = new Point(x, y),
-            };
-
-            y += textBox2.Size.Height + z;
-
-            Controls.Add(textBox2);
-
-            //
-
-            button1 = new Button()
-            {
-                Enabled = false,
-                Location = new Point(457, 458),
-                Size = new Size(106, 44),
-                Text = "تلاش مجدد",
-                UseVisualStyleBackColor = true,
-            };
-
-            button1.Click += (_, __) =>
-            {
-                button1.Enabled = false;
-                connect();
-            };
-
-            Controls.Add(button1);
-
-            //
-
-            var button2 = new Button()
-            {
-                Location = new Point(569, 459),
-                Size = new Size(106, 42),
-                Text = "انصراف",
-                UseVisualStyleBackColor = true,
-            };
-
-            button2.Click += (_, __) => Close();
-
-            Controls.Add(button2);
-
-            //
+            InitializeComponent();
 
             CancelButton = button2;
 
-            FormClosing += (_, __) => thread?.Abort();
+            //MessageBox.Show((LicenseManager.UsageMode == LicenseUsageMode.Designtime).ToString());
+        }
 
-            Load += (_, __) => connect();
+        private void ConnectDB_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            thread?.Abort();
+        }
+
+        private void ConnectDB_Load(object sender, EventArgs e)
+        {
+            connect();
         }
 
         Thread thread;
@@ -190,6 +123,17 @@ namespace Dandaan.Forms
             });
 
             thread.Start();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            button1.Enabled = false;
+            connect();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }
