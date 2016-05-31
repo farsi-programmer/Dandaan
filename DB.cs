@@ -508,6 +508,7 @@ where table_name=N'{tableName}'") > 0;
                         + "\r\n" + message + "\r\n\r\n");
                 }
                 catch { }
+                //catch (Exception ex) { MessageBox.Show(ex.ToString()); }
                 finally
                 {
                     mutex?.ReleaseMutex();

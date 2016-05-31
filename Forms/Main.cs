@@ -101,64 +101,6 @@ namespace Dandaan.Forms
             showForm(ref log);
         }
 
-        class About : Form
-        {
-            public About()
-            {
-                Text = "درباره";
-
-                int y = 20, z = 20;
-
-                using (var g = CreateGraphics())
-                {
-                    Action<Label> act = (label) =>
-                    {
-                        label.Size = g.MeasureString(label.Text, Font).ToSize();
-
-                        label.Location = new Point(z, y);
-
-                        Controls.Add(label);
-
-                        y += label.Size.Height + 20;
-                    };
-
-                    //
-
-                    var label1 = new Label() { Text = "نرم افزار مدیریت دندانپزشکی متن باز" };
-                    act(label1);
-
-                    //
-
-                    var linkLabel1 = new LinkLabel() { Text = "http://offtopic.blog.ir/", TabStop = true };
-                    act(linkLabel1);
-                    linkLabel1.LinkClicked += (_, __) => Process.Start(linkLabel1.Text);
-
-                    //
-
-                    var linkLabel2 = new LinkLabel()
-                    {
-                        Text = "https://github.com/farsi-programmer/Dandaan",
-                        TabStop = true
-                    };
-                    act(linkLabel2);
-                    linkLabel2.LinkClicked += (_, __) => Process.Start(linkLabel2.Text);
-
-                    //
-
-                    var w = 0;
-                    foreach (Control item in Controls) if (item.Size.Width > w) w = item.Size.Width;
-
-                    foreach (Control item in Controls)
-                        if (w > item.Size.Width)
-                            item.Location = new Point(item.Location.X + (w - item.Size.Width) / 2, item.Location.Y);
-
-                    //
-
-                    ClientSize = new Size(w + z, y + 5);
-                }
-            }
-        }
-
         About about = null;
 
         private void دربارهToolStripMenuItem_Click(object sender, EventArgs e)

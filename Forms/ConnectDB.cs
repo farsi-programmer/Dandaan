@@ -12,24 +12,102 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class ConnectDB : Form
+    class _ConnectDB : ConnectDB { }
+
+    class ConnectDB : Form
     {
+        TextBox textBox1, textBox2;
+        Button button1;
+
         public ConnectDB()
         {
-            InitializeComponent();
+            //MessageBox.Show((LicenseManager.UsageMode == LicenseUsageMode.Designtime).ToString());
+
+            Text = "اتصال به دیتابیس";
+
+            ClientSize = new Size((int)(ClientSize.Width / 1.2), (int)(ClientSize.Height / 1.2));
+
+            //
+
+            int y = 8, z = 8, x = 8;
+
+            textBox1 = new TextBox()
+            {
+                Multiline = true,
+                ReadOnly = true,
+                RightToLeft = RightToLeft.Yes,
+                ScrollBars = ScrollBars.Both,
+                Location = new Point(x, y),
+                ClientSize = new Size(Width - (2 * x), 100),
+            };
+
+            y += textBox1.Size.Height + z;
+
+            Controls.Add(textBox1);
+
+            //
+
+            textBox2 = new TextBox()
+            {
+                Multiline = true,
+                ReadOnly = true,
+                ScrollBars = ScrollBars.Both,
+                Size = new Size(Width - 20, 150),
+                Location = new Point(x, y),
+            };
+
+            y += textBox2.Size.Height + z;
+
+            Controls.Add(textBox2);
+
+            //
+
+            button1 = new Button()
+            {
+                Enabled = false,
+                Location = new Point(457, 458),
+                Size = new Size(106, 44),
+                Text = "تلاش مجدد",
+                UseVisualStyleBackColor = true,
+            };
+
+            button1.Click += (_, __) =>
+            {
+                button1.Enabled = false;
+                connect();
+            };
+
+            Controls.Add(button1);
+
+            //
+
+            var button2 = new Button()
+            {
+                Location = new Point(569, 459),
+                Size = new Size(106, 42),
+                Text = "انصراف",
+                UseVisualStyleBackColor = true,
+            };
+
+            button2.Click += (_, __) => Close();
+
+            Controls.Add(button2);
+
+            //
 
             CancelButton = button2;
+
+            FormClosing += (_, __) => thread?.Abort();
+
+            Load += (_, __) => connect();
         }
 
-        Thread threadDB;
-
-        private void FormDB_Load(object sender, EventArgs e)
-        {
-            connect();
-        }
+        Thread thread;
 
         private void connect()
         {
+            //MessageBox.Show(DesignMode.ToString());
+
             Program.ReadLocalSettings();
 
             // i want something responsive, in case it takes
@@ -41,7 +119,7 @@ namespace Dandaan.Forms
             // or when we can speed up a task by using multiple threads
             // (splitting it between multiple threads)
 
-            threadDB = new Thread(() =>
+            thread = new Thread(() =>
             {
                 int tries = 0;
                 go:
@@ -100,7 +178,9 @@ namespace Dandaan.Forms
                             {
                                 textBox1.AppendText("خطا در برقراری ارتباط با دیتابیس!\r\n");
                                 textBox2.AppendText(ex + "\r\n\r\n");
+                                //MessageBox.Show(ex.ToString());
                                 button1.Enabled = true;
+                                DB.Log(ex.ToString());
                             }
                             catch { }
                         }));
@@ -109,23 +189,7 @@ namespace Dandaan.Forms
                 }
             });
 
-            threadDB.Start();
-        }
-
-        private void FormDB_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            threadDB?.Abort();
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            button1.Enabled = false;
-            connect();
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            Close();
+            thread.Start();
         }
     }
 }
