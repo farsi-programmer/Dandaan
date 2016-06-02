@@ -14,6 +14,11 @@ namespace Dandaan.UserControls
     {
         public Func<IEnumerable<ListViewItem>> ItemsFunc = () => new ListViewItem[] { };
 
+        public Action ColumnsAct;
+
+        const string NoRecords = "رکوردی وجود ندارد.";
+        const string Blank = "";
+
         public ListViewBrowser()
         {
             InitializeComponent();
@@ -36,16 +41,25 @@ namespace Dandaan.UserControls
                         if (items == null || items.Length == 0)
                         {
                             listView1.Columns.Clear();
-                            listView1.Columns.Add("");
+                            listView1.Columns.Add(Blank);
 
                             listView1.Items.Clear();
-                            listView1.Items.Add("رکوردی وجود ندارد.");
+                            listView1.Items.Add(NoRecords);
 
                             listView1.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
                         }
                         else
                         {
-                            if (listView1.Items.Count == 0) listView1.Items.AddRange(items);
+                            if (listView1.Items.Count == 0 ||
+                            (listView1.Items.Count == 1 && listView1.Columns.Count == 1 &&
+                            listView1.Columns[0].Text == Blank && listView1.Items[0].Text == NoRecords))
+                            {
+                                listView1.Columns.Clear();
+                                listView1.Items.Clear();
+
+                                ColumnsAct();
+                                listView1.Items.AddRange(items);
+                            }
                             else
                             {
                                 for (int i = 0; i < listView1.Items.Count; i++)
@@ -62,7 +76,12 @@ namespace Dandaan.UserControls
 
                                                 listView1.Items[i] = items[i];
                                                 break;
+
+                                                //listView1.Items[i].SubItems[j] = items[i].SubItems[j];
                                             }
+
+                                        if (listView1.Items[i].BackColor != items[i].BackColor)
+                                            listView1.Items[i].BackColor = items[i].BackColor;
                                     }
                                     else
                                     {

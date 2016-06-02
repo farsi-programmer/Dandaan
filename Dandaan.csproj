@@ -98,11 +98,23 @@
     <Compile Include="Forms\About.Designer.cs">
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Browser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Browser.Designer.cs">
+      <DependentUpon>Browser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ConnectDB.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\ConnectDB.Designer.cs">
       <DependentUpon>ConnectDB.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Editor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Editor.Designer.cs">
+      <DependentUpon>Editor.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ListViewBrowser.cs">
       <SubType>Form</SubType>
@@ -206,7 +218,7 @@
     <Compile Include="Reflection.cs" />
     <Compile Include="Serializer.cs" />
     <Compile Include="SQL.cs" />
-    <Compile Include="Tables\DandaanAttribute.cs" />
+    <Compile Include="DandaanAttribute.cs" />
     <Compile Include="Tables\Patient.cs" />
     <Compile Include="Tables\Setting.cs" />
     <Compile Include="Tables\Table.cs" />
@@ -217,6 +229,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ConnectDB.resx">
       <DependentUpon>ConnectDB.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Editor.resx">
+      <DependentUpon>Editor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ListViewBrowser.resx">
       <DependentUpon>ListViewBrowser.cs</DependentUpon>

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace Dandaan.Tables
 {
     [Table(Name = nameof(Patient))]
-    [Dandaan(Label = "بیماران")]
+    [Dandaan(Label = "بیماران", EnableAdd = true, EnableDelete = true, EnableEdit = true, EnableSearch = true)]
     public class Patient
     {
         [Column]
@@ -22,27 +22,26 @@ namespace Dandaan.Tables
         public int PatNum { get; set; } // i don't want to make SSN mandatory, so this is the primary key
 
         [Column]
-        [Dandaan(Sql = "[nvarchar](100) NOT NULL",
-            Label = "نام خانوادگی")]
+        [Dandaan(Sql = "[nvarchar](100) NOT NULL", Label = "نام خانوادگی")]
         /// <summary>Last name.</summary>
         public string LName { get; set; }
 
         [Column]
-        [Dandaan(Sql = "[nvarchar](100) NOT NULL CONSTRAINT [DF_" + nameof(Patient) + "_" + nameof(FName) + "] DEFAULT (N'')",
+        [Dandaan(Sql = "[nvarchar](100) NOT NULL",// we don't use defaults, it makes things complicated  CONSTRAINT [DF_" + nameof(Patient) + "_" + nameof(FName) + "] DEFAULT (N'')",
             Label = "نام")]
         /// <summary>First name.</summary>
-        public string FName { get; set; }
+        public string FName { get; set; } = "";
 
         [Column]
-        [Dandaan(Sql = "[nvarchar](100) NOT NULL CONSTRAINT [DF_" + nameof(Patient) + "_" + nameof(HmPhone) + "] DEFAULT (N'')",
+        [Dandaan(Sql = "[nvarchar](100) NOT NULL",// CONSTRAINT [DF_" + nameof(Patient) + "_" + nameof(HmPhone) + "] DEFAULT (N'')",
             Label = "تلفن منزل")]
         /// <summary>Home phone. Includes any punctuation</summary>
-        public string HmPhone { get; set; }
+        public string HmPhone { get; set; } = "";
 
         [Column]
-        [Dandaan(Sql = "[nvarchar](100) NOT NULL CONSTRAINT [DF_" + nameof(Patient) + "_" + nameof(WirelessPhone) + "] DEFAULT (N'')",
+        [Dandaan(Sql = "[nvarchar](100) NOT NULL",// CONSTRAINT [DF_" + nameof(Patient) + "_" + nameof(WirelessPhone) + "] DEFAULT (N'')",
             Label = "شماره موبایل")]
         /// <summary>.</summary>
-        public string WirelessPhone { get; set; }
+        public string WirelessPhone { get; set; } = "";
     }
 }

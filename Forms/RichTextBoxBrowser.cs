@@ -11,24 +11,20 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public partial class RichTextBoxBrowser<T> : Form where T : class
+    public partial class RichTextBoxBrowser<T> : Browser<T> where T : class
     {
         public RichTextBoxBrowser()
         {
             InitializeComponent();
 
-            Text = Reflection.GetDandaanAttribute(typeof(T)).Label;
-
-            richTextBoxBrowser1.browserMenu1.CountFunc = SQL.Count<T>;
-
-            var ps = typeof(T).GetProperties();
+            Init(richTextBoxBrowser1.browserMenu1);
 
             richTextBoxBrowser1.LinesFunc = () =>
             SQL.Select<T>(richTextBoxBrowser1.browserMenu1.Page, richTextBoxBrowser1.browserMenu1.PageSize)
             .Select((row) =>
             {
                 var sb = new StringBuilder();
-                foreach (var item in ps)
+                foreach (var item in propertyInfos)
                 {
                     var obj = item.GetValue(row);
                     

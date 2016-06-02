@@ -30,6 +30,7 @@ namespace Dandaan.UserControls
 
         public Func<int> CountFunc = () => 0;
         public Action Act = () => { };
+        public DandaanAttribute DandaanAttribute;
 
         private void buttonRefresh_Click(object sender, EventArgs e)
         {
@@ -60,6 +61,11 @@ namespace Dandaan.UserControls
             else buttonFirst.Enabled = buttonPrevious.Enabled = buttonNext.Enabled = buttonLast.Enabled = false;
 
             buttonRefresh.Enabled = textBox2.Enabled = true;
+
+            buttonAdd.Enabled = DandaanAttribute.EnableAdd;
+            buttonEdit.Enabled = DandaanAttribute.EnableEdit;
+            buttonDelete.Enabled = DandaanAttribute.EnableDelete;
+            buttonSearch.Enabled = DandaanAttribute.EnableSearch;
         }
 
         private void BrowserMenu_Load(object sender, EventArgs e)
@@ -136,7 +142,7 @@ namespace Dandaan.UserControls
             checkBox1.Checked = isChecked;
         }
 
-        public Action AddAct = () => { };
+        public Action AddAct;
 
         private void buttonAdd_Click(object sender, EventArgs e)
         {

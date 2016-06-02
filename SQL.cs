@@ -222,9 +222,9 @@ end;");
             {
                 var desc = Reflection.GetDandaanAttribute(m).Sql;
 
-                if(!Common.IsMatch(desc, @"[\s]+identity[\s]+")
-                    && !Common.IsMatch(desc, @"[\s]+default[\(\s]+"))
+                if (!Common.IsMatch(desc, @"[\s]+identity[\s]+"))
                 {
+                    //!Common.IsMatch(desc, @"[\s]+default[\(\s]+")
                     p1.Add(m.Name);
                     p2.Add(SqlParameter(m.Name, t.GetProperty(m.Name).GetValue(obj), desc));
                 }

@@ -10,16 +10,16 @@ namespace Dandaan
 {
     class Reflection
     {
-        public static Tables.DandaanAttribute GetDandaanAttribute(MemberInfo m)
+        public static DandaanAttribute GetDandaanAttribute(MemberInfo m)
         {
-            var attributes = (Tables.DandaanAttribute[])m.GetCustomAttributes<Tables.DandaanAttribute>();
+            var attributes = (DandaanAttribute[])m.GetCustomAttributes<DandaanAttribute>();
 
             return attributes[0];
         }
 
-        public static Tables.DandaanAttribute GetDandaanAttribute(Type t)
+        public static DandaanAttribute GetDandaanAttribute(Type t)
         {
-            var attributes = (Tables.DandaanAttribute[])t.GetCustomAttributes<Tables.DandaanAttribute>();
+            var attributes = (DandaanAttribute[])t.GetCustomAttributes<DandaanAttribute>();
 
             return attributes[0];
         }

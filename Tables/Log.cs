@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace Dandaan.Tables
 {
     [Table(Name = nameof(Log))]
-    [Dandaan(Label = "لاگها")]
+    [Dandaan(Label = "لاگها", EnableSearch = true)]
     public class Log
     {
         [Column]//(IsPrimaryKey = true, IsDbGenerated = true)]
@@ -22,9 +22,9 @@ namespace Dandaan.Tables
         public int Id { get; set; }
 
         [Column]//(IsDbGenerated = true)]
-        [Dandaan(Sql = "[smalldatetime] NOT NULL CONSTRAINT [DF_" + nameof(Log) + "_" + nameof(DateTime) + "] DEFAULT (getdate())",
+        [Dandaan(Sql = "[smalldatetime] NOT NULL",// we don't use defaults, it makes things complicated CONSTRAINT [DF_" + nameof(Log) + "_" + nameof(DateTime) + "] DEFAULT (getdate())",
             Label = "تاریخ")]
-        public DateTime DateTime { get; set; }
+        public DateTime DateTime { get; set; } = DateTime.Now;
 
         [Column]
         [Dandaan(Sql = "[nvarchar](1000) NOT NULL",

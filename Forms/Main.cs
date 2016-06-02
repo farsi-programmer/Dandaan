@@ -98,14 +98,14 @@ namespace Dandaan.Forms
 
         private void لاگToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            showForm(ref log);
+            Common.showForm(ref log);
         }
 
         About about = null;
 
         private void دربارهToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            showForm(ref about);
+            Common.showForm(ref about);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -144,63 +144,7 @@ namespace Dandaan.Forms
 
         private void button7_Click(object sender, EventArgs e)
         {
-            var f = new Form() { AutoScroll = true };
-
-            var ps = typeof(Tables.Patient).GetProperties();
-
-            int y = 10, x = ClientSize.Width, z = 350, m = 2;
-
-            using (var g = CreateGraphics())
-                foreach (var item in ps)
-                {
-                    var da = Reflection.GetDandaanAttribute(item);
-
-                    if (item.PropertyType == typeof(string))
-                    {
-                        var label = da.Label + ":";
-
-                        var s = g.MeasureString(label, Font).ToSize();
-
-                        var l = new Label()
-                        {
-                            Text = label,
-                            TextAlign = ContentAlignment.TopRight,
-                            //BorderStyle = BorderStyle.FixedSingle,
-                            Margin = new Padding(0),
-                            Padding = new Padding(0),
-                            Size = new Size(s.Width + 5, s.Height),
-                            RightToLeft = RightToLeft.Yes,
-                        };
-
-                        l.Location = new Point(ClientSize.Width - l.Size.Width, y);
-
-                        if (x > l.Location.X) x = l.Location.X;
-
-                        var tb = new TextBox()
-                        {
-                            Width = z,
-                            Margin = new Padding(0),
-                            Padding = new Padding(0),
-                            Location = new Point(x - z - m, y),
-                            RightToLeft = RightToLeft.Yes,
-                        };
-
-                        if (l.Height > tb.Height) tb.Location = new Point(tb.Location.X, tb.Location.Y
-                            + (l.Height - tb.Height) / 2);
-                        else if (tb.Height > l.Height) l.Location = new Point(l.Location.X, l.Location.Y
-                            + (tb.Height - l.Height) / 2);
-
-                        f.Controls.Add(l);
-                        f.Controls.Add(tb);
-                        y += (l.Height > tb.Height ? l.Height : tb.Height) + 8;
-                    }
-                }
-
-            foreach (Control item in f.Controls)
-                if (item is Label) { if (item.Location.X > x) item.Location = new Point(x, item.Location.Y); }
-                else if (item.Location.X > x - z - m) item.Location = new Point(x - z - m, item.Location.Y);
-
-            f.Show();
+            ;
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -212,20 +156,7 @@ namespace Dandaan.Forms
 
         private void button8_Click(object sender, EventArgs e)
         {
-            showForm(ref patients);
-        }
-
-        void showForm<T>(ref T f) where T : Form
-        {
-            if (f == null || f.IsDisposed) f = Activator.CreateInstance<T>();
-
-            if (f.Visible == true)
-            {
-                if (f.WindowState == FormWindowState.Minimized)
-                    f.WindowState = f.lastFormWindowState;
-                else f.Focus();//BringToFront();
-            }
-            else f.Show();//(this); this keeps the form on top, which i don't like
+            Common.showForm(ref patients);
         }
 
         private void button9_Click(object sender, EventArgs e)
