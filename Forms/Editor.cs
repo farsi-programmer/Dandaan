@@ -20,9 +20,12 @@ namespace Dandaan.Forms
             AutoScroll = true;
         }
 
+        public const string _info_ = "_info_";
+
         public Editor(PropertyInfo[] propertyInfos) : this()
         {
             int y = 15, maxX = 0, textBoxWidth = 350, margin = 2, xMargin = 15, tabIndex = 0;
+            Label label;
 
             foreach (var item in propertyInfos)
             {
@@ -44,13 +47,13 @@ namespace Dandaan.Forms
                         TabIndex = tabIndex++,
                     };
 
-                    if (xMargin + textBox.Size.Width + margin > maxX) maxX = xMargin + textBox.Size.Width + margin;
+                    if (xMargin + textBox.Width + margin > maxX) maxX = xMargin + textBox.Width + margin;
 
                     //
 
                     var labelText = da.Label + ":";
 
-                    var label = new Label()
+                    label = new Label()
                     {
                         Text = labelText,
                         TextAlign = ContentAlignment.TopRight,
@@ -58,14 +61,15 @@ namespace Dandaan.Forms
                         Margin = new Padding(0),
                         Padding = new Padding(0),
                         RightToLeft = RightToLeft.Yes,
+                        AutoSize = true,
                     };
 
-                    Size s;
+                    /*Size s;
 
                     using (var g = label.CreateGraphics())
                         s = g.MeasureString(labelText, Font).ToSize();
 
-                    label.Size = new Size(s.Width + 5, s.Height);
+                    label.Size = new Size(s.Width + 5, s.Height);*/
 
                     label.Location = new Point(0, y);
 
@@ -89,17 +93,17 @@ namespace Dandaan.Forms
 
             foreach (Control item in Controls)
                 if (item is Label) item.Location = new Point(maxX, item.Location.Y);
-                else item.Location = new Point(maxX - item.Size.Width - margin, item.Location.Y);
+                else item.Location = new Point(maxX - item.Width - margin, item.Location.Y);
 
             foreach (Control item in Controls)
-                if (item.Size.Width + item.Location.X > maxX) maxX = item.Size.Width + item.Location.X;
+                if (item.Width + item.Location.X > maxX) maxX = item.Width + item.Location.X;
 
             //
 
             y += 5;
 
             var buttonCancel = new Button() { Text = "انصراف", AutoSize = true, TabIndex = tabIndex + 1, };
-            buttonCancel.Location = new Point(maxX - buttonCancel.ClientSize.Width - 5, y);
+            buttonCancel.Location = new Point(maxX - buttonCancel.Width - 5, y);
             buttonCancel.Click += (_, __) => Close();
             Controls.Add(buttonCancel);
             CancelButton = buttonCancel;
@@ -107,31 +111,62 @@ namespace Dandaan.Forms
             //
 
             var buttonAccept = new Button() { Text = "اضافه", AutoSize = true, TabIndex = tabIndex++, };
-            buttonAccept.Location = new Point(buttonCancel.Location.X - buttonAccept.ClientSize.Width - 8, y);
+            buttonAccept.Location = new Point(buttonCancel.Location.X - buttonAccept.Width - 8, y);
             buttonAccept.Click += (_, __) =>
             {
                 var obj = Activator.CreateInstance<T>();
+                //bool blank = true;
+
                 foreach (var item in propertyInfos)
                 {
                     var p = Controls[item.Name].GetType().GetProperty(nameof(TextBox.ReadOnly));
+
                     if (p != null && !(bool)p.GetValue(Controls[item.Name]))
+                    {
                         item.SetValue(obj, Controls[item.Name].Text);
+                        //if (Controls[item.Name].Text != "") blank = false;
+                    }
                 }
-                SQL.Insert(obj);
+
+                //if (blank) MessageBox.Show("لطفا ");
+                //else
+                {
+                    SQL.Insert(obj);
+
+                    Controls[_info_].ForeColor = Controls[_info_].ForeColor == Color.Green ? Color.SlateBlue : Color.Green;
+                    Controls[_info_].Text = "اضافه شد";
+
+                    foreach (Control item in Controls) if (item is TextBox) item.Text = "";
+                }
             };
-
-            //
-
-            tabIndex++;
 
             Controls.Add(buttonAccept);
             AcceptButton = buttonAccept;
 
-            y += buttonAccept.ClientSize.Height;
+            tabIndex++;
 
             //
 
-            ClientSize = new Size(maxX + 5, y + 12);
+            label = new Label()
+            {
+                TextAlign = ContentAlignment.TopRight,
+                Margin = new Padding(0),
+                Padding = new Padding(0),
+                RightToLeft = RightToLeft.Yes,
+                AutoSize = true,
+                Name = _info_,
+                Location = new Point(10, y + 4),
+            };
+
+            Controls.Add(label);
+
+            //
+
+            y += (buttonAccept.Height > label.Height ? buttonAccept.Height : label.Height);
+
+            //
+
+            ClientSize = new Size(maxX + 8, y + 12);
         }
 
         private void Editor_Load(object sender, EventArgs e)

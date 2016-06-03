@@ -21,19 +21,24 @@ namespace Dandaan.Forms
 
             listViewBrowser1.ColumnsAct = () =>
             {
-                using (var g = CreateGraphics())
+                //using (var g = CreateGraphics())
                 {
                     int sum = 0;
-                    SizeF size;
+                    //SizeF size;
                     foreach (var item in propertyInfos)
                     {
                         var label = Reflection.GetDandaanAttribute(item).Label;
 
-                        size = g.MeasureString(label, Font);
+                        //size = g.MeasureString(label, Font);
 
-                        listViewBrowser1.listView1.Columns.Add(label).Width = (int)size.Width + 10;
+                        //listViewBrowser1.listView1.Columns.Add(label).Width = (int)size.Width + 10;
+                        var c = new ColumnHeader() { Text = label };
+                        c.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
+                        listViewBrowser1.listView1.Columns.Add(c);
 
-                        sum += (int)size.Width + 10;
+                        //sum += (int)size.Width + 10;
+                        c.Width += 30;
+                        sum += c.Width + 5;
                     }
 
                     if (listViewBrowser1.listView1.Width > sum && (listViewBrowser1.listView1.Width - sum) / propertyInfos.Length > 1)
