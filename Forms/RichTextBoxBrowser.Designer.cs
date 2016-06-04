@@ -28,23 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.richTextBoxBrowser1 = new Dandaan.UserControls.RichTextBoxBrowser();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
-            // richTextBoxBrowser1
+            // richTextBox1
             // 
-            this.richTextBoxBrowser1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(178)));
-            this.richTextBoxBrowser1.Location = new System.Drawing.Point(0, 0);
-            this.richTextBoxBrowser1.Name = "richTextBoxBrowser1";
-            this.richTextBoxBrowser1.Size = new System.Drawing.Size(784, 562);
-            this.richTextBoxBrowser1.TabIndex = 0;
+            this.richTextBox1.Location = new System.Drawing.Point(15, 15);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.ReadOnly = true;
+            this.richTextBox1.Size = new System.Drawing.Size(755, 488);
+            this.richTextBox1.TabIndex = 1;
+            this.richTextBox1.Text = "";
             // 
             // RichTextBoxBrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 562);
-            this.Controls.Add(this.richTextBoxBrowser1);
+            this.Controls.Add(this.richTextBox1);
             this.Name = "RichTextBoxBrowser";
             this.Text = "RichTextBoxBrowser";
             this.ResumeLayout(false);
@@ -53,6 +54,6 @@
 
         #endregion
 
-        private UserControls.RichTextBoxBrowser richTextBoxBrowser1;
+        public System.Windows.Forms.RichTextBox richTextBox1;
     }
 }

@@ -105,7 +105,7 @@ namespace Dandaan.Forms
 
                     try
                     {
-                        Invoke(new Action(() =>
+                        Invoke(() =>
                         {
                             try // this is in the main thread
                             {
@@ -116,7 +116,7 @@ namespace Dandaan.Forms
                                 DB.Log(ex.ToString());
                             }
                             catch { }
-                        }));
+                        });
                     }
                     catch { } // in case the application is being closed and the form is disposed
                 }

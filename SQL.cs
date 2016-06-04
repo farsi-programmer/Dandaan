@@ -255,7 +255,13 @@ end;");
             {
                 p = new SqlParameter($"@{name}", SqlDbType.TinyInt) { Value = value };
             }
-            //else if
+            else
+            {
+                var t = typeof(SqlDbType);
+                foreach (var item in t.GetEnumNames())
+                    if (desc.Contains("[" + item.ToLower() + "]"))
+                        p = new SqlParameter($"@{name}", Enum.Parse(t, item)) { Value = value };
+            }
 
             return p;
         }

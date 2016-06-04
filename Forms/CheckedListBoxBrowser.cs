@@ -1,23 +1,22 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Dandaan.UserControls
+namespace Dandaan.Forms
 {
-    public partial class TextBoxBrowser : TextBoxBrowserBase
+    public partial class CheckedListBoxBrowser<T> : ListBoxBrowserBase<T> where T : class
     {
-        public TextBoxBrowser()
+        public CheckedListBoxBrowser()
         {
             InitializeComponent();
 
-            browserMenu1.Act = Act(textBox1);
+            ListBox = checkedListBox1;
         }
     }
 }

@@ -1,13 +1,13 @@
-﻿namespace Dandaan.UserControls
+﻿namespace Dandaan.Forms
 {
-    partial class CheckedListBoxBrowser
+    partial class CheckedListBoxBrowser<T>
     {
-        /// <summary> 
+        /// <summary>
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
+        /// <summary>
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -20,14 +20,15 @@
             base.Dispose(disposing);
         }
 
-        #region Component Designer generated code
+        #region Windows Form Designer generated code
 
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
+        /// <summary>
+        /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
             this.SuspendLayout();
             // 
@@ -45,9 +46,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.checkedListBox1);
+            this.Text = "CheckedListBoxBrowser";
             this.Name = "CheckedListBoxBrowser";
-            this.Controls.SetChildIndex(this.browserMenu1, 0);
-            this.Controls.SetChildIndex(this.checkedListBox1, 0);
             this.ResumeLayout(false);
 
         }

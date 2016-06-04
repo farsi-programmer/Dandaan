@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Dandaan.UserControls
+namespace Dandaan.Forms
 {
-    public partial class ListBoxBrowser : ListBoxBrowserBase
+    public partial class TextBoxBrowser<T> : TextBoxBrowserBase<T> where T : class
     {
-        public ListBoxBrowser()
+        public TextBoxBrowser()
         {
             InitializeComponent();
 
-            browserMenu1.Act = Act(listBox1);
+            TextBox = textBox1;
         }
     }
 }

@@ -98,14 +98,14 @@ namespace Dandaan.Forms
 
         private void لاگToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Common.showForm(ref log);
+            ShowForm(ref log);
         }
 
         About about = null;
 
         private void دربارهToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Common.showForm(ref about);
+            ShowForm(ref about);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -156,12 +156,23 @@ namespace Dandaan.Forms
 
         private void button8_Click(object sender, EventArgs e)
         {
-            Common.showForm(ref patients);
+            ShowForm(ref patients);
+        }
+
+        class ff : Form
+        {
+            public ff() { FormClosing += Ff_FormClosing; }
+
+            private void Ff_FormClosing(object sender, FormClosingEventArgs e)
+            {
+                MessageBox.Show("ff");
+            }
         }
 
         private void button9_Click(object sender, EventArgs e)
         {
-            throw new Exception("");
+            var f = new ff();
+            f.Show();
         }
 
         private void button10_Click(object sender, EventArgs e)

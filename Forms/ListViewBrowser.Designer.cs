@@ -28,23 +28,28 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.listViewBrowser1 = new Dandaan.UserControls.ListViewBrowser();
+            this.listView1 = new System.Windows.Forms.ListView();
             this.SuspendLayout();
             // 
-            // listViewBrowser1
+            // listView1
             // 
-            this.listViewBrowser1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(178)));
-            this.listViewBrowser1.Location = new System.Drawing.Point(0, 0);
-            this.listViewBrowser1.Name = "listViewBrowser1";
-            this.listViewBrowser1.Size = new System.Drawing.Size(784, 562);
-            this.listViewBrowser1.TabIndex = 0;
+            this.listView1.FullRowSelect = true;
+            this.listView1.Location = new System.Drawing.Point(16, 15);
+            this.listView1.MultiSelect = false;
+            this.listView1.Name = "listView1";
+            this.listView1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.listView1.RightToLeftLayout = true;
+            this.listView1.Size = new System.Drawing.Size(753, 488);
+            this.listView1.TabIndex = 1;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.View = System.Windows.Forms.View.Details;
             // 
             // ListViewBrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 562);
-            this.Controls.Add(this.listViewBrowser1);
+            this.Controls.Add(this.listView1);
             this.Name = "ListViewBrowser";
             this.Text = "ListViewBrowser";
             this.ResumeLayout(false);
@@ -53,6 +58,6 @@
 
         #endregion
 
-        private UserControls.ListViewBrowser listViewBrowser1;
+        public System.Windows.Forms.ListView listView1;
     }
 }

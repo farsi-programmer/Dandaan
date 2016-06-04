@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +12,12 @@ namespace Dandaan
 {
     class Common
     {
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        static extern bool SetCaretPos(int X, int Y);
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        static extern bool GetCaretPos(out Point lpPoint);
+
         public static Match Match(string input, string pattern)
         {
             return Regex.Match(input, pattern, RegexOptions.IgnoreCase);
@@ -33,19 +40,6 @@ namespace Dandaan
                 }
                 //catch (ThreadAbortException) { }
             });
-        }
-
-        public static void showForm<T>(ref T f) where T : Forms.Form
-        {
-            if (f == null || f.IsDisposed) f = Activator.CreateInstance<T>();
-
-            if (f.Visible == true)
-            {
-                if (f.WindowState == FormWindowState.Minimized)
-                    f.WindowState = f.lastFormWindowState;
-                else f.Select();//Focus();//BringToFront();
-            }
-            else f.Show();//(this); this keeps the form on top, which i don't like
         }
     }
 }

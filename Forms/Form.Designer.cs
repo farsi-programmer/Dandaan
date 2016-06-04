@@ -38,6 +38,7 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(178)));
             this.Name = "Form";
             this.Text = "مدیریت دندانپزشکی";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_FormClosing);
             this.Resize += new System.EventHandler(this.Form_Resize);
             this.ResumeLayout(false);
 

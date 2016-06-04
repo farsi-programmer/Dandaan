@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Dandaan.UserControls
+namespace Dandaan.Forms
 {
-    public partial class RichTextBoxBrowser : TextBoxBrowserBase
+    public partial class ListBoxBrowser<T> : ListBoxBrowserBase<T> where T : class
     {
-        public RichTextBoxBrowser()
+        public ListBoxBrowser()
         {
             InitializeComponent();
 
-            browserMenu1.Act = Act(richTextBox1);
+            ListBox = listBox1;
         }
     }
 }
