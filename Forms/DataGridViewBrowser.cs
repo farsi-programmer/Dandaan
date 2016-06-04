@@ -19,7 +19,7 @@ namespace Dandaan.Forms
             InitializeComponent();
         }
 
-        protected override void Act()
+        protected override void LoadAct()
         {
             // testing
             CountFunc = () => 1000;
@@ -75,6 +75,11 @@ namespace Dandaan.Forms
             });
 
             thread.Start();
+        }
+
+        protected override void DeleteAct()
+        {
+            ;
         }
     }
 }

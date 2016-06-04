@@ -39,7 +39,8 @@ namespace Dandaan.Forms
         protected System.Threading.Thread thread = null;
         protected int Page = 1, PageSize = 100;
         protected Func<int> CountFunc = SQL.Count<T>;
-        protected abstract void Act();
+        protected abstract void LoadAct();
+        protected abstract void DeleteAct();
 
         private void buttonRefresh_Click(object sender, EventArgs e)
         {
@@ -48,13 +49,17 @@ namespace Dandaan.Forms
 
         private void loadData(int page)
         {
+            go:
             disable();
+
+            count = CountFunc(); // this can be wrong under high load
+            if (label1.Text != count.ToString()) label1.Text = count.ToString();
+            if (page > pages) { page = pages; goto go; }
+
             Page = page;
             if (textBox2.Text != Page.ToString()) textBox2.Text = Page.ToString();
 
-            Act();
-            count = CountFunc(); // this can be wrong under high load
-            if (label1.Text != count.ToString()) label1.Text = count.ToString();
+            LoadAct();
         }
 
         protected void Enable()
@@ -81,7 +86,7 @@ namespace Dandaan.Forms
         {
             Text = DandaanAttribute.Label;
 
-            buttonRefresh_Click(null, null);
+            buttonRefresh.PerformClick();
 
             timer = new Timer() { Interval = 3000, Enabled = true };
             timer.Tick += Timer_Tick;
@@ -89,7 +94,7 @@ namespace Dandaan.Forms
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if (checkBox1.Checked) buttonRefresh_Click(null, null);
+            if (checkBox1.Checked) buttonRefresh.PerformClick();
         }
 
         private void buttonFirst_Click(object sender, EventArgs e)
@@ -139,18 +144,15 @@ namespace Dandaan.Forms
             = buttonPrevious.Enabled = textBox2.Enabled = buttonDelete.Enabled = buttonEdit.Enabled = false;
         }
 
-        public Action DeleteAct = () => { };
-
         private void buttonDelete_Click(object sender, EventArgs e)
         {
             bool isChecked = checkBox1.Checked;
             if (isChecked) checkBox1.Checked = false;
 
-            if (MessageBox.Show("آیا مطمئن هستید که میخواهید این رکورد را حذف کنید؟",
-                Program.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Stop, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
-                DeleteAct();
+            DeleteAct();
 
             checkBox1.Checked = isChecked;
+            buttonRefresh.PerformClick();
         }
 
         private void buttonAdd_Click(object sender, EventArgs e)
@@ -161,7 +163,7 @@ namespace Dandaan.Forms
                 editor.Text = DandaanAttribute.Label;
             }
 
-            ShowForm(ref editor);
+            ShowForm(ref editor, false);
         }
 
         int pages => (count / PageSize) + (count % PageSize > 0 ? 1 : 0);

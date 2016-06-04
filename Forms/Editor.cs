@@ -47,6 +47,9 @@ namespace Dandaan.Forms
                         TabIndex = tabIndex++,
                     };
 
+                    var color = textBox.BackColor;
+                    textBox.TextChanged += (_, __) => { textBox.BackColor = textBox.Text != "" ? Color.MistyRose : color;  };
+
                     if (xMargin + textBox.Width + margin > maxX) maxX = xMargin + textBox.Width + margin;
 
                     //

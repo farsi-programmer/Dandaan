@@ -238,6 +238,19 @@ end;");
             return 0;
         }
 
+        public static void Delete<T>(T obj) where T : class
+        {
+            using (var context = DB.DataContext)
+            {
+                var pi = context.GetType().GetField(typeof(T).Name + "s");
+                var table = ((System.Data.Linq.Table<T>)(pi.GetValue(context)));
+
+                table.Attach(obj);
+                table.DeleteOnSubmit(obj);
+                context.SubmitChanges();
+            }
+        }
+
         public static SqlParameter SqlParameter(string name, object value, string desc/*description attribute*/)
         {
             SqlParameter p = null;

@@ -63,6 +63,9 @@ namespace Dandaan.Forms
             s.MainFormWindowState = WindowState;
             Tables.Setting.Update(s);
 #endif
+
+            for (int i = 0; i < Application.OpenForms.Count; i++)
+                if (Application.OpenForms[i] != this) Application.OpenForms[i].Close();
         }
 
         private void Main_SizeChanged(object sender, EventArgs e)

@@ -36,6 +36,7 @@ namespace Dandaan
         static void Main()
         {
             AppDomain.CurrentDomain.SetData("DataDirectory", DataDirectory);
+            Application.ThreadExit += Application_ThreadExit;
             Application.ApplicationExit += Application_ApplicationExit;
 
             Application.ThreadException += Application_ThreadException;
@@ -44,6 +45,11 @@ namespace Dandaan
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Forms.ConnectDB());
+        }
+
+        private static void Application_ThreadExit(object sender, EventArgs e)
+        {
+            ;
         }
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

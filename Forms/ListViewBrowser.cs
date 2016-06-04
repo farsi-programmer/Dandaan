@@ -69,7 +69,7 @@ namespace Dandaan.Forms
             };
         }
 
-        protected override void Act()
+        protected override void LoadAct()
         {
             // testing
             //browserMenu1.CountFunc = () => 1000;
@@ -151,6 +151,34 @@ namespace Dandaan.Forms
             });
 
             thread.Start();
+        }
+
+        protected override void DeleteAct()
+        {
+            if (listView1.SelectedIndices.Count < 1) MessageBox.Show("لطفا یک رکورد را برای حذف کردن انتخاب کنید", Program.Title);
+            else if (MessageBox.Show("آیا مطمئن هستید که میخواهید این رکورد را حذف کنید؟"
+                 + "\r\n" + listView1.SelectedItems[0].Text,
+                Program.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Stop, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+            {
+                var obj = Activator.CreateInstance<T>();
+
+                for (int i = 0; i < PropertyInfos.Length; i++)
+                {
+                    var value = listView1.SelectedItems[0].SubItems[i].Text;
+                    var p = PropertyInfos[i];
+                    var t = p.PropertyType;
+
+                    if (t == typeof(string))
+                        p.SetValue(obj, value);
+                    else if (t.IsEnum)
+                        p.SetValue(obj, Enum.Parse(t, value));
+                    else if (t.IsValueType)
+                        p.SetValue(obj, t.GetMethod(nameof(int.Parse), new Type[] { typeof(string) })
+                            .Invoke(null, new object[] { value }));
+                }
+
+                SQL.Delete<T>(obj);
+            }
         }
     }
 }

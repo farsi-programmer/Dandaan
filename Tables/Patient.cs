@@ -15,7 +15,7 @@ namespace Dandaan.Tables
     [Dandaan(Label = "بیماران", EnableAdd = true, EnableDelete = true, EnableEdit = true, EnableSearch = true)]
     public class Patient
     {
-        [Column]
+        [Column(IsPrimaryKey = true)]
         [Dandaan(Sql = "[int] IDENTITY NOT NULL CONSTRAINT [PK_" + nameof(Patient) + "] PRIMARY KEY CLUSTERED",
             Label = "شماره بیمار")]
         /// <summary>PatNum.</summary>

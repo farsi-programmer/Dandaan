@@ -36,10 +36,10 @@ CONSTRAINT [FK_" + nameof(Setting) + "_" + nameof(User) + @"] FOREIGN KEY REFERE
             return SelectOrInsertDefault(userId);
         }
 
-        public static void MigrateTo1()
+        /*public static void MigrateTo1()
         {
             ;
-        }
+        }*/
 
         private static void Insert(Setting setting)
         {

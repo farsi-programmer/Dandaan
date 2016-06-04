@@ -49,7 +49,7 @@ namespace Dandaan.Forms
             //sb.Append($"{log.Id}\t{log.DateTime}\t{Regex.Replace(str, "\r\n", @"\r\n")}\r\n");
         }
 
-        protected override void Act()
+        protected override void LoadAct()
         {
 #if using_ef || using_sqlite
             DB.Run((context) =>
@@ -117,6 +117,11 @@ namespace Dandaan.Forms
 
             thread.Start();
 #endif
+        }
+
+        protected override void DeleteAct()
+        {
+            ;
         }
 
         static void scroll(TextBoxBase textBox, string beforeSelection)

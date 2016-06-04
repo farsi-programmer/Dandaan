@@ -44,7 +44,7 @@ namespace Dandaan.Forms
             });
         }
 
-        protected override void Act()
+        protected override void LoadAct()
         {
             thread = Common.Thread(() =>
             {
@@ -106,6 +106,11 @@ namespace Dandaan.Forms
             });
 
             thread.Start();
+        }
+
+        protected override void DeleteAct()
+        {
+            ;
         }
     }
 }

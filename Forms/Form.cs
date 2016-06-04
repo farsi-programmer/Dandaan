@@ -33,11 +33,11 @@ namespace Dandaan.Forms
 
         List<Form> openForms = new List<Form>();
 
-        protected void ShowForm<T>(ref T f) where T : Forms.Form
+        protected void ShowForm<T>(ref T f, bool shouldClose = true) where T : Form, new()
         {
-            if (f == null || f.IsDisposed) f = Activator.CreateInstance<T>();
+            if (f == null || f.IsDisposed) f = new T();//Activator.CreateInstance<T>();
 
-            if (!openForms.Contains(f)) openForms.Add(f);
+            if (shouldClose && !openForms.Contains(f)) openForms.Add(f);
 
             if (f.Visible == true)
             {
