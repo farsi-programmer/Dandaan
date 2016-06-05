@@ -48,7 +48,21 @@ namespace Dandaan.Forms
                     };
 
                     var color = textBox.BackColor;
-                    textBox.TextChanged += (_, __) => { textBox.BackColor = textBox.Text != "" ? Color.MistyRose : color;  };
+                    textBox.TextChanged += (_, __) =>
+                    {
+                        if (textBox.Text != "")
+                        {
+                            textBox.BackColor = Color.LightYellow;//LightGoldenrodYellow;//MistyRose;
+                            (AcceptButton as Button).Enabled = true;
+                        }
+                        else
+                        {
+                            textBox.BackColor = color;
+                            (AcceptButton as Button).Enabled = false;
+                            foreach (Control A in Controls)
+                                if (A is TextBox && A.Text != "") (AcceptButton as Button).Enabled = true;
+                        }
+                    };
 
                     if (xMargin + textBox.Width + margin > maxX) maxX = xMargin + textBox.Width + margin;
 
@@ -113,7 +127,7 @@ namespace Dandaan.Forms
 
             //
 
-            var buttonAccept = new Button() { Text = "اضافه", AutoSize = true, TabIndex = tabIndex++, };
+            var buttonAccept = new Button() { Text = "اضافه", AutoSize = true, TabIndex = tabIndex++, Enabled = false };
             buttonAccept.Location = new Point(buttonCancel.Location.X - buttonAccept.Width - 8, y);
             buttonAccept.Click += (_, __) =>
             {

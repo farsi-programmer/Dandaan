@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    public abstract partial class Browser<T> : Form where T : class
+    public partial class Browser<T> : Form where T : class
     {
         public Browser()
         {
@@ -27,7 +27,7 @@ namespace Dandaan.Forms
         private void Browser_FormClosing(object sender, FormClosingEventArgs e)
         {
             timer?.Dispose();
-            thread?.Abort();
+            Thread?.Abort();
         }
 
         Editor<T> editor = null;
@@ -36,11 +36,12 @@ namespace Dandaan.Forms
 
         protected DandaanAttribute DandaanAttribute;
         protected PropertyInfo[] PropertyInfos;
-        protected System.Threading.Thread thread = null;
+        protected System.Threading.Thread Thread;
         protected int Page = 1, PageSize = 100;
         protected Func<int> CountFunc = SQL.Count<T>;
-        protected abstract void LoadAct();
-        protected abstract void DeleteAct();
+        protected Action LoadAct;
+        protected Func<bool> DeleteFunc;
+        protected Control View;
 
         private void buttonRefresh_Click(object sender, EventArgs e)
         {
@@ -84,6 +85,8 @@ namespace Dandaan.Forms
 
         private void Browser_Load(object sender, EventArgs e)
         {
+            View.KeyDown += View_KeyDown;
+
             Text = DandaanAttribute.Label;
 
             buttonRefresh.PerformClick();
@@ -149,10 +152,10 @@ namespace Dandaan.Forms
             bool isChecked = checkBox1.Checked;
             if (isChecked) checkBox1.Checked = false;
 
-            DeleteAct();
+            var success = DeleteFunc();
 
             checkBox1.Checked = isChecked;
-            buttonRefresh.PerformClick();
+            if (success) buttonRefresh.PerformClick();
         }
 
         private void buttonAdd_Click(object sender, EventArgs e)
@@ -166,6 +169,17 @@ namespace Dandaan.Forms
             ShowForm(ref editor, false);
         }
 
+        private void buttonEdit_Click(object sender, EventArgs e)
+        {
+            ;
+        }
+
         int pages => (count / PageSize) + (count % PageSize > 0 ? 1 : 0);
+
+        private void View_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete) buttonDelete.PerformClick();
+            else if (e.KeyCode == Keys.Insert) buttonAdd.PerformClick();
+        }
     }
 }

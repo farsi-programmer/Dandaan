@@ -164,7 +164,7 @@
             this.buttonDelete.Margin = new System.Windows.Forms.Padding(6);
             this.buttonDelete.Name = "buttonDelete";
             this.buttonDelete.Size = new System.Drawing.Size(52, 35);
-            this.buttonDelete.TabIndex = 15;
+            this.buttonDelete.TabIndex = 10;
             this.buttonDelete.Text = "حذف";
             this.buttonDelete.UseVisualStyleBackColor = true;
             this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
@@ -178,7 +178,7 @@
             this.buttonAdd.Margin = new System.Windows.Forms.Padding(6);
             this.buttonAdd.Name = "buttonAdd";
             this.buttonAdd.Size = new System.Drawing.Size(53, 35);
-            this.buttonAdd.TabIndex = 16;
+            this.buttonAdd.TabIndex = 9;
             this.buttonAdd.Text = "اضافه";
             this.buttonAdd.UseVisualStyleBackColor = true;
             this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
@@ -192,7 +192,7 @@
             this.buttonSearch.Margin = new System.Windows.Forms.Padding(6);
             this.buttonSearch.Name = "buttonSearch";
             this.buttonSearch.Size = new System.Drawing.Size(65, 35);
-            this.buttonSearch.TabIndex = 17;
+            this.buttonSearch.TabIndex = 7;
             this.buttonSearch.Text = "جستجو";
             this.buttonSearch.UseVisualStyleBackColor = true;
             // 
@@ -205,9 +205,10 @@
             this.buttonEdit.Margin = new System.Windows.Forms.Padding(6);
             this.buttonEdit.Name = "buttonEdit";
             this.buttonEdit.Size = new System.Drawing.Size(64, 35);
-            this.buttonEdit.TabIndex = 18;
+            this.buttonEdit.TabIndex = 8;
             this.buttonEdit.Text = "ویرایش";
             this.buttonEdit.UseVisualStyleBackColor = true;
+            this.buttonEdit.Click += new System.EventHandler(this.buttonEdit_Click);
             // 
             // Browser
             // 

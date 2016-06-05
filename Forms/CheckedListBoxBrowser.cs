@@ -16,7 +16,7 @@ namespace Dandaan.Forms
         {
             InitializeComponent();
 
-            ListBox = checkedListBox1;
+            View = checkedListBox1;
         }
     }
 }

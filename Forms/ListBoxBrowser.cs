@@ -16,7 +16,7 @@ namespace Dandaan.Forms
         {
             InitializeComponent();
 
-            ListBox = listBox1;
+            View = listBox1;
         }
     }
 }

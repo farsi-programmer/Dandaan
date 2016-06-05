@@ -17,7 +17,7 @@ namespace Dandaan.Forms
         {
             InitializeComponent();
 
-            TextBox = richTextBox1;
+            View = richTextBox1;
         }
 
 #if using_ef || using_sqlite

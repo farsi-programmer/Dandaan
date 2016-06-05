@@ -16,7 +16,7 @@ namespace Dandaan.Forms
         {
             InitializeComponent();
 
-            TextBox = textBox1;
+            View = textBox1;
         }
     }
 }
