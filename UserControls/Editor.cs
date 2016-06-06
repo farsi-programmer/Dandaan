@@ -1,31 +1,37 @@
 ﻿using System;
-using System.Reflection;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
+using System.Data;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Dandaan.Forms
+namespace Dandaan.UserControls
 {
-    public partial class Editor<T> : Form where T : class
+    public partial class Editor<T> : UserControl where T : class
     {
         public Editor()
         {
             InitializeComponent();
-
-            AutoScroll = true;
         }
 
-        public const string _info_ = "_info_";
+        const string _info_ = "_info_";
 
-        public Editor(PropertyInfo[] propertyInfos) : this()
+        public EditorKind _kind { get; }
+        public T _obj { get; protected set; }
+
+        public Editor(PropertyInfo[] propertyInfos, Form form, EditorKind kind = EditorKind.Add,
+            T obj = null, Action acceptAct = null, Action cancelAct = null)
         {
+            _kind = kind;
+            _obj = obj;
+
             int y = 15, maxX = 0, textBoxWidth = 350, margin = 2, xMargin = 15, tabIndex = 0;
             Label label;
+            Color color = Color.Empty;
 
             foreach (var item in propertyInfos)
             {
@@ -35,32 +41,35 @@ namespace Dandaan.Forms
                 {
                     //
 
-                    var textBox = new TextBox()
+                    var textBox = new Controls.TextBox()
                     {
                         Width = textBoxWidth,
                         Margin = new Padding(0),
                         Padding = new Padding(0),
                         Location = new Point(xMargin, y),
-                        ReadOnly = Common.IsMatch(da.Sql, @"[\s]+identity[\s]+"),
+                        ReadOnly = kind == EditorKind.Search ? false : Common.IsMatch(da.Sql, @"[\s]+identity[\s]+"),
                         RightToLeft = RightToLeft.Yes,
                         Name = item.Name,
                         TabIndex = tabIndex++,
                     };
 
-                    var color = textBox.BackColor;
+                    textBox.DefaultText = textBox.Text = null != obj ? item.GetValue(obj).ToString() : "";
+                    color = textBox.BackColor;
+
                     textBox.TextChanged += (_, __) =>
                     {
-                        if (textBox.Text != "")
+                        if (textBox.Text != textBox.DefaultText)
                         {
                             textBox.BackColor = Color.LightYellow;//LightGoldenrodYellow;//MistyRose;
-                            (AcceptButton as Button).Enabled = true;
+                            (form.AcceptButton as Button).Enabled = true;
                         }
                         else
                         {
                             textBox.BackColor = color;
-                            (AcceptButton as Button).Enabled = false;
+                            (form.AcceptButton as Button).Enabled = false;
                             foreach (Control A in Controls)
-                                if (A is TextBox && A.Text != "") (AcceptButton as Button).Enabled = true;
+                                if (A is TextBox && A.Text != (A as Controls.TextBox).DefaultText && !(A as TextBox).ReadOnly)
+                                    (form.AcceptButton as Button).Enabled = true;
                         }
                     };
 
@@ -121,26 +130,36 @@ namespace Dandaan.Forms
 
             var buttonCancel = new Button() { Text = "انصراف", AutoSize = true, TabIndex = tabIndex + 1, };
             buttonCancel.Location = new Point(maxX - buttonCancel.Width - 5, y);
-            buttonCancel.Click += (_, __) => Close();
+            buttonCancel.Click += (_, __) => { if (cancelAct == null) form.Close(); else cancelAct(); };
             Controls.Add(buttonCancel);
-            CancelButton = buttonCancel;
+            form.CancelButton = buttonCancel;
 
             //
 
-            var buttonAccept = new Button() { Text = "اضافه", AutoSize = true, TabIndex = tabIndex++, Enabled = false };
+            var buttonAccept = new Button()
+            {
+                Text = kind == EditorKind.Add ? "اضافه" : kind == EditorKind.Edit ? "ویرایش" : "جستجو",
+                AutoSize = true,
+                TabIndex = tabIndex++,
+                Enabled = false
+            };
             buttonAccept.Location = new Point(buttonCancel.Location.X - buttonAccept.Width - 8, y);
             buttonAccept.Click += (_, __) =>
             {
-                var obj = Activator.CreateInstance<T>();
+                obj = Activator.CreateInstance<T>();
                 //bool blank = true;
 
                 foreach (var item in propertyInfos)
                 {
                     var p = Controls[item.Name].GetType().GetProperty(nameof(TextBox.ReadOnly));
 
-                    if (p != null && !(bool)p.GetValue(Controls[item.Name]))
+                    if (p != null)
                     {
-                        item.SetValue(obj, Controls[item.Name].Text);
+                        if (!(bool)p.GetValue(Controls[item.Name]))
+                            item.SetValue(obj, Controls[item.Name].Text);
+                        else if (kind == EditorKind.Edit)
+                            item.SetValue(obj, item.GetValue(_obj));
+
                         //if (Controls[item.Name].Text != "") blank = false;
                     }
                 }
@@ -148,17 +167,34 @@ namespace Dandaan.Forms
                 //if (blank) MessageBox.Show("لطفا ");
                 //else
                 {
-                    SQL.Insert(obj);
+                    if (kind == EditorKind.Add)
+                        SQL.Insert(obj);
+                    else if (kind == EditorKind.Edit)
+                    {
+                        SQL.Update(obj, _obj);
+                        _obj = obj;
+                    }
+
+                    acceptAct();
 
                     Controls[_info_].ForeColor = Controls[_info_].ForeColor == Color.Green ? Color.SlateBlue : Color.Green;
-                    Controls[_info_].Text = "اضافه شد";
+                    Controls[_info_].Text = kind == EditorKind.Add ? "اضافه شد" : kind == EditorKind.Edit ? "ویرایش شد" : "جستجو شد";
 
-                    foreach (Control item in Controls) if (item is TextBox) item.Text = "";
+                    foreach (Control item in Controls)
+                        if (item is TextBox)
+                            if (kind == EditorKind.Add)
+                                item.Text = "";
+                            else if (!(item as TextBox).ReadOnly)
+                            {
+                                (item as Controls.TextBox).DefaultText = item.Text;
+                                item.GetType().GetMethod(nameof(OnTextChanged), BindingFlags.NonPublic | BindingFlags.Instance)
+                                .Invoke(item, new object[] { new EventArgs() });
+                            }
                 }
             };
 
             Controls.Add(buttonAccept);
-            AcceptButton = buttonAccept;
+            form.AcceptButton = buttonAccept;
 
             tabIndex++;
 
@@ -186,14 +222,18 @@ namespace Dandaan.Forms
             ClientSize = new Size(maxX + 8, y + 12);
         }
 
-        private void Editor_Load(object sender, EventArgs e)
-        {
+        protected override void OnLoad(EventArgs e)
+        {       
             foreach (Control item in Controls)
             {
                 var p = item.GetType().GetProperty(nameof(TextBox.ReadOnly));
                 if (p != null && !(bool)p.GetValue(item))
                 { item.Select(); break; }
             }
+
+            base.OnLoad(e);
         }
     }
+
+    public enum EditorKind { Add, Edit, Search };
 }

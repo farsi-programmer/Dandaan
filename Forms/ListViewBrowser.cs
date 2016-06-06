@@ -141,6 +141,28 @@ namespace Dandaan.Forms
                 Thread.Start();
             };
 
+            Func<T> getObj = () =>
+            {
+                var obj = Activator.CreateInstance<T>();
+
+                for (int i = 0; i < PropertyInfos.Length; i++)
+                {
+                    var value = listView1.SelectedItems[0].SubItems[i].Text;
+                    var p = PropertyInfos[i];
+                    var t = p.PropertyType;
+
+                    if (t == typeof(string))
+                        p.SetValue(obj, value);
+                    else if (t.IsEnum)
+                        p.SetValue(obj, Enum.Parse(t, value));
+                    else if (t.IsValueType)
+                        p.SetValue(obj, t.GetMethod(nameof(int.Parse), new Type[] { typeof(string) })
+                            .Invoke(null, new object[] { value }));
+                }
+
+                return obj;
+            };
+
             DeleteFunc = () =>
             {
                 if (listView1.SelectedIndices.Count < 1) MessageBox.Show("لطفا یک رکورد را برای حذف کردن انتخاب کنید", Program.Title);
@@ -148,29 +170,49 @@ namespace Dandaan.Forms
                      + "\r\n" + listView1.SelectedItems[0].Text,
                     Program.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Stop, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
                 {
-                    var obj = Activator.CreateInstance<T>();
-
-                    for (int i = 0; i < PropertyInfos.Length; i++)
-                    {
-                        var value = listView1.SelectedItems[0].SubItems[i].Text;
-                        var p = PropertyInfos[i];
-                        var t = p.PropertyType;
-
-                        if (t == typeof(string))
-                            p.SetValue(obj, value);
-                        else if (t.IsEnum)
-                            p.SetValue(obj, Enum.Parse(t, value));
-                        else if (t.IsValueType)
-                            p.SetValue(obj, t.GetMethod(nameof(int.Parse), new Type[] { typeof(string) })
-                                .Invoke(null, new object[] { value }));
-                    }
-
-                    SQL.Delete(obj);
+                    SQL.Delete(getObj());
 
                     return true;
                 }
 
                 return false;
+            };
+
+            EditAct = (act) =>
+            {
+                if (listView1.SelectedIndices.Count < 1) MessageBox.Show("لطفا یک رکورد را برای ویرایش کردن انتخاب کنید", Program.Title);
+                else
+                {
+                    var obj = getObj();
+
+                    Func<T, bool> equals = (_obj) => 
+                    {
+                        foreach (var item in PropertyInfos)
+                            if (!item.GetValue(_obj).Equals(item.GetValue(obj)))
+                                return false;
+
+                        return true;
+                    };
+
+                    foreach (Form item in Application.OpenForms)
+                        foreach (var A in item.Controls)
+                            if (A is UserControls.Editor<T>
+                            && (A as UserControls.Editor<T>)._kind == UserControls.EditorKind.Edit
+                            && equals((A as UserControls.Editor<T>)._obj))
+                            {
+                                var f = item;
+                                ShowForm(ref f, false);
+
+                                return;
+                            }
+
+                    var editForm = new Form() { AutoScroll = true, Text = DandaanAttribute.Label };
+                    var editor = new UserControls.Editor<T>(PropertyInfos, editForm, UserControls.EditorKind.Edit, obj, act);
+                    editForm.Controls.Add(editor);
+                    editForm.ClientSize = editor.ClientSize;
+
+                    ShowForm(ref editForm, false);
+                }
             };
         }        
     }

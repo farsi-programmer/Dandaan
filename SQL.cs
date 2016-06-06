@@ -240,13 +240,28 @@ end;");
 
         public static void Delete<T>(T obj) where T : class
         {
+            editOrDelete(obj, null);
+        }
+
+        public static void Update<T>(T obj, T _obj) where T : class
+        {
+            editOrDelete(obj, _obj);
+        }
+
+        private static void editOrDelete<T>(T obj, T _obj) where T : class
+        {
             using (var context = DB.DataContext)
             {
                 var pi = context.GetType().GetField(typeof(T).Name + "s");
                 var table = ((System.Data.Linq.Table<T>)(pi.GetValue(context)));
 
-                table.Attach(obj);
-                table.DeleteOnSubmit(obj);
+                if (_obj == null)
+                {
+                    table.Attach(obj);
+                    table.DeleteOnSubmit(obj);
+                }
+                else table.Attach(obj, _obj);
+
                 context.SubmitChanges();
             }
         }

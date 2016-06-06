@@ -90,6 +90,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common.cs" />
+    <Compile Include="Controls\TextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\TextBox.Designer.cs">
+      <DependentUpon>TextBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="DataContext.cs" />
     <Compile Include="DB.cs" />
     <Compile Include="Forms\About.cs">
@@ -121,12 +127,6 @@
     </Compile>
     <Compile Include="Forms\DataGridViewBrowser.Designer.cs">
       <DependentUpon>DataGridViewBrowser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Editor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Editor.Designer.cs">
-      <DependentUpon>Editor.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ListBoxBrowser.cs">
       <SubType>Form</SubType>
@@ -182,6 +182,12 @@
     <Compile Include="Forms\Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\Editor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\Editor.Designer.cs">
+      <DependentUpon>Editor.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\UserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -209,9 +215,6 @@
     <EmbeddedResource Include="Forms\ConnectDB.resx">
       <DependentUpon>ConnectDB.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Editor.resx">
-      <DependentUpon>Editor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\ListViewBrowser.resx">
       <DependentUpon>ListViewBrowser.cs</DependentUpon>
     </EmbeddedResource>
@@ -226,6 +229,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\Editor.resx">
+      <DependentUpon>Editor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\UserControl.resx">
       <DependentUpon>UserControl.cs</DependentUpon>

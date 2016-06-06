@@ -18,8 +18,8 @@ namespace Dandaan.Forms
 
             View = dataGridView1;
 
-            LoadAct = ()=>
-        {
+            LoadAct = () =>
+            {
                 // testing
                 CountFunc = () => 1000;
                 var x = new List<DataGridViewRow>(1000);

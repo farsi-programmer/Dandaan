@@ -30,7 +30,7 @@ namespace Dandaan.Forms
             Thread?.Abort();
         }
 
-        Editor<T> editor = null;
+        Form addForm;
         Timer timer;
         int count = 0;
 
@@ -41,6 +41,7 @@ namespace Dandaan.Forms
         protected Func<int> CountFunc = SQL.Count<T>;
         protected Action LoadAct;
         protected Func<bool> DeleteFunc;
+        protected Action<Action> EditAct;
         protected Control View;
 
         private void buttonRefresh_Click(object sender, EventArgs e)
@@ -86,6 +87,7 @@ namespace Dandaan.Forms
         private void Browser_Load(object sender, EventArgs e)
         {
             View.KeyDown += View_KeyDown;
+            View.DoubleClick += View_DoubleClick;
 
             Text = DandaanAttribute.Label;
 
@@ -93,6 +95,11 @@ namespace Dandaan.Forms
 
             timer = new Timer() { Interval = 3000, Enabled = true };
             timer.Tick += Timer_Tick;
+        }
+
+        private void View_DoubleClick(object sender, EventArgs e)
+        {
+            buttonEdit.PerformClick();
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -160,18 +167,33 @@ namespace Dandaan.Forms
 
         private void buttonAdd_Click(object sender, EventArgs e)
         {
-            if (editor == null || editor.IsDisposed)
+            if (addForm == null || addForm.IsDisposed)
             {
-                editor = new Editor<T>(PropertyInfos);
-                editor.Text = DandaanAttribute.Label;
+                addForm = new Form() { AutoScroll = true, Text = DandaanAttribute.Label };
+                var editor = new UserControls.Editor<T>(PropertyInfos, addForm, acceptAct: acceptAct);
+                addForm.Controls.Add(editor);
+                addForm.ClientSize = editor.ClientSize;
             }
 
-            ShowForm(ref editor, false);
+            ShowForm(ref addForm, false);
         }
+
+        Action acceptAct => () =>
+        {
+            if (Visible) buttonRefresh.PerformClick();
+            else foreach (var item in Application.OpenForms)
+                    if (item is Browser<T>)
+                        (item as Browser<T>).buttonRefresh.PerformClick();
+        };
 
         private void buttonEdit_Click(object sender, EventArgs e)
         {
-            ;
+            bool isChecked = checkBox1.Checked;
+            if (isChecked) checkBox1.Checked = false;
+
+            EditAct(acceptAct);
+
+            checkBox1.Checked = isChecked;
         }
 
         int pages => (count / PageSize) + (count % PageSize > 0 ? 1 : 0);
@@ -180,6 +202,8 @@ namespace Dandaan.Forms
         {
             if (e.KeyCode == Keys.Delete) buttonDelete.PerformClick();
             else if (e.KeyCode == Keys.Insert) buttonAdd.PerformClick();
+            else if (e.KeyCode == Keys.F3) buttonSearch.PerformClick();
+            else if (e.KeyCode == Keys.Enter) buttonEdit.PerformClick();
         }
     }
 }
