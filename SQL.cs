@@ -1,4 +1,6 @@
-﻿using System;
+﻿// http://offtopic.blog.ir/
+
+using System;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
@@ -275,14 +277,6 @@ end;");
                 var len = Common.Match(desc, $@"\[nvarchar][\s]*\(([\d]+)\)").Groups[1].Value;
                 p = new SqlParameter($"@{name}", SqlDbType.NVarChar, int.Parse(len)) { Value = value };
             }
-            else if (desc.Contains("[int]"))
-            {
-                p = new SqlParameter($"@{name}", SqlDbType.Int) { Value = value };
-            }
-            else if (desc.Contains("[tinyint]"))
-            {
-                p = new SqlParameter($"@{name}", SqlDbType.TinyInt) { Value = value };
-            }
             else
             {
                 var t = typeof(SqlDbType);
@@ -323,12 +317,17 @@ end;");
                 sdr.Close();
             }*/
 
+            if (page < 1) page = 1;
+
             using (var context = DB.DataContext)
             {
                 var t = (System.Data.Linq.Table<T>)context.GetType().GetField(typeof(T).Name + "s")
                     .GetValue(context);
-
-                using (var en = t.Skip((page - 1) * pageSize).Take(pageSize).GetEnumerator())
+                
+                using (var en = t.Skip((page - 1) * pageSize)
+                    //.Where((x) => true)
+                    //System.Data.Linq.SqlClient.SqlMethods.Like(,,)
+                    .Take(pageSize).GetEnumerator())
                     while (en.MoveNext())
                         yield return en.Current;
             }

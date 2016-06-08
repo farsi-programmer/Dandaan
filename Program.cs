@@ -72,6 +72,8 @@ namespace Dandaan
 
         private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
         {
+            // we never want to get in here, it crashes the program
+
             var ex = e.Exception;
 
             while (ex.InnerException != null) ex = ex.InnerException;

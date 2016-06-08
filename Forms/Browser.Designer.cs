@@ -51,7 +51,7 @@
             this.buttonLast.Margin = new System.Windows.Forms.Padding(6);
             this.buttonLast.Name = "buttonLast";
             this.buttonLast.Size = new System.Drawing.Size(56, 35);
-            this.buttonLast.TabIndex = 6;
+            this.buttonLast.TabIndex = 7;
             this.buttonLast.Text = "آخرین";
             this.buttonLast.UseVisualStyleBackColor = true;
             this.buttonLast.Click += new System.EventHandler(this.buttonLast_Click);
@@ -66,7 +66,7 @@
             this.buttonNext.Margin = new System.Windows.Forms.Padding(6);
             this.buttonNext.Name = "buttonNext";
             this.buttonNext.Size = new System.Drawing.Size(49, 35);
-            this.buttonNext.TabIndex = 5;
+            this.buttonNext.TabIndex = 6;
             this.buttonNext.Text = "بعدی";
             this.buttonNext.UseVisualStyleBackColor = true;
             this.buttonNext.Click += new System.EventHandler(this.buttonNext_Click);
@@ -81,7 +81,7 @@
             this.buttonPrevious.Margin = new System.Windows.Forms.Padding(6);
             this.buttonPrevious.Name = "buttonPrevious";
             this.buttonPrevious.Size = new System.Drawing.Size(44, 35);
-            this.buttonPrevious.TabIndex = 4;
+            this.buttonPrevious.TabIndex = 5;
             this.buttonPrevious.Text = "قبلی";
             this.buttonPrevious.UseVisualStyleBackColor = true;
             this.buttonPrevious.Click += new System.EventHandler(this.buttonPrevious_Click);
@@ -96,7 +96,7 @@
             this.buttonFirst.Margin = new System.Windows.Forms.Padding(6);
             this.buttonFirst.Name = "buttonFirst";
             this.buttonFirst.Size = new System.Drawing.Size(50, 35);
-            this.buttonFirst.TabIndex = 3;
+            this.buttonFirst.TabIndex = 4;
             this.buttonFirst.Text = "اولین";
             this.buttonFirst.UseVisualStyleBackColor = true;
             this.buttonFirst.Click += new System.EventHandler(this.buttonFirst_Click);
@@ -110,7 +110,7 @@
             this.label1.Location = new System.Drawing.Point(4, 522);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(20, 22);
-            this.label1.TabIndex = 14;
+            this.label1.TabIndex = 12;
             this.label1.Text = "1";
             this.label1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.textBox2_MouseClick);
             // 
@@ -123,7 +123,7 @@
             this.buttonRefresh.Name = "buttonRefresh";
             this.buttonRefresh.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.buttonRefresh.Size = new System.Drawing.Size(79, 35);
-            this.buttonRefresh.TabIndex = 0;
+            this.buttonRefresh.TabIndex = 1;
             this.buttonRefresh.Text = "بازخوانی";
             this.buttonRefresh.UseVisualStyleBackColor = true;
             this.buttonRefresh.Click += new System.EventHandler(this.buttonRefresh_Click);
@@ -136,7 +136,7 @@
             this.textBox2.Location = new System.Drawing.Point(554, 520);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(54, 27);
-            this.textBox2.TabIndex = 2;
+            this.textBox2.TabIndex = 3;
             this.textBox2.Text = "1";
             this.textBox2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.textBox2_MouseClick);
             this.textBox2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox2_KeyPress);
@@ -151,7 +151,7 @@
             this.checkBox1.Location = new System.Drawing.Point(621, 520);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(73, 26);
-            this.checkBox1.TabIndex = 1;
+            this.checkBox1.TabIndex = 2;
             this.checkBox1.Text = "خودکار";
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.textBox2_MouseClick);
@@ -164,7 +164,7 @@
             this.buttonDelete.Margin = new System.Windows.Forms.Padding(6);
             this.buttonDelete.Name = "buttonDelete";
             this.buttonDelete.Size = new System.Drawing.Size(52, 35);
-            this.buttonDelete.TabIndex = 10;
+            this.buttonDelete.TabIndex = 11;
             this.buttonDelete.Text = "حذف";
             this.buttonDelete.UseVisualStyleBackColor = true;
             this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
@@ -178,7 +178,7 @@
             this.buttonAdd.Margin = new System.Windows.Forms.Padding(6);
             this.buttonAdd.Name = "buttonAdd";
             this.buttonAdd.Size = new System.Drawing.Size(53, 35);
-            this.buttonAdd.TabIndex = 9;
+            this.buttonAdd.TabIndex = 10;
             this.buttonAdd.Text = "اضافه";
             this.buttonAdd.UseVisualStyleBackColor = true;
             this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
@@ -192,9 +192,10 @@
             this.buttonSearch.Margin = new System.Windows.Forms.Padding(6);
             this.buttonSearch.Name = "buttonSearch";
             this.buttonSearch.Size = new System.Drawing.Size(65, 35);
-            this.buttonSearch.TabIndex = 7;
+            this.buttonSearch.TabIndex = 8;
             this.buttonSearch.Text = "جستجو";
             this.buttonSearch.UseVisualStyleBackColor = true;
+            this.buttonSearch.Click += new System.EventHandler(this.buttonSearch_Click);
             // 
             // buttonEdit
             // 
@@ -205,7 +206,7 @@
             this.buttonEdit.Margin = new System.Windows.Forms.Padding(6);
             this.buttonEdit.Name = "buttonEdit";
             this.buttonEdit.Size = new System.Drawing.Size(64, 35);
-            this.buttonEdit.TabIndex = 8;
+            this.buttonEdit.TabIndex = 9;
             this.buttonEdit.Text = "ویرایش";
             this.buttonEdit.UseVisualStyleBackColor = true;
             this.buttonEdit.Click += new System.EventHandler(this.buttonEdit_Click);

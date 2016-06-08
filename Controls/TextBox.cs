@@ -23,5 +23,10 @@ namespace Dandaan.Controls
         {
             base.OnPaint(pe);
         }
+
+        public void RaiseTextChanged()
+        {
+            OnTextChanged(new EventArgs());
+        }
     }
 }

@@ -56,7 +56,7 @@ namespace Dandaan.Forms
 
             count = CountFunc(); // this can be wrong under high load
             if (label1.Text != count.ToString()) label1.Text = count.ToString();
-            if (page > pages) { page = pages; goto go; }
+            if (page > pages && page != 1) { page = pages; goto go; }
 
             Page = page;
             if (textBox2.Text != Page.ToString()) textBox2.Text = Page.ToString();
@@ -81,13 +81,16 @@ namespace Dandaan.Forms
             buttonAdd.Enabled = DandaanAttribute.EnableAdd;
             buttonEdit.Enabled = DandaanAttribute.EnableEdit;
             buttonDelete.Enabled = DandaanAttribute.EnableDelete;
-            buttonSearch.Enabled = DandaanAttribute.EnableSearch;
+            buttonSearch.Enabled = DandaanAttribute.EnableSearch && !search;
+
+            focused?.Select();
         }
 
         private void Browser_Load(object sender, EventArgs e)
         {
             View.KeyDown += View_KeyDown;
             View.DoubleClick += View_DoubleClick;
+            View.TabIndex = 0;
 
             Text = DandaanAttribute.Label;
 
@@ -148,8 +151,14 @@ namespace Dandaan.Forms
             }
         }
 
+        Control focused;
+
         private void disable()
         {
+            focused = null;
+            foreach (Control item in Controls)
+                if (item.Focused) { focused = item; break; }
+
             buttonRefresh.Enabled = buttonFirst.Enabled = buttonLast.Enabled = buttonNext.Enabled
             = buttonPrevious.Enabled = textBox2.Enabled = buttonDelete.Enabled = buttonEdit.Enabled = false;
         }
@@ -169,7 +178,7 @@ namespace Dandaan.Forms
         {
             if (addForm == null || addForm.IsDisposed)
             {
-                addForm = new Form() { AutoScroll = true, Text = DandaanAttribute.Label };
+                addForm = new Form() { Text = DandaanAttribute.Label };
                 var editor = new UserControls.Editor<T>(PropertyInfos, addForm, acceptAct: acceptAct);
                 addForm.Controls.Add(editor);
                 addForm.ClientSize = editor.ClientSize;
@@ -197,6 +206,48 @@ namespace Dandaan.Forms
         }
 
         int pages => (count / PageSize) + (count % PageSize > 0 ? 1 : 0);
+
+        bool search = false;
+        private void buttonSearch_Click(object sender, EventArgs e)
+        {
+            var h = View.Height;
+            var l = View.Location;
+
+            var panel = new Panel()
+            {
+                Width = ClientSize.Width,
+                AutoScroll = true,
+            };
+
+            var editor = new UserControls.Editor<T>(PropertyInfos, this, UserControls.EditorKind.Search,
+                searchAct: (T obj) =>
+                {
+                    ;
+                },
+                cancelAct: () =>
+                {
+                    View.Height = h;
+                    View.Location = l;
+                    search = false;
+                    buttonSearch.Enabled = true;
+                    Controls.Remove(panel);
+                    panel.Dispose();
+                });
+
+            panel.Height = editor.Height;
+            editor.Location = new Point(panel.Width - editor.Width, 0);
+            var half = View.Height / 2;
+            if (panel.Height > half) panel.Height = half;
+
+            panel.Controls.Add(editor);
+
+            View.Height -= panel.Height;
+            View.Location = new Point(View.Location.X, View.Location.Y + panel.Height);
+
+            search = true;
+            buttonSearch.Enabled = false;
+            Controls.Add(panel);
+        }
 
         private void View_KeyDown(object sender, KeyEventArgs e)
         {

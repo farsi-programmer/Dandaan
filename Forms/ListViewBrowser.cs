@@ -206,7 +206,7 @@ namespace Dandaan.Forms
                                 return;
                             }
 
-                    var editForm = new Form() { AutoScroll = true, Text = DandaanAttribute.Label };
+                    var editForm = new Form() { Text = DandaanAttribute.Label };
                     var editor = new UserControls.Editor<T>(PropertyInfos, editForm, UserControls.EditorKind.Edit, obj, act);
                     editForm.Controls.Add(editor);
                     editForm.ClientSize = editor.ClientSize;

@@ -24,7 +24,7 @@ namespace Dandaan.UserControls
         public T _obj { get; protected set; }
 
         public Editor(PropertyInfo[] propertyInfos, Form form, EditorKind kind = EditorKind.Add,
-            T obj = null, Action acceptAct = null, Action cancelAct = null)
+            T obj = null, Action acceptAct = null, Action cancelAct = null, Action<T> searchAct = null)
         {
             _kind = kind;
             _obj = obj;
@@ -61,16 +61,22 @@ namespace Dandaan.UserControls
                         if (textBox.Text != textBox.DefaultText)
                         {
                             textBox.BackColor = Color.LightYellow;//LightGoldenrodYellow;//MistyRose;
-                            (form.AcceptButton as Button).Enabled = true;
+                            if (kind != EditorKind.Search)
+                                (form.AcceptButton as Button).Enabled = true;
                         }
                         else
                         {
                             textBox.BackColor = color;
-                            (form.AcceptButton as Button).Enabled = false;
-                            foreach (Control A in Controls)
-                                if (A is TextBox && A.Text != (A as Controls.TextBox).DefaultText && !(A as TextBox).ReadOnly)
-                                    (form.AcceptButton as Button).Enabled = true;
+                            if (kind != EditorKind.Search)
+                            {
+                                (form.AcceptButton as Button).Enabled = false;
+                                foreach (Control A in Controls)
+                                    if (A is TextBox && A.Text != (A as Controls.TextBox).DefaultText && !(A as TextBox).ReadOnly)
+                                        (form.AcceptButton as Button).Enabled = true;
+                            }
                         }
+
+                        if (kind == EditorKind.Search) searchAct(getObj(propertyInfos, kind));
                     };
 
                     if (xMargin + textBox.Width + margin > maxX) maxX = xMargin + textBox.Width + margin;
@@ -128,7 +134,12 @@ namespace Dandaan.UserControls
 
             y += 5;
 
-            var buttonCancel = new Button() { Text = "انصراف", AutoSize = true, TabIndex = tabIndex + 1, };
+            var buttonCancel = new Button()
+            {
+                Text = "انصراف",
+                AutoSize = true,
+                TabIndex = tabIndex + 1,
+            };
             buttonCancel.Location = new Point(maxX - buttonCancel.Width - 5, y);
             buttonCancel.Click += (_, __) => { if (cancelAct == null) form.Close(); else cancelAct(); };
             Controls.Add(buttonCancel);
@@ -141,62 +152,52 @@ namespace Dandaan.UserControls
                 Text = kind == EditorKind.Add ? "اضافه" : kind == EditorKind.Edit ? "ویرایش" : "جستجو",
                 AutoSize = true,
                 TabIndex = tabIndex++,
-                Enabled = false
+                Enabled = false,
+                Visible = kind != EditorKind.Search,
             };
-            buttonAccept.Location = new Point(buttonCancel.Location.X - buttonAccept.Width - 8, y);
-            buttonAccept.Click += (_, __) =>
+
+            if (kind != EditorKind.Search)
             {
-                obj = Activator.CreateInstance<T>();
-                //bool blank = true;
-
-                foreach (var item in propertyInfos)
+                buttonAccept.Location = new Point(buttonCancel.Location.X - buttonAccept.Width - 8, y);
+                buttonAccept.Click += (_, __) =>
                 {
-                    var p = Controls[item.Name].GetType().GetProperty(nameof(TextBox.ReadOnly));
-
-                    if (p != null)
-                    {
-                        if (!(bool)p.GetValue(Controls[item.Name]))
-                            item.SetValue(obj, Controls[item.Name].Text);
-                        else if (kind == EditorKind.Edit)
-                            item.SetValue(obj, item.GetValue(_obj));
-
-                        //if (Controls[item.Name].Text != "") blank = false;
-                    }
-                }
+                    obj = getObj(propertyInfos, kind);
 
                 //if (blank) MessageBox.Show("لطفا ");
                 //else
                 {
-                    if (kind == EditorKind.Add)
-                        SQL.Insert(obj);
-                    else if (kind == EditorKind.Edit)
-                    {
-                        SQL.Update(obj, _obj);
-                        _obj = obj;
-                    }
+                        if (kind == EditorKind.Add)
+                            SQL.Insert(obj);
+                        else if (kind == EditorKind.Edit)
+                        {
+                            SQL.Update(obj, _obj);
+                            _obj = obj;
+                        }
 
-                    acceptAct();
+                        acceptAct();
 
-                    Controls[_info_].ForeColor = Controls[_info_].ForeColor == Color.Green ? Color.SlateBlue : Color.Green;
-                    Controls[_info_].Text = kind == EditorKind.Add ? "اضافه شد" : kind == EditorKind.Edit ? "ویرایش شد" : "جستجو شد";
+                        Controls[_info_].ForeColor = Controls[_info_].ForeColor == Color.Green ? Color.SlateBlue : Color.Green;
+                        Controls[_info_].Text = kind == EditorKind.Add ? "اضافه شد" : kind == EditorKind.Edit ? "ویرایش شد" : "جستجو شد";
 
-                    foreach (Control item in Controls)
-                        if (item is TextBox)
-                            if (kind == EditorKind.Add)
-                                item.Text = "";
-                            else if (!(item as TextBox).ReadOnly)
-                            {
-                                (item as Controls.TextBox).DefaultText = item.Text;
-                                item.GetType().GetMethod(nameof(OnTextChanged), BindingFlags.NonPublic | BindingFlags.Instance)
-                                .Invoke(item, new object[] { new EventArgs() });
+                        foreach (Control item in Controls)
+                            if (item is TextBox)
+                                if (kind == EditorKind.Add)
+                                    item.Text = "";
+                                else if (!(item as TextBox).ReadOnly)
+                                {
+                                    (item as Controls.TextBox).DefaultText = item.Text;
+                                    (item as Controls.TextBox).RaiseTextChanged();
+                                //item.GetType().GetMethod(nameof(OnTextChanged), BindingFlags.NonPublic | BindingFlags.Instance)
+                                //.Invoke(item, new object[] { new EventArgs() });
                             }
-                }
-            };
+                    }
+                };
 
-            Controls.Add(buttonAccept);
-            form.AcceptButton = buttonAccept;
+                Controls.Add(buttonAccept);
+                form.AcceptButton = buttonAccept;
 
-            tabIndex++;
+                tabIndex++;
+            }
 
             //
 
@@ -222,8 +223,31 @@ namespace Dandaan.UserControls
             ClientSize = new Size(maxX + 8, y + 12);
         }
 
+        private T getObj(PropertyInfo[] propertyInfos, EditorKind kind)
+        {
+            T obj = Activator.CreateInstance<T>();
+            //bool blank = true;
+
+            foreach (var item in propertyInfos)
+            {
+                var p = Controls[item.Name].GetType().GetProperty(nameof(TextBox.ReadOnly));
+
+                if (p != null)
+                {
+                    if (!(bool)p.GetValue(Controls[item.Name]))
+                        item.SetValue(obj, Controls[item.Name].Text);
+                    else if (kind == EditorKind.Edit || kind == EditorKind.Search)
+                        item.SetValue(obj, item.GetValue(_obj));
+
+                    //if (Controls[item.Name].Text != "") blank = false;
+                }
+            }
+
+            return obj;
+        }
+
         protected override void OnLoad(EventArgs e)
-        {       
+        {
             foreach (Control item in Controls)
             {
                 var p = item.GetType().GetProperty(nameof(TextBox.ReadOnly));

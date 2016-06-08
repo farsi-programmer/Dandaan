@@ -34,11 +34,19 @@ namespace Dandaan
         {
             return new Thread(() =>
             {
-                //try
+                try
                 {
                     act();
                 }
-                //catch (ThreadAbortException) { }
+                catch (ThreadAbortException) { }
+                catch (Exception ex)
+                {
+                    while (ex.InnerException != null) ex = ex.InnerException;
+
+                    DB.Log(ex.ToString());
+
+                    MessageBox.Show("برنامه با مشکل مواجه شده است\r\n" + ex.ToString(), Program.Title);
+                }
             });
         }
     }

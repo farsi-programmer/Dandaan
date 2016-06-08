@@ -43,14 +43,14 @@ namespace Dandaan.Forms
             {
                 if (f.WindowState == FormWindowState.Minimized)
                     f.WindowState = f.lastFormWindowState;
-                else f.Select();//Focus();//BringToFront();
+                else f.Activate();//Select();//Focus();//BringToFront();
             }
             else f.Show();//(this); this keeps the form on top, which i don't like
         }
 
         private void Form_FormClosing(object sender, FormClosingEventArgs e)
         {
-            foreach (var item in openForms) if (item != null) item.Close();
+            foreach (var item in openForms) item?.Close();
         }
     }
 }
