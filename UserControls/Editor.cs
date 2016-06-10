@@ -79,6 +79,8 @@ namespace Dandaan.UserControls
                         if (kind == EditorKind.Search) searchAct(getObj(propertyInfos, kind));
                     };
 
+                    textBox.MouseClick += (_, __) => textBox.SelectAll();
+
                     if (xMargin + textBox.Width + margin > maxX) maxX = xMargin + textBox.Width + margin;
 
                     //
@@ -225,17 +227,44 @@ namespace Dandaan.UserControls
 
         private T getObj(PropertyInfo[] propertyInfos, EditorKind kind)
         {
-            T obj = Activator.CreateInstance<T>();
+            T obj;
+            var constructor = typeof(T).GetConstructor(new Type[] { typeof(bool) });
+            if (constructor != null)
+                obj = (T)constructor.Invoke(new object[] { false });
+            else
+                obj = Activator.CreateInstance<T>();
             //bool blank = true;
 
             foreach (var item in propertyInfos)
             {
                 var p = Controls[item.Name].GetType().GetProperty(nameof(TextBox.ReadOnly));
+                var value = Controls[item.Name].Text;
+
+                var t = item.PropertyType;
+                var ut = Nullable.GetUnderlyingType(t);
+                if (ut != null) t = ut;
 
                 if (p != null)
                 {
                     if (!(bool)p.GetValue(Controls[item.Name]))
-                        item.SetValue(obj, Controls[item.Name].Text);
+                    {
+                        if (t == typeof(string))
+                            item.SetValue(obj, value);
+                        else if (t.IsEnum)
+                            item.SetValue(obj, Enum.Parse(t, value));
+                        else if (t.IsValueType)
+                        {
+                            //var m = t.GetMethod(nameof(int.Parse), new Type[] { typeof(string) });
+                            //var v = m.Invoke(null, new object[] { value });
+                            //item.SetValue(obj, v);
+
+                            var m = t.GetMethod(nameof(int.TryParse), new Type[] { typeof(string), t.MakeByRefType() });
+                            var ps = new object[] { value, null };
+                            var v = m.Invoke(null, ps);
+                            if ((bool)v) item.SetValue(obj, ps[1]);
+                            else Controls[item.Name].Text = "";
+                        }
+                    }
                     else if (kind == EditorKind.Edit || kind == EditorKind.Search)
                         item.SetValue(obj, item.GetValue(_obj));
 

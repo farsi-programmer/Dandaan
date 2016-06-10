@@ -17,7 +17,7 @@ namespace Dandaan.Tables
     {
         [Column]
         [Dandaan(Sql = "[int] IDENTITY NOT NULL CONSTRAINT [IX_" + nameof(Table) + "] UNIQUE NONCLUSTERED")]
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         [Column]
         [Dandaan(Sql = "[nvarchar](100) NOT NULL CONSTRAINT [PK_" + nameof(Table) + @"] PRIMARY KEY CLUSTERED 
@@ -26,7 +26,7 @@ namespace Dandaan.Tables
 
         [Column]
         [Dandaan(Sql = "[int] NOT NULL")]
-        public int Version { get; set; }
+        public int? Version { get; set; }
 
         [Column]
         [Dandaan(Sql = "[nvarchar](1000) NOT NULL")]

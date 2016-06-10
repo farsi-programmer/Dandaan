@@ -65,7 +65,8 @@ namespace Dandaan.Forms
 #endif
 
             for (int i = 0; i < Application.OpenForms.Count; i++)
-                if (Application.OpenForms[i] != this) Application.OpenForms[i].Close();
+                if (Application.OpenForms[i] != this)
+                    Application.OpenForms[i].Invoke(new Action(() => Application.OpenForms[i].Close()));
         }
 
         private void Main_SizeChanged(object sender, EventArgs e)

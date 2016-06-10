@@ -288,13 +288,121 @@ end;");
             return p;
         }
 
-        public static int Count<T>() where T : class
+        public static int Count<T>(T searchObj = null) where T : class
         {
-            using (var context = DB.DataContext)
+            if (searchObj != null)
             {
-                var pi = context.GetType().GetField(typeof(T).Name + "s");
+                var sb = new StringBuilder();
+                var ps = new List<object>();
+                where(searchObj, true, typeof(T).GetProperties(), ref sb, ref ps, true);
 
-                return ((System.Data.Linq.Table<T>)(pi.GetValue(context))).Count();
+                return (int)DB.ExecuteScalar($"SELECT COUNT(*) FROM {typeof(T).Name} WHERE 1=1 " + sb, ps.Cast<SqlParameter>().ToArray()); ;
+            }
+            else
+            {
+                using (var context = DB.DataContext)
+                {
+
+                    var pi = context.GetType().GetField(typeof(T).Name + "s");
+
+                    return ((System.Data.Linq.Table<T>)(pi.GetValue(context))).Count();
+                }
+            }
+        }
+
+        public static IEnumerable<T> Select<T>(int page, int pageSize, T obj, bool like = false) where T : class
+        {
+            if (page < 1) page = 1;
+            int start = ((page - 1) * pageSize) + 1, end = start + pageSize - 1;
+
+            var pi = typeof(T).GetProperties();
+
+            var sb = new StringBuilder($"SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY ");
+
+            foreach (var item in pi) sb.Append($"[t0].{item.Name},");
+            sb = sb.Remove(sb.Length - 1, 1);
+
+            sb.Append($") AS [ROW_NUMBER],* FROM [{typeof(T).Name}] AS [t0]");
+
+            //var ps = new List<SqlParameter>();
+            var ps = new List<object>();
+
+            if (obj != null)
+            {
+                sb.Append(" WHERE 1=1 ");
+                where(obj, like, pi, ref sb, ref ps);
+            }
+
+            sb.Append($") AS [t1] WHERE [t1].[ROW_NUMBER] BETWEEN {start} AND {end} ORDER BY [t1].[ROW_NUMBER]");
+
+            /*using (var con = DB.Connection)
+            {
+                var cmd = con.CreateCommand();
+                cmd.CommandText = sb.ToString();
+                cmd.Parameters.AddRange(ps.ToArray());
+                cmd.ExecuteReader();
+
+                var sdr = cmd.ExecuteReader();
+                while (sdr.Read())
+                {
+                    yield return new Tables.Patient()
+                    {
+                        Id = (int)sdr[nameof(Id)],
+                        DateTime = (DateTime)sdr[nameof(DateTime)],
+                        Message = (string)sdr[nameof(Message)]
+                    };
+                }
+                sdr.Close();
+            }*/
+
+            using (var context = DB.DataContext)
+            using (var en = context.ExecuteQuery<T>(sb.ToString(), ps.ToArray()).GetEnumerator())
+                while (en.MoveNext())
+                    yield return en.Current;
+        }
+
+        private static void where<T>(T obj, bool like, PropertyInfo[] pi, ref StringBuilder sb, ref List<object> ps, bool sqlParams = false) where T : class
+        {
+            var i = 0;
+
+            foreach (var item in pi)
+            {
+                if (like)
+                {
+                    var value = item.GetValue(obj);
+
+                    if (item.PropertyType == typeof(string))
+                    {
+                        if ((value as string).Trim() != "")
+                        {
+                            if (sqlParams)
+                            {
+                                sb.Append($@" AND {item.Name} LIKE @{item.Name} ESCAPE '\'");
+                                ps.Add(new SqlParameter($"@{item.Name}", escapeForLike(value as string) + "%"));
+                            }
+                            else
+                            {
+                                sb.Append($@" AND {item.Name} LIKE {{{i}}} ESCAPE '\'");
+                                ps.Add(escapeForLike(value as string) + "%");
+                                i++;
+                            }
+                        }
+                    }
+                    else if (value != null)
+                    {
+                        if (sqlParams)
+                        {
+                            sb.Append($" AND {item.Name} = @{item.Name}");
+                            ps.Add(new SqlParameter($"@{item.Name}", value));
+                        }
+                        else
+                        {
+                            sb.Append($" AND {item.Name} = {{{i}}}");
+                            ps.Add(value);
+                            i++;
+                        }
+                    }
+                }
             }
         }
 
@@ -323,14 +431,25 @@ end;");
             {
                 var t = (System.Data.Linq.Table<T>)context.GetType().GetField(typeof(T).Name + "s")
                     .GetValue(context);
-                
-                using (var en = t.Skip((page - 1) * pageSize)
-                    //.Where((x) => true)
-                    //System.Data.Linq.SqlClient.SqlMethods.Like(,,)
-                    .Take(pageSize).GetEnumerator())
+
+                var q = t.Skip((page - 1) * pageSize).Take(pageSize);
+
+                //MessageBox.Show(context.GetCommand(q).CommandText);
+                //.Where((x) => System.Data.Linq.SqlClient.SqlMethods.Like("", ""))
+
+                using (var en = q.GetEnumerator())
                     while (en.MoveNext())
                         yield return en.Current;
             }
+        }
+
+        static string escapeForLike(string str)
+        {
+            str = Regex.Replace(str, Regex.Escape("%"), @"\%");
+            str = Regex.Replace(str, Regex.Escape("_"), @"\_");
+            str = Regex.Replace(str, Regex.Escape("["), @"\[");
+
+            return str;
         }
     }
 }

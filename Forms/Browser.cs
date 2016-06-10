@@ -30,19 +30,23 @@ namespace Dandaan.Forms
             Thread?.Abort();
         }
 
+        int pages => (count / PageSize) + (count % PageSize > 0 ? 1 : 0);
         Form addForm;
         Timer timer;
         int count = 0;
+        bool search = false;
+        Control focused;
 
         protected DandaanAttribute DandaanAttribute;
         protected PropertyInfo[] PropertyInfos;
         protected System.Threading.Thread Thread;
         protected int Page = 1, PageSize = 100;
-        protected Func<int> CountFunc = SQL.Count<T>;
+        protected Func<T, int> CountFunc = SQL.Count;
         protected Action LoadAct;
         protected Func<bool> DeleteFunc;
         protected Action<Action> EditAct;
         protected Control View;
+        protected T SearchObj;
 
         private void buttonRefresh_Click(object sender, EventArgs e)
         {
@@ -54,7 +58,7 @@ namespace Dandaan.Forms
             go:
             disable();
 
-            count = CountFunc(); // this can be wrong under high load
+            count = CountFunc(SearchObj); // this can be wrong under high load
             if (label1.Text != count.ToString()) label1.Text = count.ToString();
             if (page > pages && page != 1) { page = pages; goto go; }
 
@@ -151,8 +155,6 @@ namespace Dandaan.Forms
             }
         }
 
-        Control focused;
-
         private void disable()
         {
             focused = null;
@@ -205,9 +207,6 @@ namespace Dandaan.Forms
             checkBox1.Checked = isChecked;
         }
 
-        int pages => (count / PageSize) + (count % PageSize > 0 ? 1 : 0);
-
-        bool search = false;
         private void buttonSearch_Click(object sender, EventArgs e)
         {
             var h = View.Height;
@@ -220,9 +219,10 @@ namespace Dandaan.Forms
             };
 
             var editor = new UserControls.Editor<T>(PropertyInfos, this, UserControls.EditorKind.Search,
-                searchAct: (T obj) =>
+                searchAct: (T searchObj) =>
                 {
-                    ;
+                    SearchObj = searchObj;
+                    buttonRefresh.PerformClick();
                 },
                 cancelAct: () =>
                 {
@@ -230,8 +230,16 @@ namespace Dandaan.Forms
                     View.Location = l;
                     search = false;
                     buttonSearch.Enabled = true;
+                    foreach (Control item in panel.Controls)
+                    {
+                        foreach (Control A in item.Controls) A.Dispose();
+                        item.Dispose();
+                    }
                     Controls.Remove(panel);
                     panel.Dispose();
+                    
+                    SearchObj = null;
+                    buttonRefresh.PerformClick();
                 });
 
             panel.Height = editor.Height;
@@ -247,6 +255,11 @@ namespace Dandaan.Forms
             search = true;
             buttonSearch.Enabled = false;
             Controls.Add(panel);
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            buttonRefresh.PerformClick();
         }
 
         private void View_KeyDown(object sender, KeyEventArgs e)

@@ -34,7 +34,7 @@ namespace Dandaan.Forms
                 Thread = Common.Thread(() =>
                 {
                     bool odd = true;
-                    var items = SQL.Select<T>(Page, PageSize).Select((row) =>
+                    var items = SQL.Select(Page, PageSize, SearchObj, true).Select((row) =>
                     {
                         odd = !odd;
                         return new ListViewItem(PropertyInfos.Select(item => item.GetValue(row).ToString()).ToArray())
@@ -149,7 +149,10 @@ namespace Dandaan.Forms
                 {
                     var value = listView1.SelectedItems[0].SubItems[i].Text;
                     var p = PropertyInfos[i];
+
                     var t = p.PropertyType;
+                    var ut = Nullable.GetUnderlyingType(t);
+                    if (ut != null) t = ut;
 
                     if (t == typeof(string))
                         p.SetValue(obj, value);

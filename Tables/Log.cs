@@ -19,16 +19,26 @@ namespace Dandaan.Tables
         [Column]//(IsPrimaryKey = true, IsDbGenerated = true)]
         [Dandaan(Sql = "[int] IDENTITY NOT NULL CONSTRAINT [PK_" + nameof(Log) + "] PRIMARY KEY CLUSTERED (Id DESC)",
             Label = "شماره")]
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         [Column]//(IsDbGenerated = true)]
         [Dandaan(Sql = "[smalldatetime] NOT NULL",// we don't use defaults, it makes things complicated CONSTRAINT [DF_" + nameof(Log) + "_" + nameof(DateTime) + "] DEFAULT (getdate())",
             Label = "تاریخ")]
-        public DateTime DateTime { get; set; } = DateTime.Now;
+        public DateTime? DateTime { get; set; }// = DateTime.Now;
 
         [Column]
         [Dandaan(Sql = "[nvarchar](1000) NOT NULL",
             Label = "پیام")]
         public string Message { get; set; }
+
+        public Log() : this(true) { }
+
+        public Log(bool setDefaults)
+        {
+            if (setDefaults)
+            {
+                DateTime = System.DateTime.Now;
+            }
+        }
     }
 }

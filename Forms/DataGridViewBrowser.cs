@@ -21,7 +21,7 @@ namespace Dandaan.Forms
             LoadAct = () =>
             {
                 // testing
-                CountFunc = () => 1000;
+                CountFunc = (s) => 1000;
                 var x = new List<DataGridViewRow>(1000);
                 for (int i = 0; i < 1000; i++) { var r = new DataGridViewRow(); r.Cells.Add(new DataGridViewTextBoxCell() { Value = i }); x.Add(r); }
                 Func<DataGridViewRow[]> ArrayFunc = () => { return x.Skip((Page - 1) * PageSize).Take(PageSize).Select((k) => { Invoke(new Action(() => { k.Cells[0].Value = (int)k.Cells[0].Value + DateTime.Now.Second; })); return k; }).ToArray(); };

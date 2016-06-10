@@ -154,6 +154,7 @@
             this.checkBox1.TabIndex = 2;
             this.checkBox1.Text = "خودکار";
             this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             this.checkBox1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.textBox2_MouseClick);
             // 
             // buttonDelete

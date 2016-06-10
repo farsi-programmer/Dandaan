@@ -67,7 +67,10 @@ namespace Dandaan
 
             DB.Log(str);
 
-            MessageBox.Show("برنامه با مشکل مواجه شده است\r\n" + str, Title);
+            //MessageBox.Show("برنامه با مشکل مواجه شده است\r\n" + str, Title);
+            var f = new Forms.Message() { Text = Title };
+            f.textBox1.Text = "برنامه با مشکل مواجه شده است\r\n" + str;
+            f.Show();
         }
 
         private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)

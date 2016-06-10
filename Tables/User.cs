@@ -28,7 +28,7 @@ namespace Dandaan.Tables
 
         [Column]//(IsDbGenerated = true)]
         [Dandaan(Sql = "[tinyint] NOT NULL")]// CONSTRAINT [DF_" + nameof(User) + "_" + nameof(Enabled) + "] DEFAULT ((1))")]
-        public byte Enabled { get; set; } = 1;
+        public byte? Enabled { get; set; } = 1;
 
         public static int Count()
         {

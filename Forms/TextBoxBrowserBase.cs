@@ -42,7 +42,7 @@ namespace Dandaan.Forms
                         Invoke(() => Controls.Add(rtb));
                     }
 
-                    var lines = SQL.Select<T>(Page, PageSize).Select((row) =>
+                    var lines = SQL.Select<T>(Page, PageSize, SearchObj, true).Select((row) =>
                     {
                         var A = new StringBuilder();
                         foreach (var item in PropertyInfos)
