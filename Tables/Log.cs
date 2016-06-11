@@ -24,14 +24,14 @@ namespace Dandaan.Tables
         [Column]//(IsDbGenerated = true)]
         [Dandaan(Sql = "[smalldatetime] NOT NULL",// we don't use defaults, it makes things complicated CONSTRAINT [DF_" + nameof(Log) + "_" + nameof(DateTime) + "] DEFAULT (getdate())",
             Label = "تاریخ")]
-        public DateTime? DateTime { get; set; }// = DateTime.Now;
+        public DateTime? DateTime { get; set; } = System.DateTime.Now;
 
         [Column]
         [Dandaan(Sql = "[nvarchar](1000) NOT NULL",
             Label = "پیام")]
         public string Message { get; set; }
 
-        public Log() : this(true) { }
+        /*public Log() : this(true) { }
 
         public Log(bool setDefaults)
         {
@@ -39,6 +39,6 @@ namespace Dandaan.Tables
             {
                 DateTime = System.DateTime.Now;
             }
-        }
+        }*/
     }
 }

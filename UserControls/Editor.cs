@@ -227,16 +227,19 @@ namespace Dandaan.UserControls
 
         private T getObj(PropertyInfo[] propertyInfos, EditorKind kind)
         {
-            T obj;
+            /*T obj;
             var constructor = typeof(T).GetConstructor(new Type[] { typeof(bool) });
             if (constructor != null)
                 obj = (T)constructor.Invoke(new object[] { false });
             else
-                obj = Activator.CreateInstance<T>();
+                obj = Activator.CreateInstance<T>();*/
+            T obj = Activator.CreateInstance<T>();
             //bool blank = true;
 
             foreach (var item in propertyInfos)
             {
+                item.SetValue(obj, null);
+
                 var p = Controls[item.Name].GetType().GetProperty(nameof(TextBox.ReadOnly));
                 var value = Controls[item.Name].Text;
 
