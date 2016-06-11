@@ -83,8 +83,11 @@ namespace Dandaan.Forms
             buttonRefresh.Enabled = textBox2.Enabled = true;
 
             buttonAdd.Enabled = DandaanAttribute.EnableAdd;
-            buttonEdit.Enabled = DandaanAttribute.EnableEdit;
-            buttonDelete.Enabled = DandaanAttribute.EnableDelete;
+            if (count > 0)
+            {
+                buttonEdit.Enabled = DandaanAttribute.EnableEdit;
+                buttonDelete.Enabled = DandaanAttribute.EnableDelete;
+            }
             buttonSearch.Enabled = DandaanAttribute.EnableSearch && !search;
 
             focused?.Select();

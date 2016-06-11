@@ -262,7 +262,9 @@ namespace Dandaan.UserControls
                             var ps = new object[] { value, null };
                             var v = m.Invoke(null, ps);
                             if ((bool)v) item.SetValue(obj, ps[1]);
-                            else Controls[item.Name].Text = "";
+                            //else Controls[item.Name].Text = "";
+                            else if (Controls[item.Name].Text != "")
+                                Controls[item.Name].BackColor = Color.MistyRose;
                         }
                     }
                     else if (kind == EditorKind.Edit || kind == EditorKind.Search)

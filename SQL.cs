@@ -302,13 +302,15 @@ end;");
             {
                 using (var context = DB.DataContext)
                 {
-
                     var pi = context.GetType().GetField(typeof(T).Name + "s");
 
                     return ((System.Data.Linq.Table<T>)(pi.GetValue(context))).Count();
                 }
             }
         }
+
+        // i am doing this because LINQ2SQL doesn't understand reflection
+        // another method is to compile the c# code on the fly
 
         public static IEnumerable<T> Select<T>(int page, int pageSize, T obj, bool like = false) where T : class
         {

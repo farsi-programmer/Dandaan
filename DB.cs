@@ -378,9 +378,29 @@ namespace Dandaan
 
         public static DataContext DataContext => new DataContext(ConnectionString);
 
-        public static void DataContextRun(Action<DataContext> act)
+        public static void ContextRun(Action<DataContext> act)
         {
             using (var context = DataContext) act(context);
+        }
+
+        public static void ConnectionRun(Action<SqlConnection> act)
+        {
+            using (var connection = Connection) act(connection);
+        }
+
+        public static void ExecuteReader(string sql, Action<SqlDataReader> act,
+            CommandBehavior commandBehavior = CommandBehavior.Default)
+        {
+            ConnectionRun((connection) =>
+            {
+                var cmd = connection.CreateCommand();
+                cmd.CommandText = sql;
+                var reader = cmd.ExecuteReader(commandBehavior);
+
+                while (reader.Read()) act(reader);
+
+                reader.Close();
+            });
         }
 
         public static object ExecuteScalar(string sql, params SqlParameter[] sps)
@@ -450,13 +470,40 @@ namespace Dandaan
             if (!File.Exists(path))
             {
                 // detach_db if the file is deleted
-                if ((int)ExecuteScalar($@"if db_id(N'{path}') is not null select 1
+
+                /*if ((int)ExecuteScalar($@"if db_id(N'{path}') is not null select 1
 else select count(*) from sys.databases where [name]=N'{path}'") > 0)
-                    ExecuteScalar($@"USE [master]
+                    ExecuteScalar($@"USE [master];
 -- Drop Connections
 --ALTER DATABASE [{path}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-EXEC master.dbo.sp_detach_db @dbname = N'{path}';");
-                         
+EXEC master.dbo.sp_detach_db @dbname = N'{path}';");*/
+
+                //
+
+                //try
+                {
+                    string DBName = "DBName", Location = "Location";
+                    ExecuteReader($@"USE [master];
+SELECT
+db.name AS {DBName},
+--type_desc AS FileType,
+Physical_Name AS {Location}
+FROM
+sys.master_files mf
+INNER JOIN
+sys.databases db
+ON db.database_id=mf.database_id
+--WHERE db.name LIKE N'Dandaan_%'", (reader) =>
+                           {
+                               if (reader[Location] as string == path)
+                                   ExecuteScalar($@"USE [master];
+EXEC master.dbo.sp_detach_db @dbname = N'{reader[DBName]}';");
+                           });
+                }
+                //catch { }
+                
+                //
+
                 ExecuteScalar($@"create database
 {name}_{Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture)/*this is how ef does it*/}
 on (name={name}, filename='{path}')
