@@ -37,7 +37,11 @@ namespace Dandaan.Forms
                     var items = SQL.Select(Page, PageSize, SearchObj, true).Select((row) =>
                     {
                         odd = !odd;
-                        return new ListViewItem(PropertyInfos.Select(item => item.GetValue(row).ToString()).ToArray())
+                        return new ListViewItem(PropertyInfos.Select(item =>
+                        {
+                            var value = item.GetValue(row);
+                            return value != null ? value.ToString() : "";
+                        }).ToArray())
                         { BackColor = odd ? Color.LightCyan : Color.FromArgb(0xcf, 0xff, 0xcf) };
                     }).ToArray();
 
@@ -209,10 +213,9 @@ namespace Dandaan.Forms
                                 return;
                             }
 
-                    var editForm = new Form() { Text = DandaanAttribute.Label };
+                    var editForm = new Editor<T>(DandaanAttribute.Label);
                     var editor = new UserControls.Editor<T>(PropertyInfos, editForm, UserControls.EditorKind.Edit, obj, act);
-                    editForm.Controls.Add(editor);
-                    editForm.ClientSize = editor.ClientSize;
+                    editForm.setEditor(editor);
 
                     ShowForm(ref editForm, false);
                 }

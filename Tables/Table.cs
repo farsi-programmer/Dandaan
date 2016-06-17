@@ -16,12 +16,13 @@ namespace Dandaan.Tables
     public class Table
     {
         [Column]
-        [DandaanColumn(Sql = "[int] IDENTITY NOT NULL CONSTRAINT [IX_" + nameof(Table) + "] UNIQUE NONCLUSTERED")]
+        [DandaanColumn(Sql = "[int] IDENTITY NOT NULL CONSTRAINT [IX_" + nameof(Table) + @"]
+UNIQUE NONCLUSTERED")]
         public int? Id { get; set; }
 
         [Column]
-        [DandaanColumn(Sql = "[nvarchar](100) NOT NULL CONSTRAINT [PK_" + nameof(Table) + @"] PRIMARY KEY CLUSTERED 
-([Name] ASC, [Version] DESC)")]
+        [DandaanColumn(Sql = "[nvarchar](100) NOT NULL CONSTRAINT [PK_" + nameof(Table) + @"]
+PRIMARY KEY CLUSTERED ([Name] ASC, [Version] DESC)")]
         public string Name { get; set; }
 
         [Column]

@@ -33,94 +33,165 @@ namespace Dandaan.UserControls
             Label label;
             Color color = Color.Empty;
 
+            Action<Control, PropertyInfo, DandaanColumnAttribute> act = (control, item, da) =>
+            {
+                control.Width = textBoxWidth;
+                control.Margin = new Padding(0);
+                control.Padding = new Padding(0);
+                control.Location = new Point(xMargin, y);
+                control.RightToLeft = RightToLeft.Yes;
+                control.Name = item.Name;
+                control.TabIndex = tabIndex++;
+
+                //
+
+                if (control is TextBox)
+                {
+                    if (kind != EditorKind.Search)
+                    {
+                        if (Common.IsMatch(da.Sql, @"[\s]+identity[\s]+"))
+                            (control as TextBox).ReadOnly = true;
+                        else if (kind == EditorKind.Edit && Reflection.GetColumnAttribute(item).IsPrimaryKey)
+                            (control as TextBox).ReadOnly = true;
+                    }
+                }
+                else if (control is ComboBox)
+                {
+                    //(control as ComboBox).DropDownStyle = ComboBoxStyle.DropDownList;
+                    (control as ComboBox).AutoCompleteSource = AutoCompleteSource.ListItems;
+                    (control as ComboBox).AutoCompleteMode = AutoCompleteMode.Append;
+                }
+
+                //
+
+                control.Text = null != obj ? item.GetValue(obj).ToString() : "";
+
+                if (control is TextBox)
+                    (control as Controls.TextBox).DefaultText = control.Text;
+                else if (control is ComboBox)
+                {
+                    (control as Controls.ComboBox).Items.AddRange(Enum.GetNames(item.PropertyType));
+
+                    if (control.Text == "") (control as Controls.ComboBox).SelectedIndex = 0;
+
+                    (control as Controls.ComboBox).DefaultText = control.Text;
+
+                    (control as Controls.ComboBox).LostFocus += (_, __) =>
+                    {
+                        if (!form.Disposing)
+                        {
+                            if (control.Text != (control as Controls.ComboBox).DefaultText &&
+                            !(control as ComboBox).Items.Contains(control.Text))
+                                control.Text = (control as Controls.ComboBox).DefaultText;
+                        }
+                    };
+
+                    (control as Controls.ComboBox).PreviewKeyDown += (_, __) =>
+                    {
+                        if (__.KeyCode == Keys.Enter) (control as Controls.ComboBox).RaiseLostFocus();
+                    };
+                }
+
+                //
+
+                color = control.BackColor;
+
+                var textChanged = new EventHandler((_, __) =>
+                {
+                    if ((control is TextBox && control.Text != (control as Controls.TextBox).DefaultText)
+                    || (control is ComboBox && control.Text != (control as Controls.ComboBox).DefaultText))
+                    {
+                        control.BackColor = Color.LightYellow;//LightGoldenrodYellow;//MistyRose;
+                        if (kind != EditorKind.Search)
+                            (form.AcceptButton as Button).Enabled = true;
+                    }
+                    else
+                    {
+                        control.BackColor = color;
+                        if (kind != EditorKind.Search)
+                        {
+                            (form.AcceptButton as Button).Enabled = false;
+
+                            foreach (Control A in Controls)
+                                if ((A is TextBox && A.Text != (A as Controls.TextBox).DefaultText && !(A as TextBox).ReadOnly)
+                                || (A is ComboBox && A.Text != (A as Controls.ComboBox).DefaultText))
+                                    (form.AcceptButton as Button).Enabled = true;
+                        }
+                    }
+
+                    if (kind == EditorKind.Search) searchAct(getObj(propertyInfos, kind));
+                });
+
+                //
+
+                if (control is TextBox)
+                    (control as Controls.TextBox).TextChanged += textChanged;
+                else if (control is ComboBox)
+                    (control as Controls.ComboBox).TextChanged += textChanged;
+
+                //
+
+                if (xMargin + control.Width + margin > maxX) maxX = xMargin + control.Width + margin;
+            };
+
             foreach (var item in propertyInfos)
             {
                 var da = Reflection.GetDandaanColumnAttribute(item);
 
-                //if (item.PropertyType == typeof(string))
+                Control control = null;
+
+                //
+
+                if (item.PropertyType.IsEnum)
                 {
-                    //
-
-                    var textBox = new Controls.TextBox()
-                    {
-                        Width = textBoxWidth,
-                        Margin = new Padding(0),
-                        Padding = new Padding(0),
-                        Location = new Point(xMargin, y),
-                        ReadOnly = kind == EditorKind.Search ? false : Common.IsMatch(da.Sql, @"[\s]+identity[\s]+"),
-                        RightToLeft = RightToLeft.Yes,
-                        Name = item.Name,
-                        TabIndex = tabIndex++,
-                    };
-
-                    textBox.DefaultText = textBox.Text = null != obj ? item.GetValue(obj).ToString() : "";
-                    color = textBox.BackColor;
-
-                    textBox.TextChanged += (_, __) =>
-                    {
-                        if (textBox.Text != textBox.DefaultText)
-                        {
-                            textBox.BackColor = Color.LightYellow;//LightGoldenrodYellow;//MistyRose;
-                            if (kind != EditorKind.Search)
-                                (form.AcceptButton as Button).Enabled = true;
-                        }
-                        else
-                        {
-                            textBox.BackColor = color;
-                            if (kind != EditorKind.Search)
-                            {
-                                (form.AcceptButton as Button).Enabled = false;
-                                foreach (Control A in Controls)
-                                    if (A is TextBox && A.Text != (A as Controls.TextBox).DefaultText && !(A as TextBox).ReadOnly)
-                                        (form.AcceptButton as Button).Enabled = true;
-                            }
-                        }
-
-                        if (kind == EditorKind.Search) searchAct(getObj(propertyInfos, kind));
-                    };
-
-                    textBox.MouseClick += (_, __) => textBox.SelectAll();
-
-                    if (xMargin + textBox.Width + margin > maxX) maxX = xMargin + textBox.Width + margin;
-
-                    //
-
-                    var labelText = da.Label + ":";
-
-                    label = new Label()
-                    {
-                        Text = labelText,
-                        TextAlign = ContentAlignment.TopRight,
-                        //BorderStyle = BorderStyle.FixedSingle,
-                        Margin = new Padding(0),
-                        Padding = new Padding(0),
-                        RightToLeft = RightToLeft.Yes,
-                        AutoSize = true,
-                    };
-
-                    /*Size s;
-
-                    using (var g = label.CreateGraphics())
-                        s = g.MeasureString(labelText, Font).ToSize();
-
-                    label.Size = new Size(s.Width + 5, s.Height);*/
-
-                    label.Location = new Point(0, y);
-
-                    //
-
-                    if (label.Height > textBox.Height) textBox.Location = new Point(textBox.Location.X, textBox.Location.Y
-                        + (label.Height - textBox.Height) / 2);
-                    else if (textBox.Height > label.Height) label.Location = new Point(label.Location.X, label.Location.Y
-                        + (textBox.Height - label.Height) / 2);
-
-                    y += (label.Height > textBox.Height ? label.Height : textBox.Height) + xMargin;
-
-                    //
-
-                    Controls.Add(label);
-                    Controls.Add(textBox);
+                    control = new Controls.ComboBox();
+                    act(control, item, da);
                 }
+                else
+                {
+                    control = new Controls.TextBox();
+                    act(control, item, da);
+
+                    control.MouseClick += (_, __) => (control as Controls.TextBox).SelectAll();
+                }
+
+                //
+
+                var labelText = da.Label + ":";
+
+                label = new Label()
+                {
+                    Text = labelText,
+                    TextAlign = ContentAlignment.TopRight,
+                    //BorderStyle = BorderStyle.FixedSingle,
+                    Margin = new Padding(0),
+                    Padding = new Padding(0),
+                    RightToLeft = RightToLeft.Yes,
+                    AutoSize = true,
+                };
+
+                /*Size s;
+
+                using (var g = label.CreateGraphics())
+                    s = g.MeasureString(labelText, Font).ToSize();
+
+                label.Size = new Size(s.Width + 5, s.Height);*/
+
+                label.Location = new Point(0, y);
+
+                //
+
+                if (label.Height > control.Height) control.Location = new Point(control.Location.X, control.Location.Y
+                    + (label.Height - control.Height) / 2);
+                else if (control.Height > label.Height) label.Location = new Point(label.Location.X, label.Location.Y
+                    + (control.Height - label.Height) / 2);
+
+                y += (label.Height > control.Height ? label.Height : control.Height) + xMargin;
+
+                //
+
+                Controls.Add(label);
+                Controls.Add(control);
             }
 
             //
@@ -165,9 +236,9 @@ namespace Dandaan.UserControls
                 {
                     obj = getObj(propertyInfos, kind);
 
-                //if (blank) MessageBox.Show("لطفا ");
-                //else
-                {
+                    //if (blank) MessageBox.Show("لطفا ");
+                    //else
+                    {
                         if (kind == EditorKind.Add)
                             SQL.Insert(obj);
                         else if (kind == EditorKind.Edit)
@@ -183,14 +254,28 @@ namespace Dandaan.UserControls
 
                         foreach (Control item in Controls)
                             if (item is TextBox)
+                            {
                                 if (kind == EditorKind.Add)
                                     item.Text = "";
                                 else if (!(item as TextBox).ReadOnly)
                                 {
                                     (item as Controls.TextBox).DefaultText = item.Text;
                                     (item as Controls.TextBox).RaiseTextChanged();
-                                //item.GetType().GetMethod(nameof(OnTextChanged), BindingFlags.NonPublic | BindingFlags.Instance)
-                                //.Invoke(item, new object[] { new EventArgs() });
+                                    //item.GetType().GetMethod(nameof(OnTextChanged), BindingFlags.NonPublic | BindingFlags.Instance)
+                                    //.Invoke(item, new object[] { new EventArgs() });
+                                }
+                            }
+                            else if (item is ComboBox)
+                            {
+                                if (kind == EditorKind.Add)
+                                    item.Text = (item as Controls.ComboBox).DefaultText;
+                                else
+                                {
+                                    (item as Controls.ComboBox).DefaultText = item.Text;
+                                    item.Text = "";
+                                    item.Text = (item as Controls.ComboBox).DefaultText;
+                                    // not working (item as Controls.ComboBox).RaiseTextChanged();
+                                }
                             }
                     }
                 };
@@ -240,16 +325,17 @@ namespace Dandaan.UserControls
             {
                 item.SetValue(obj, null);
 
-                var p = Controls[item.Name].GetType().GetProperty(nameof(TextBox.ReadOnly));
-                var value = Controls[item.Name].Text;
-
                 var t = item.PropertyType;
                 var ut = Nullable.GetUnderlyingType(t);
                 if (ut != null) t = ut;
 
-                if (p != null)
+                var p = Controls[item.Name].GetType().GetProperty(nameof(TextBox.ReadOnly));
+
+                if (Controls[item.Name] is ComboBox || p != null)
                 {
-                    if (!(bool)p.GetValue(Controls[item.Name]))
+                    var value = Controls[item.Name].Text;
+
+                    if (Controls[item.Name] is ComboBox || !(bool)p.GetValue(Controls[item.Name]))
                     {
                         if (t == typeof(string))
                             item.SetValue(obj, value);

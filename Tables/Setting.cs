@@ -15,7 +15,8 @@ namespace Dandaan.Tables
     {
         [Column(IsPrimaryKey = true)]
         [DandaanColumn(Sql = "[int] NOT NULL CONSTRAINT [PK_" + nameof(Setting) + @"] PRIMARY KEY CLUSTERED
-CONSTRAINT [FK_" + nameof(Setting) + "_" + nameof(User) + @"] FOREIGN KEY REFERENCES [dbo].[" + nameof(User) + "] ([" + nameof(User.Id) + "])")]
+CONSTRAINT [FK_" + nameof(Setting) + "_" + nameof(User) + @"]
+FOREIGN KEY REFERENCES [dbo].[" + nameof(User) + "] ([" + nameof(User.Id) + "])")]
         public int UserId { get; set; }
 
         [Column]

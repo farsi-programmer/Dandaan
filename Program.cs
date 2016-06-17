@@ -70,6 +70,7 @@ namespace Dandaan
             //MessageBox.Show("برنامه با مشکل مواجه شده است\r\n" + str, Title);
             var f = new Forms.Message() { Text = Title };
             f.textBox1.Text = "برنامه با مشکل مواجه شده است\r\n" + str;
+            f.button1.Select();
             f.Show();
         }
 

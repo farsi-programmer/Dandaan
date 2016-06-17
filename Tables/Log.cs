@@ -13,11 +13,12 @@ using System.Threading.Tasks;
 namespace Dandaan.Tables
 {
     [Table(Name = nameof(Log))]
-    [Dandaan(Label = "لاگها", EnableSearch = true)]
+    [Dandaan(Label = "لاگ​ها", EnableSearch = true)]
     public class Log
     {
         [Column]//(IsPrimaryKey = true, IsDbGenerated = true)]
-        [DandaanColumn(Sql = "[int] IDENTITY NOT NULL CONSTRAINT [PK_" + nameof(Log) + "] PRIMARY KEY CLUSTERED (Id DESC)",
+        [DandaanColumn(Sql = "[int] IDENTITY NOT NULL CONSTRAINT [PK_" + nameof(Log) + @"]
+PRIMARY KEY CLUSTERED (Id DESC)",
             Label = "شماره")]
         public int? Id { get; set; }
 

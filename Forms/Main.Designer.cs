@@ -31,6 +31,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.فایلToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.فرمجدیدToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.دادهجدیدToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.لاگToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.خروجToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.راهنماToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -57,7 +59,6 @@
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.button10 = new System.Windows.Forms.Button();
-            this.فرمجدیدToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.toolStrip2.SuspendLayout();
@@ -81,11 +82,26 @@
             // 
             this.فایلToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.فرمجدیدToolStripMenuItem,
+            this.دادهجدیدToolStripMenuItem,
             this.لاگToolStripMenuItem,
             this.خروجToolStripMenuItem});
             this.فایلToolStripMenuItem.Name = "فایلToolStripMenuItem";
             this.فایلToolStripMenuItem.Size = new System.Drawing.Size(49, 29);
             this.فایلToolStripMenuItem.Text = "فایل";
+            // 
+            // فرمجدیدToolStripMenuItem
+            // 
+            this.فرمجدیدToolStripMenuItem.Name = "فرمجدیدToolStripMenuItem";
+            this.فرمجدیدToolStripMenuItem.Size = new System.Drawing.Size(152, 30);
+            this.فرمجدیدToolStripMenuItem.Text = "فرم جدید";
+            this.فرمجدیدToolStripMenuItem.Click += new System.EventHandler(this.فرمجدیدToolStripMenuItem_Click);
+            // 
+            // دادهجدیدToolStripMenuItem
+            // 
+            this.دادهجدیدToolStripMenuItem.Name = "دادهجدیدToolStripMenuItem";
+            this.دادهجدیدToolStripMenuItem.Size = new System.Drawing.Size(152, 30);
+            this.دادهجدیدToolStripMenuItem.Text = "داده جدید";
+            this.دادهجدیدToolStripMenuItem.Click += new System.EventHandler(this.دادهجدیدToolStripMenuItem_Click);
             // 
             // لاگToolStripMenuItem
             // 
@@ -342,13 +358,6 @@
             this.button10.UseVisualStyleBackColor = true;
             this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
-            // فرمجدیدToolStripMenuItem
-            // 
-            this.فرمجدیدToolStripMenuItem.Name = "فرمجدیدToolStripMenuItem";
-            this.فرمجدیدToolStripMenuItem.Size = new System.Drawing.Size(152, 30);
-            this.فرمجدیدToolStripMenuItem.Text = "فرم جدید";
-            this.فرمجدیدToolStripMenuItem.Click += new System.EventHandler(this.فرمجدیدToolStripMenuItem_Click);
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
@@ -417,6 +426,7 @@
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Button button10;
         private System.Windows.Forms.ToolStripMenuItem فرمجدیدToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem دادهجدیدToolStripMenuItem;
     }
 }
 

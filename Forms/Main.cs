@@ -191,9 +191,18 @@ namespace Dandaan.Forms
             MessageBox.Show(richTextBox1.Rtf);
         }
 
+        ListViewBrowser<Tables.UserTable> userTables = null;
+
         private void فرمجدیدToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ;
+            ShowForm(ref userTables);
+        }
+
+        ListViewBrowser<Tables.Column> columns = null;
+
+        private void دادهجدیدToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowForm(ref columns);
         }
     }
 

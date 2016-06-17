@@ -20,6 +20,10 @@ namespace Dandaan
 
         public Table<Tables.Patient> Patients;
 
+        public Table<Tables.UserTable> UserTables;
+
+        public Table<Tables.Column> Columns;
+
         public DataContext(string connection) : base(connection) { }
 
         public DataContext(SqlConnection connection) : base(connection) { }

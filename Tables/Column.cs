@@ -13,23 +13,33 @@ using System.Threading.Tasks;
 namespace Dandaan.Tables
 {
     [Table(Name = nameof(Column))]
-    [Dandaan(Label = "مشخصات")]
+    [Dandaan(Label = "داده​ها", EnableAdd = true, EnableDelete = true, EnableSearch = true, EnableEdit = true)]
     public class Column
     {
         [Column]
-        [DandaanColumn(Sql = "[int] IDENTITY NOT NULL CONSTRAINT [PK_" + nameof(Column) + @"]
-PRIMARY KEY CLUSTERED (Id DESC)",
+        [DandaanColumn(Sql = "[int] IDENTITY NOT NULL CONSTRAINT [IX_" + nameof(Column) + @"]
+UNIQUE NONCLUSTERED",
             Label = "شماره")]
         public int? Id { get; set; }
+
+        //[Column]
+        //[DandaanColumn(Sql = "[nvarchar](100) NOT NULL",
+        //    Label = "نام")]
+        //public string Name { get; set; }
+
+        [Column(IsPrimaryKey = true)]
+        [DandaanColumn(Sql = "[nvarchar](100) NOT NULL CONSTRAINT [PK_" + nameof(Column) + @"]
+PRIMARY KEY CLUSTERED ([Label] ASC, [UserTableId] ASC)",
+            Label = "نام")]
+        public string Label { get; set; }
 
         [Column]
         [DandaanColumn(Sql = "[nvarchar](100) NOT NULL")]
         public string Type { get; set; }
 
         [Column]
-        [DandaanColumn(Sql = "[nvarchar](100) NOT NULL",
-            Label = "نام")]
-        public string Name { get; set; }
+        [DandaanColumn(Sql = "[int] NOT NULL")]
+        public NoOrYes Nullable { get; set; }
 
         [Column]
         [DandaanColumn(Sql = "[nvarchar](1000) NOT NULL",
@@ -37,29 +47,24 @@ PRIMARY KEY CLUSTERED (Id DESC)",
         public object DefaultValue { get; set; }
 
         [Column]
-        [DandaanColumn(Sql = "[nvarchar](100) NOT NULL",
-            Label = "نام")]
-        public string Label { get; set; }
-
-        [Column]
-        [DandaanColumn(Sql = "[tinyint] NOT NULL",
+        [DandaanColumn(Sql = "[int] NOT NULL",
             Label = "امکان اضافه")]
-        public byte EnableAdd { get; set; }
+        public NoOrYes EnableAdd { get; set; }
 
         [Column]
-        [DandaanColumn(Sql = "[tinyint] NOT NULL",
+        [DandaanColumn(Sql = "[int] NOT NULL",
             Label = "امکان حذف")]
-        public byte EnableDelete { get; set; }
+        public NoOrYes EnableDelete { get; set; }
 
         [Column]
-        [DandaanColumn(Sql = "[tinyint] NOT NULL",
+        [DandaanColumn(Sql = "[int] NOT NULL",
             Label = "امکان ویرایش")]
-        public byte EnableEdit { get; set; }
+        public NoOrYes EnableEdit { get; set; }
 
         [Column]
-        [DandaanColumn(Sql = "[tinyint] NOT NULL",
+        [DandaanColumn(Sql = "[int] NOT NULL",
             Label = "امکان جستجو")]
-        public byte EnableSearch { get; set; }
+        public NoOrYes EnableSearch { get; set; }
 
         [Column]
         [DandaanColumn(Sql = "[int] NOT NULL")]
@@ -70,22 +75,22 @@ PRIMARY KEY CLUSTERED (Id DESC)",
         public int Length { get; set; }
 
         [Column]
-        [DandaanColumn(Sql = "[tinyint] NOT NULL")]
-        public byte Null { get; set; }
+        [DandaanColumn(Sql = "[int] NOT NULL")]
+        public NoOrYes Null { get; set; }
 
         [Column]
-        [DandaanColumn(Sql = "[tinyint] NOT NULL")]
-        public byte Identity { get; set; }
+        [DandaanColumn(Sql = "[int] NOT NULL")]
+        public NoOrYes Identity { get; set; }
 
         [Column]
-        [DandaanColumn(Sql = "[tinyint] NOT NULL")]
-        public byte PrimaryKey { get; set; }
+        [DandaanColumn(Sql = "[int] NOT NULL")]
+        public NoOrYes PrimaryKey { get; set; }
 
         [Column]
-        [DandaanColumn(Sql = "[tinyint] NOT NULL")]
-        public byte Unique { get; set; }
+        [DandaanColumn(Sql = "[int] NOT NULL")]
+        public NoOrYes Unique { get; set; }
 
-        [Column]
+        [Column(IsPrimaryKey = true)]
         [DandaanColumn(Sql = "[int] NOT NULL CONSTRAINT [FK_" + nameof(Column) + "_" + nameof(UserTable) + @"]
 FOREIGN KEY REFERENCES [dbo].[" + nameof(UserTable) + "] ([" + nameof(UserTable.Id) + "])")]
         public int UserTableId { get; set; }
@@ -93,6 +98,6 @@ FOREIGN KEY REFERENCES [dbo].[" + nameof(UserTable) + "] ([" + nameof(UserTable.
         [Column]
         [DandaanColumn(Sql = "[int] CONSTRAINT [FK_" + nameof(Column) + "_" + nameof(Column) + @"]
 FOREIGN KEY REFERENCES [dbo].[" + nameof(Column) + "] ([" + nameof(Id) + "])")]
-        public int ReferenceColumnId { get; set; }
+        public int? ReferenceColumnId { get; set; }
     }
 }

@@ -39,7 +39,7 @@ namespace Dandaan
                     act();
                 }
                 catch (ThreadAbortException) { }
-                catch (Exception ex)
+                catch (Exception ex) when (!System.Diagnostics.Debugger.IsAttached)
                 {
                     while (ex.InnerException != null) ex = ex.InnerException;
 
@@ -48,6 +48,7 @@ namespace Dandaan
                     //MessageBox.Show("برنامه با مشکل مواجه شده است\r\n" + ex.ToString(), Program.Title);
                     var f = new Forms.Message() { Text = Program.Title };
                     f.textBox1.Text = "برنامه با مشکل مواجه شده است\r\n" + ex.ToString();
+                    f.button1.Select();
                     f.ShowDialog();
                 }
             });

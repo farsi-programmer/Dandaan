@@ -13,43 +13,47 @@ using System.Threading.Tasks;
 namespace Dandaan.Tables
 {
     [Table(Name = nameof(UserTable))]
-    [Dandaan(Label = "فرمها")]
+    [Dandaan(Label = "فرم​ها", EnableAdd = true, EnableDelete = true, EnableSearch = true, EnableEdit = true)]
     public class UserTable
     {
         [Column]
-        [DandaanColumn(Sql = "[int] IDENTITY NOT NULL CONSTRAINT [PK_" + nameof(UserTable) + @"]
-PRIMARY KEY CLUSTERED (Id DESC)",
+        [DandaanColumn(Sql = "[int] IDENTITY NOT NULL CONSTRAINT [IX_" + nameof(UserTable) + @"]
+UNIQUE NONCLUSTERED",
             Label = "شماره")]
         public int? Id { get; set; }
 
-        [Column]
-        [DandaanColumn(Sql = "[nvarchar](100) NOT NULL",
-            Label = "نام")]
-        public string Name { get; set; }
+        //[Column]
+        //[DandaanColumn(Sql = "[nvarchar](100) NOT NULL",
+        //    Label = "نام")]
+        //public string Name { get; set; }
 
-        [Column]
-        [DandaanColumn(Sql = "[nvarchar](100) NOT NULL",
+        [Column(IsPrimaryKey = true)]
+        [DandaanColumn(Sql = "[nvarchar](100) NOT NULL CONSTRAINT [PK_" + nameof(UserTable) + @"]
+PRIMARY KEY CLUSTERED (Label DESC)",
             Label = "نام")]
         public string Label { get; set; }
 
         [Column]
-        [DandaanColumn(Sql = "[tinyint] NOT NULL",
+        [DandaanColumn(Sql = "[int] NOT NULL",
             Label = "امکان اضافه")]
-        public byte EnableAdd { get; set; }
+        public NoOrYes EnableAdd { get; set; }
 
         [Column]
-        [DandaanColumn(Sql = "[tinyint] NOT NULL",
+        [DandaanColumn(Sql = "[int] NOT NULL",
             Label = "امکان حذف")]
-        public byte EnableDelete { get; set; }
+        public NoOrYes EnableDelete { get; set; }
 
         [Column]
-        [DandaanColumn(Sql = "[tinyint] NOT NULL",
+        [DandaanColumn(Sql = "[int] NOT NULL",
             Label = "امکان ویرایش")]
-        public byte EnableEdit { get; set; }
+        public NoOrYes EnableEdit { get; set; }
 
         [Column]
-        [DandaanColumn(Sql = "[tinyint] NOT NULL",
+        [DandaanColumn(Sql = "[int] NOT NULL",
             Label = "امکان جستجو")]
-        public byte EnableSearch { get; set; }
+        public NoOrYes EnableSearch { get; set; }
     }
+
+    //public enum NoOrYes { No, Yes }
+    public enum NoOrYes { خیر, بله }
 }

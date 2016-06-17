@@ -34,21 +34,21 @@
             // 
             // textBox1
             // 
-            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(178)));
+            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(178)));
             this.textBox1.Location = new System.Drawing.Point(12, 12);
             this.textBox1.MaxLength = 3276700;
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(760, 399);
+            this.textBox1.Size = new System.Drawing.Size(760, 498);
             this.textBox1.TabIndex = 0;
             this.textBox1.WordWrap = false;
             // 
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(178)));
-            this.button1.Location = new System.Drawing.Point(691, 417);
+            this.button1.Location = new System.Drawing.Point(691, 519);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(81, 34);
             this.button1.TabIndex = 1;
@@ -60,11 +60,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 461);
+            this.ClientSize = new System.Drawing.Size(784, 562);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.textBox1);
             this.Name = "Message";
             this.Text = "Message";
+            this.Load += new System.EventHandler(this.Message_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -73,6 +74,6 @@
         #endregion
 
         public System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button button1;
+        public System.Windows.Forms.Button button1;
     }
 }

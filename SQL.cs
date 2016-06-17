@@ -168,7 +168,7 @@ COMMIT TRANSACTION;";
             if (IfNotExists.Length > 0)
             {
                 // we get an updlock and hold it for the duration of the transaction
-                sb.Append($@"if not exists (select * from [dbo].[{table}] with (updlock,holdlock) where ");
+                sb.Append($@"if not exists (select * from [dbo].[{table}] with (updlock, holdlock) where ");
 
                 for (int i = 0; i < IfNotExists.Length; i++)
                 {
@@ -186,7 +186,7 @@ insert into [dbo].[{table}] (");
 
             for (int i = 0; i < columns.Count; i++)
             {
-                sb.Append(columns[i]);
+                sb.Append($"[{columns[i]}]");
                 if (i != columns.Count - 1) sb.Append(", ");
             }            
 
@@ -228,7 +228,18 @@ end;");
                 {
                     //!Common.IsMatch(desc, @"[\s]+default[\(\s]+")
                     p1.Add(m.Name);
-                    p2.Add(SqlParameter(m.Name, t.GetProperty(m.Name).GetValue(obj), desc));
+
+                    var p = t.GetProperty(m.Name);
+                    var v = p.GetValue(obj);
+                    if (v == null)
+                    {
+                        if (p.PropertyType == typeof(string) || p.PropertyType == typeof(object))
+                            v = "";
+                        else
+                            v = DBNull.Value;
+                    }
+
+                    p2.Add(SqlParameter(m.Name, v, desc));
                 }
             }
 
@@ -321,7 +332,7 @@ end;");
 
             var sb = new StringBuilder($"SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY ");
 
-            foreach (var item in pi) sb.Append($"[t0].{item.Name},");
+            foreach (var item in pi) sb.Append($"[t0].[{item.Name}],");
             sb = sb.Remove(sb.Length - 1, 1);
 
             sb.Append($") AS [ROW_NUMBER],* FROM [{typeof(T).Name}] AS [t0]");

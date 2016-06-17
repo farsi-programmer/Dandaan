@@ -31,7 +31,7 @@ namespace Dandaan.Forms
         }
 
         int pages => (count / PageSize) + (count % PageSize > 0 ? 1 : 0);
-        Form addForm;
+        Editor<T> addForm;
         Timer timer;
         int count = 0;
         bool search = false;
@@ -183,10 +183,9 @@ namespace Dandaan.Forms
         {
             if (addForm == null || addForm.IsDisposed)
             {
-                addForm = new Form() { Text = DandaanAttribute.Label };
+                addForm = new Editor<T>(DandaanAttribute.Label);
                 var editor = new UserControls.Editor<T>(PropertyInfos, addForm, acceptAct: acceptAct);
-                addForm.Controls.Add(editor);
-                addForm.ClientSize = editor.ClientSize;
+                addForm.setEditor(editor);
             }
 
             ShowForm(ref addForm, false);

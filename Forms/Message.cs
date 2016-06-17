@@ -15,11 +15,18 @@ namespace Dandaan.Forms
         public Message()
         {
             InitializeComponent();
+
+            CancelButton = button1;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void Message_Load(object sender, EventArgs e)
+        {
+            ;
         }
     }
 }

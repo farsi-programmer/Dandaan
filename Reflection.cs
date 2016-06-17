@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,13 @@ namespace Dandaan
 {
     class Reflection
     {
+        public static ColumnAttribute GetColumnAttribute(MemberInfo m)
+        {
+            var attributes = (ColumnAttribute[])m.GetCustomAttributes<ColumnAttribute>();
+
+            return attributes[0];
+        }
+
         public static DandaanAttribute GetDandaanAttribute(MemberInfo m)
         {
             var attributes = (DandaanAttribute[])m.GetCustomAttributes<DandaanAttribute>();
