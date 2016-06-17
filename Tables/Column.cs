@@ -89,5 +89,10 @@ PRIMARY KEY CLUSTERED (Id DESC)",
         [DandaanColumn(Sql = "[int] NOT NULL CONSTRAINT [FK_" + nameof(Column) + "_" + nameof(UserTable) + @"]
 FOREIGN KEY REFERENCES [dbo].[" + nameof(UserTable) + "] ([" + nameof(UserTable.Id) + "])")]
         public int UserTableId { get; set; }
+
+        [Column]
+        [DandaanColumn(Sql = "[int] CONSTRAINT [FK_" + nameof(Column) + "_" + nameof(Column) + @"]
+FOREIGN KEY REFERENCES [dbo].[" + nameof(Column) + "] ([" + nameof(Id) + "])")]
+        public int ReferenceColumnId { get; set; }
     }
 }

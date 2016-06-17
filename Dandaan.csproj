@@ -189,7 +189,6 @@
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
     <Compile Include="Tables\Column.cs" />
-    <Compile Include="Tables\ForeignKey.cs" />
     <Compile Include="Tables\UserTable.cs" />
     <Compile Include="UserControls\Editor.cs">
       <SubType>UserControl</SubType>
