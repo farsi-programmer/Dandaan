@@ -35,7 +35,7 @@ namespace Dandaan.UserControls
 
             foreach (var item in propertyInfos)
             {
-                var da = Reflection.GetDandaanAttribute(item);
+                var da = Reflection.GetDandaanColumnAttribute(item);
 
                 //if (item.PropertyType == typeof(string))
                 {

@@ -17,11 +17,24 @@ namespace Dandaan
             return attributes[0];
         }
 
+        public static DandaanColumnAttribute GetDandaanColumnAttribute(MemberInfo m)
+        {
+            return (DandaanColumnAttribute)GetDandaanAttribute(m);
+        }
+
         public static DandaanAttribute GetDandaanAttribute(Type t)
         {
             var attributes = (DandaanAttribute[])t.GetCustomAttributes<DandaanAttribute>();
 
-            return attributes[0];
+            if (attributes[0] is DandaanColumnAttribute)
+                return (DandaanColumnAttribute)attributes[0];
+            else
+                return attributes[0];
+        }
+
+        public static DandaanColumnAttribute GetDandaanColumnAttribute(Type t)
+        {
+            return (DandaanColumnAttribute)GetDandaanAttribute(t);
         }
 
         public static string GetDescriptionAttribute(MemberInfo m, bool shouldHave = true)

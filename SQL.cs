@@ -42,7 +42,7 @@ namespace Dandaan
 
             foreach (var item in ps)
             {
-                var desc = Reflection.GetDandaanAttribute(item).Sql;
+                var desc = Reflection.GetDandaanColumnAttribute(item).Sql;
                 sb.AppendLine($"[{item.Name}] {desc},");
             }
 
@@ -222,7 +222,7 @@ end;");
 
             foreach (var m in ms)
             {
-                var desc = Reflection.GetDandaanAttribute(m).Sql;
+                var desc = Reflection.GetDandaanColumnAttribute(m).Sql;
 
                 if (!Common.IsMatch(desc, @"[\s]+identity[\s]+"))
                 {

@@ -190,6 +190,11 @@ namespace Dandaan.Forms
             MessageBox.Show(new RichTextBox() { Text = "" }.Rtf);
             MessageBox.Show(richTextBox1.Rtf);
         }
+
+        private void فرمجدیدToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ;
+        }
     }
 
 }

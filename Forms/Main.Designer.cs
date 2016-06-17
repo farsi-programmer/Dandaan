@@ -57,6 +57,7 @@
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.button10 = new System.Windows.Forms.Button();
+            this.فرمجدیدToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.toolStrip2.SuspendLayout();
@@ -79,6 +80,7 @@
             // فایلToolStripMenuItem
             // 
             this.فایلToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.فرمجدیدToolStripMenuItem,
             this.لاگToolStripMenuItem,
             this.خروجToolStripMenuItem});
             this.فایلToolStripMenuItem.Name = "فایلToolStripMenuItem";
@@ -88,14 +90,14 @@
             // لاگToolStripMenuItem
             // 
             this.لاگToolStripMenuItem.Name = "لاگToolStripMenuItem";
-            this.لاگToolStripMenuItem.Size = new System.Drawing.Size(121, 30);
+            this.لاگToolStripMenuItem.Size = new System.Drawing.Size(152, 30);
             this.لاگToolStripMenuItem.Text = "لاگ";
             this.لاگToolStripMenuItem.Click += new System.EventHandler(this.لاگToolStripMenuItem_Click);
             // 
             // خروجToolStripMenuItem
             // 
             this.خروجToolStripMenuItem.Name = "خروجToolStripMenuItem";
-            this.خروجToolStripMenuItem.Size = new System.Drawing.Size(121, 30);
+            this.خروجToolStripMenuItem.Size = new System.Drawing.Size(152, 30);
             this.خروجToolStripMenuItem.Text = "خروج";
             this.خروجToolStripMenuItem.Click += new System.EventHandler(this.خروجToolStripMenuItem_Click);
             // 
@@ -340,6 +342,13 @@
             this.button10.UseVisualStyleBackColor = true;
             this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
+            // فرمجدیدToolStripMenuItem
+            // 
+            this.فرمجدیدToolStripMenuItem.Name = "فرمجدیدToolStripMenuItem";
+            this.فرمجدیدToolStripMenuItem.Size = new System.Drawing.Size(152, 30);
+            this.فرمجدیدToolStripMenuItem.Text = "فرم جدید";
+            this.فرمجدیدToolStripMenuItem.Click += new System.EventHandler(this.فرمجدیدToolStripMenuItem_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
@@ -407,6 +416,7 @@
         private System.Windows.Forms.ToolStrip toolStrip2;
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Button button10;
+        private System.Windows.Forms.ToolStripMenuItem فرمجدیدToolStripMenuItem;
     }
 }
 

@@ -6,6 +6,8 @@
 namespace Dandaan
 {
     using System;
+    using System.Text.RegularExpressions;
+    using System.Collections.Generic;
     using System.Data;
     using System.Globalization;
     using System.IO;
@@ -409,7 +411,7 @@ namespace Dandaan
             using (var cmd = connection.CreateCommand())
             {
                 cmd.CommandText = sql;
-                foreach (var p in sps) cmd.Parameters.Add(p);
+                cmd.Parameters.AddRange(sps);
                 return cmd.ExecuteScalar();
             }
         }
@@ -429,12 +431,12 @@ namespace Dandaan
         {
             //Thread.Sleep(5000);            
 
-            AttachOrCreateDatabase();
+            attachOrCreateDatabase();
 
-            CreateTablesAndMigrateData();
+            createTablesAndMigrateData();
         }
 
-        private static void CreateTablesAndMigrateData()
+        private static void createTablesAndMigrateData()
         {
             //ExecuteNonQuery(File.ReadAllText(Dir + "\\" + nameof(Dandaan) + ".sql"));
 
@@ -442,13 +444,14 @@ namespace Dandaan
                 .Where(t => t.IsClass && t.Namespace == nameof(Dandaan) + "." + nameof(Tables)
                 && t.IsPublic/*this is necessary because of ienumerable*/);
 
+            var done = new List<Type>();
+
             // this is the first table
-            SQL.CreateTable(typeof(Tables.Table));
+            createTable(typeof(Tables.Table), tables, done);
 
-            // Setting references User
-            SQL.CreateTable(typeof(Tables.User));
+            foreach (var item in tables) createTable(item, tables, done);
 
-            foreach (var t in tables)
+            /*foreach (var t in tables)
             {
                 //var f = t.GetField(nameof(Tables.DandaanLog.CreateTable));
                 //sb.AppendLine((string)f.GetRawConstantValue());
@@ -457,10 +460,34 @@ namespace Dandaan
                 //m.Invoke(null, new object[] { t });
 
                 SQL.CreateTable(t);
-            }
+            }*/
         }
 
-        private static void AttachOrCreateDatabase()
+        private static void createTable(Type t, IEnumerable<Type> tables, List<Type> done)
+        {
+            if (done.Contains(t)) return;
+
+            var ps = t.GetProperties();
+
+            foreach (var A in ps)
+            {
+                var sql = Reflection.GetDandaanColumnAttribute(A).Sql;
+
+                if (Common.IsMatch(sql, "FOREIGN KEY REFERENCES"))
+                {
+                    var name = Common.Match(sql, @"FOREIGN KEY REFERENCES[\s]*\[dbo].\[([^]]+)]").Groups[1].Value;
+
+                    if (t.Name != name) // self referencing table
+                        createTable(tables.Where(_t => _t.Name == name).First(), tables, done);
+                }
+            }
+
+            SQL.CreateTable(t);
+
+            done.Add(t);
+        }
+
+        private static void attachOrCreateDatabase()
         {
             var name = nameof(Dandaan);
             var mdf = ".mdf";

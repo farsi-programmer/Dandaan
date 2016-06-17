@@ -15,19 +15,19 @@ namespace Dandaan.Tables
     public class User
     {
         [Column]//(IsDbGenerated = true)]
-        [Dandaan(Sql = "[int] IDENTITY NOT NULL CONSTRAINT [IX_" + nameof(User) + "] UNIQUE NONCLUSTERED")]
+        [DandaanColumn(Sql = "[int] IDENTITY NOT NULL CONSTRAINT [IX_" + nameof(User) + "] UNIQUE NONCLUSTERED")]
         public int Id { get; set; }
 
         [Column]//(IsPrimaryKey = true)]
-        [Dandaan(Sql = "[nvarchar](100) NOT NULL CONSTRAINT [PK_" + nameof(User) + "] PRIMARY KEY CLUSTERED")]
+        [DandaanColumn(Sql = "[nvarchar](100) NOT NULL CONSTRAINT [PK_" + nameof(User) + "] PRIMARY KEY CLUSTERED")]
         public string Name { get; set; }
 
         [Column]//(IsDbGenerated = true)]
-        [Dandaan(Sql = "[nvarchar](100) NOT NULL")]// we don't use defaults, it makes things complicated CONSTRAINT [DF_" + nameof(User) + "_" + nameof(Password) + "] DEFAULT (N'')")]
+        [DandaanColumn(Sql = "[nvarchar](100) NOT NULL")]// we don't use defaults, it makes things complicated CONSTRAINT [DF_" + nameof(User) + "_" + nameof(Password) + "] DEFAULT (N'')")]
         public string Password { get; set; } = "";
 
         [Column]//(IsDbGenerated = true)]
-        [Dandaan(Sql = "[tinyint] NOT NULL")]// CONSTRAINT [DF_" + nameof(User) + "_" + nameof(Enabled) + "] DEFAULT ((1))")]
+        [DandaanColumn(Sql = "[tinyint] NOT NULL")]// CONSTRAINT [DF_" + nameof(User) + "_" + nameof(Enabled) + "] DEFAULT ((1))")]
         public byte? Enabled { get; set; } = 1;
 
         public static int Count()

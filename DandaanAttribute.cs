@@ -8,8 +8,6 @@ namespace Dandaan
 {
     public class DandaanAttribute : Attribute
     {
-        public string Sql { get; set; }
-
         public string Label { get; set; }
 
         public bool EnableAdd { get; set; }
@@ -19,5 +17,12 @@ namespace Dandaan
         public bool EnableEdit { get; set; }
 
         public bool EnableSearch { get; set; }
+
+        //public Type[] References { get; set; }
+    }
+
+    public class DandaanColumnAttribute : DandaanAttribute
+    {
+        public string Sql { get; set; }
     }
 }

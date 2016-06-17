@@ -14,12 +14,12 @@ namespace Dandaan.Tables
     public class Setting
     {
         [Column(IsPrimaryKey = true)]
-        [Dandaan(Sql = "[int] NOT NULL CONSTRAINT [PK_" + nameof(Setting) + @"] PRIMARY KEY CLUSTERED
+        [DandaanColumn(Sql = "[int] NOT NULL CONSTRAINT [PK_" + nameof(Setting) + @"] PRIMARY KEY CLUSTERED
 CONSTRAINT [FK_" + nameof(Setting) + "_" + nameof(User) + @"] FOREIGN KEY REFERENCES [dbo].[" + nameof(User) + "] ([" + nameof(User.Id) + "])")]
         public int UserId { get; set; }
 
         [Column]
-        [Dandaan(Sql = "[int] NOT NULL")]
+        [DandaanColumn(Sql = "[int] NOT NULL")]
         public System.Windows.Forms.FormWindowState MainFormWindowState { get; set; }
 
         public static Setting SelectOrInsertDefault(int userId)
