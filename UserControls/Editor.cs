@@ -1,4 +1,6 @@
-﻿using System;
+﻿// http://offtopic.blog.ir/
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -29,7 +31,7 @@ namespace Dandaan.UserControls
             _kind = kind;
             _obj = obj;
 
-            int y = 15, maxX = 0, textBoxWidth = 350, margin = 2, xMargin = 15, tabIndex = 0;
+            int y = 15, maxX = 0, textBoxWidth = /*350*/400, margin = 2, xMargin = 15, tabIndex = 0;
             Label label;
             Color color = Color.Empty;
 
@@ -60,6 +62,9 @@ namespace Dandaan.UserControls
                     //(control as ComboBox).DropDownStyle = ComboBoxStyle.DropDownList;
                     (control as ComboBox).AutoCompleteSource = AutoCompleteSource.ListItems;
                     (control as ComboBox).AutoCompleteMode = AutoCompleteMode.Append;
+
+                    if (kind == EditorKind.Edit && Reflection.GetColumnAttribute(item).IsPrimaryKey)
+                        control.Enabled = false;
                 }
 
                 //
@@ -70,23 +75,67 @@ namespace Dandaan.UserControls
                     (control as Controls.TextBox).DefaultText = control.Text;
                 else if (control is ComboBox)
                 {
-                    (control as Controls.ComboBox).Items.AddRange(Enum.GetNames(item.PropertyType));
+                    if (kind == EditorKind.Search && Nullable.GetUnderlyingType(item.PropertyType) != null)
+                    {
+                        if (SQL.isForeignKey(da.Sql))
+                            (control as Controls.ComboBox).Items.Add(new ComboboxItem { Text = ""/*, Value = 0*/ });
+                        else (control as Controls.ComboBox).Items.Add("");
+                    }
 
-                    if (control.Text == "") (control as Controls.ComboBox).SelectedIndex = 0;
+                    if (SQL.isForeignKey(da.Sql))
+                    {
+                        var type = Type.GetType($"{nameof(Dandaan)}.{nameof(Tables)}.{SQL.getForeignTable(da.Sql)}");
+
+                        var result = typeof(SQL).GetMethod(nameof(SQL.SelectAll)).MakeGenericMethod(type)
+                        .Invoke(null, null);
+
+                        foreach (var B in (System.Collections.IEnumerable)result)
+                        {
+                            var text = type.GetProperty(da.ForeignTableDisplayColumn).GetValue(B).ToString();
+                            var value = type.GetProperty(SQL.getForeignColumn(da.Sql)).GetValue(B);
+
+                            var i = (control as ComboBox).Items.Add(new ComboboxItem
+                            {
+                                Value = value,
+                                Text = text
+                            });
+
+                            if (control.Text == value.ToString())
+                            {
+                                control.Text = text;
+                                (control as ComboBox).SelectedIndex = i;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (item.PropertyType.IsEnum)
+                            (control as Controls.ComboBox).Items.AddRange(Enum.GetNames(item.PropertyType));
+                        else
+                            (control as Controls.ComboBox).Items.AddRange(Enum.GetNames(Nullable.GetUnderlyingType(item.PropertyType)));
+                    }
+
+                    if (control.Text == "" && (control as ComboBox).Items.Count > 0)
+                         (control as ComboBox).SelectedIndex = 0;
 
                     (control as Controls.ComboBox).DefaultText = control.Text;
 
-                    (control as Controls.ComboBox).LostFocus += (_, __) =>
+                    (control as ComboBox).LostFocus += (_, __) =>
                     {
                         if (!form.Disposing)
                         {
-                            if (control.Text != (control as Controls.ComboBox).DefaultText &&
-                            !(control as ComboBox).Items.Contains(control.Text))
+                            var contains = (control as ComboBox).Items.Contains(control.Text);
+
+                            if (!contains && (control as ComboBox).Items.Count > 0 && (control as ComboBox).Items[0] is ComboboxItem)
+                                foreach (ComboboxItem B in (control as ComboBox).Items)
+                                    if (B.Text == control.Text) { contains = true; break; }
+
+                            if (control.Text != (control as Controls.ComboBox).DefaultText && !contains)
                                 control.Text = (control as Controls.ComboBox).DefaultText;
                         }
                     };
 
-                    (control as Controls.ComboBox).PreviewKeyDown += (_, __) =>
+                    (control as ComboBox).PreviewKeyDown += (_, __) =>
                     {
                         if (__.KeyCode == Keys.Enter) (control as Controls.ComboBox).RaiseLostFocus();
                     };
@@ -119,15 +168,29 @@ namespace Dandaan.UserControls
                         }
                     }
 
-                    if (kind == EditorKind.Search) searchAct(getObj(propertyInfos, kind));
+                    if (kind == EditorKind.Search)
+                    {
+                        var contains = false;
+
+                        if (control is ComboBox)
+                        {
+                            contains = (control as ComboBox).Items.Contains(control.Text);
+
+                            if (!contains && (control as ComboBox).Items.Count > 0 && (control as ComboBox).Items[0] is ComboboxItem)
+                                foreach (ComboboxItem B in (control as ComboBox).Items)
+                                    if (B.Text == control.Text) { contains = true; break; }
+                        }
+
+                        if (!(control is ComboBox && !contains)) searchAct(getObj(propertyInfos, kind));
+                    }
                 });
 
                 //
 
                 if (control is TextBox)
-                    (control as Controls.TextBox).TextChanged += textChanged;
+                    (control as TextBox).TextChanged += textChanged;
                 else if (control is ComboBox)
-                    (control as Controls.ComboBox).TextChanged += textChanged;
+                    (control as ComboBox).TextChanged += textChanged;
 
                 //
 
@@ -136,13 +199,16 @@ namespace Dandaan.UserControls
 
             foreach (var item in propertyInfos)
             {
+                var ut = Nullable.GetUnderlyingType(item.PropertyType);
+
                 var da = Reflection.GetDandaanColumnAttribute(item);
 
                 Control control = null;
 
                 //
 
-                if (item.PropertyType.IsEnum)
+                if (item.PropertyType.IsEnum || (ut != null && ut.IsEnum)
+                    || SQL.isForeignKey(da.Sql))
                 {
                     control = new Controls.ComboBox();
                     act(control, item, da);
@@ -335,12 +401,20 @@ namespace Dandaan.UserControls
                 {
                     var value = Controls[item.Name].Text;
 
+                    if (Controls[item.Name] is ComboBox && (Controls[item.Name] as ComboBox).Items.Count > 0
+                        && (Controls[item.Name] as ComboBox).Items[0] is ComboboxItem
+                        && (Controls[item.Name] as ComboBox).SelectedItem != null
+                        && ((Controls[item.Name] as ComboBox).SelectedItem as ComboboxItem).Value != null)
+                        value = ((Controls[item.Name] as ComboBox).SelectedItem as ComboboxItem).Value.ToString();
+
                     if (Controls[item.Name] is ComboBox || !(bool)p.GetValue(Controls[item.Name]))
                     {
                         if (t == typeof(string))
                             item.SetValue(obj, value);
                         else if (t.IsEnum)
-                            item.SetValue(obj, Enum.Parse(t, value));
+                        {
+                            if (value as string != "") item.SetValue(obj, Enum.Parse(t, value as string));
+                        }
                         else if (t.IsValueType)
                         {
                             //var m = t.GetMethod(nameof(int.Parse), new Type[] { typeof(string) });
@@ -376,6 +450,17 @@ namespace Dandaan.UserControls
             }
 
             base.OnLoad(e);
+        }
+    }
+
+    public class ComboboxItem
+    {
+        public string Text { get; set; }
+        public object Value { get; set; }
+
+        public override string ToString()
+        {
+            return Text;
         }
     }
 

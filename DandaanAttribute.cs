@@ -24,5 +24,9 @@ namespace Dandaan
     public class DandaanColumnAttribute : DandaanAttribute
     {
         public string Sql { get; set; }
+
+        //public Type ForeignTable { get; set; }
+
+        public string ForeignTableDisplayColumn { get; set; }
     }
 }

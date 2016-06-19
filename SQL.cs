@@ -307,7 +307,7 @@ end;");
                 var ps = new List<object>();
                 where(searchObj, true, typeof(T).GetProperties(), ref sb, ref ps, true);
 
-                return (int)DB.ExecuteScalar($"SELECT COUNT(*) FROM {typeof(T).Name} WHERE 1=1 " + sb, ps.Cast<SqlParameter>().ToArray()); ;
+                return (int)DB.ExecuteScalar($"SELECT COUNT(*) FROM [dbo].[{typeof(T).Name}] WHERE 1=1 " + sb, ps.Cast<SqlParameter>().ToArray()); ;
             }
             else
             {
@@ -318,6 +318,11 @@ end;");
                     return ((System.Data.Linq.Table<T>)(pi.GetValue(context))).Count();
                 }
             }
+        }
+
+        public static T SelectFirst<T>(T obj) where T : class
+        {
+            return Select(1, 1, obj).FirstOrDefault();
         }
 
         // i am doing this because LINQ2SQL doesn't understand reflection
@@ -335,7 +340,7 @@ end;");
             foreach (var item in pi) sb.Append($"[t0].[{item.Name}],");
             sb = sb.Remove(sb.Length - 1, 1);
 
-            sb.Append($") AS [ROW_NUMBER],* FROM [{typeof(T).Name}] AS [t0]");
+            sb.Append($") AS [ROW_NUMBER],* FROM [dbo].[{typeof(T).Name}] AS [t0]");
 
             //var ps = new List<SqlParameter>();
             var ps = new List<object>();
@@ -380,40 +385,55 @@ end;");
 
             foreach (var item in pi)
             {
-                if (like)
-                {
-                    var value = item.GetValue(obj);
+                var value = item.GetValue(obj);
 
-                    if (item.PropertyType == typeof(string))
+                if (value == null) continue;
+
+                if (item.PropertyType == typeof(string))
+                {
+                    if ((value as string).Trim() != "")
                     {
-                        if ((value as string).Trim() != "")
+                        if (sqlParams)
                         {
-                            if (sqlParams)
+                            if (like)
                             {
-                                sb.Append($@" AND {item.Name} LIKE @{item.Name} ESCAPE '\'");
+                                sb.Append($@" AND [{item.Name}] LIKE @{item.Name} ESCAPE '\'");
                                 ps.Add(new SqlParameter($"@{item.Name}", escapeForLike(value as string) + "%"));
                             }
                             else
                             {
-                                sb.Append($@" AND {item.Name} LIKE {{{i}}} ESCAPE '\'");
-                                ps.Add(escapeForLike(value as string) + "%");
-                                i++;
+                                sb.Append($@" AND [{item.Name}] = @{item.Name}");
+                                ps.Add(new SqlParameter($"@{item.Name}", value));
                             }
-                        }
-                    }
-                    else if (value != null)
-                    {
-                        if (sqlParams)
-                        {
-                            sb.Append($" AND {item.Name} = @{item.Name}");
-                            ps.Add(new SqlParameter($"@{item.Name}", value));
                         }
                         else
                         {
-                            sb.Append($" AND {item.Name} = {{{i}}}");
-                            ps.Add(value);
+                            if (like)
+                            {
+                                sb.Append($@" AND [{item.Name}] LIKE {{{i}}} ESCAPE '\'");
+                                ps.Add(escapeForLike(value as string) + "%");
+                            }
+                            else
+                            {
+                                sb.Append($@" AND [{item.Name}] = {{{i}}}");
+                                ps.Add(value);
+                            }
                             i++;
                         }
+                    }
+                }
+                else// if (value != null)
+                {
+                    if (sqlParams)
+                    {
+                        sb.Append($" AND {item.Name} = @{item.Name}");
+                        ps.Add(new SqlParameter($"@{item.Name}", value));
+                    }
+                    else
+                    {
+                        sb.Append($" AND {item.Name} = {{{i}}}");
+                        ps.Add(value);
+                        i++;
                     }
                 }
             }
@@ -463,6 +483,28 @@ end;");
             str = Regex.Replace(str, Regex.Escape("["), @"\[");
 
             return str;
+        }
+
+        public static bool isForeignKey(string sql)
+        {
+            return Common.IsMatch(sql, @"[\s]+FOREIGN[\s]+KEY[\s]+");
+        }
+
+        public static string getForeignTable(string sql)
+        {
+            return Common.Match(sql, @"[\s]+FOREIGN[\s]+KEY[\s]+REFERENCES[\s]+\[dbo]\.\[([^]]+)]")
+                .Groups[1].Value;
+        }
+
+        public static string getForeignColumn(string sql)
+        {
+            return Common.Match(sql, @"[\s]+FOREIGN[\s]+KEY[\s]+REFERENCES[\s]+\[dbo]\.\[[^]]+][\s]+\(\[([^]]+)]\)")
+                .Groups[1].Value;
+        }
+
+        public static IEnumerable<T> SelectAll<T>() where T : class
+        {
+            return Select<T>(1, int.MaxValue);
         }
     }
 }

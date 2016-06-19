@@ -15,6 +15,7 @@ namespace Dandaan.Forms
     {
         const string NoRecords = "رکوردی وجود ندارد.";
         const string Blank = "";
+        List<T> original, _original;
 
         public ListViewBrowser()
         {
@@ -33,13 +34,34 @@ namespace Dandaan.Forms
 
                 Thread = Common.Thread(() =>
                 {
+                    _original = new List<T>();
                     bool odd = true;
                     var items = SQL.Select(Page, PageSize, SearchObj, true).Select((row) =>
                     {
+                        _original.Add(row);
                         odd = !odd;
                         return new ListViewItem(PropertyInfos.Select(item =>
                         {
+                            var da = Reflection.GetDandaanColumnAttribute(item);
+
                             var value = item.GetValue(row);
+
+                            if (SQL.isForeignKey(da.Sql))
+                            {
+                                var type = Type.GetType($"{nameof(Dandaan)}.{nameof(Tables)}.{SQL.getForeignTable(da.Sql)}");
+
+                                var obj = Activator.CreateInstance(type);
+
+                                type.GetProperties().Where(p => p.Name == SQL.getForeignColumn(da.Sql)).First()
+                                .SetValue(obj, value);
+
+                                var result = typeof(SQL).GetMethod(nameof(SQL.SelectFirst)).MakeGenericMethod(type)
+                                .Invoke(null, new object[] { obj });
+
+                                value = type.GetProperties().Where(p => p.Name == da.ForeignTableDisplayColumn).First()
+                                .GetValue(result);
+                            }
+
                             return value != null ? value.ToString() : "";
                         }).ToArray())
                         { BackColor = odd ? Color.LightCyan : Color.FromArgb(0xcf, 0xff, 0xcf) };
@@ -47,6 +69,8 @@ namespace Dandaan.Forms
 
                     Invoke(() =>
                     {
+                        original = _original;
+
                         if (items == null || items.Length == 0)
                         {
                             listView1.Columns.Clear();
@@ -151,8 +175,8 @@ namespace Dandaan.Forms
 
                 for (int i = 0; i < PropertyInfos.Length; i++)
                 {
+                    /*var p = PropertyInfos[i];
                     var value = listView1.SelectedItems[0].SubItems[i].Text;
-                    var p = PropertyInfos[i];
 
                     var t = p.PropertyType;
                     var ut = Nullable.GetUnderlyingType(t);
@@ -163,8 +187,14 @@ namespace Dandaan.Forms
                     else if (t.IsEnum)
                         p.SetValue(obj, Enum.Parse(t, value));
                     else if (t.IsValueType)
-                        p.SetValue(obj, t.GetMethod(nameof(int.Parse), new Type[] { typeof(string) })
-                            .Invoke(null, new object[] { value }));
+                    {
+                        if (SQL.isForeignKey(Reflection.GetDandaanColumnAttribute(p).Sql))
+                            p.SetValue(obj, p.GetValue(original[listView1.SelectedItems[0].Index]));
+                        else
+                            p.SetValue(obj, t.GetMethod(nameof(int.Parse), new Type[] { typeof(string) })
+                                .Invoke(null, new object[] { value }));
+                    }*/
+                    obj = original[listView1.SelectedItems[0].Index];
                 }
 
                 return obj;
@@ -213,7 +243,7 @@ namespace Dandaan.Forms
                                 return;
                             }
 
-                    var editForm = new Editor<T>(DandaanAttribute.Label);
+                    var editForm = new Editor<T>(DandaanAttribute.Label + " - ویرایش");
                     var editor = new UserControls.Editor<T>(PropertyInfos, editForm, UserControls.EditorKind.Edit, obj, act);
                     editForm.setEditor(editor);
 

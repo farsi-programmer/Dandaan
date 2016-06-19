@@ -20,6 +20,8 @@ namespace Dandaan.Forms
         {
             InitializeComponent();
 
+            AutoScroll = true;
+
             StartPosition = FormStartPosition.CenterScreen;
         }
 

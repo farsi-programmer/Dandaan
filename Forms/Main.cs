@@ -193,14 +193,14 @@ namespace Dandaan.Forms
 
         ListViewBrowser<Tables.UserTable> userTables = null;
 
-        private void فرمجدیدToolStripMenuItem_Click(object sender, EventArgs e)
+        private void button11_Click(object sender, EventArgs e)
         {
             ShowForm(ref userTables);
         }
 
         ListViewBrowser<Tables.Column> columns = null;
 
-        private void دادهجدیدToolStripMenuItem_Click(object sender, EventArgs e)
+        private void button12_Click(object sender, EventArgs e)
         {
             ShowForm(ref columns);
         }

@@ -31,8 +31,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.فایلToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.فرمجدیدToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.دادهجدیدToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.لاگToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.خروجToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.راهنماToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,6 +57,8 @@
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.button10 = new System.Windows.Forms.Button();
+            this.button11 = new System.Windows.Forms.Button();
+            this.button12 = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.toolStrip2.SuspendLayout();
@@ -81,39 +81,23 @@
             // فایلToolStripMenuItem
             // 
             this.فایلToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.فرمجدیدToolStripMenuItem,
-            this.دادهجدیدToolStripMenuItem,
             this.لاگToolStripMenuItem,
             this.خروجToolStripMenuItem});
             this.فایلToolStripMenuItem.Name = "فایلToolStripMenuItem";
             this.فایلToolStripMenuItem.Size = new System.Drawing.Size(49, 29);
             this.فایلToolStripMenuItem.Text = "فایل";
             // 
-            // فرمجدیدToolStripMenuItem
-            // 
-            this.فرمجدیدToolStripMenuItem.Name = "فرمجدیدToolStripMenuItem";
-            this.فرمجدیدToolStripMenuItem.Size = new System.Drawing.Size(152, 30);
-            this.فرمجدیدToolStripMenuItem.Text = "فرم جدید";
-            this.فرمجدیدToolStripMenuItem.Click += new System.EventHandler(this.فرمجدیدToolStripMenuItem_Click);
-            // 
-            // دادهجدیدToolStripMenuItem
-            // 
-            this.دادهجدیدToolStripMenuItem.Name = "دادهجدیدToolStripMenuItem";
-            this.دادهجدیدToolStripMenuItem.Size = new System.Drawing.Size(152, 30);
-            this.دادهجدیدToolStripMenuItem.Text = "داده جدید";
-            this.دادهجدیدToolStripMenuItem.Click += new System.EventHandler(this.دادهجدیدToolStripMenuItem_Click);
-            // 
             // لاگToolStripMenuItem
             // 
             this.لاگToolStripMenuItem.Name = "لاگToolStripMenuItem";
-            this.لاگToolStripMenuItem.Size = new System.Drawing.Size(152, 30);
+            this.لاگToolStripMenuItem.Size = new System.Drawing.Size(121, 30);
             this.لاگToolStripMenuItem.Text = "لاگ";
             this.لاگToolStripMenuItem.Click += new System.EventHandler(this.لاگToolStripMenuItem_Click);
             // 
             // خروجToolStripMenuItem
             // 
             this.خروجToolStripMenuItem.Name = "خروجToolStripMenuItem";
-            this.خروجToolStripMenuItem.Size = new System.Drawing.Size(152, 30);
+            this.خروجToolStripMenuItem.Size = new System.Drawing.Size(121, 30);
             this.خروجToolStripMenuItem.Text = "خروج";
             this.خروجToolStripMenuItem.Click += new System.EventHandler(this.خروجToolStripMenuItem_Click);
             // 
@@ -222,7 +206,7 @@
             // button8
             // 
             this.button8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button8.Location = new System.Drawing.Point(679, 40);
+            this.button8.Location = new System.Drawing.Point(684, 41);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(93, 35);
             this.button8.TabIndex = 1;
@@ -358,11 +342,35 @@
             this.button10.UseVisualStyleBackColor = true;
             this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
+            // button11
+            // 
+            this.button11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button11.Location = new System.Drawing.Point(684, 82);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(93, 35);
+            this.button11.TabIndex = 13;
+            this.button11.Text = "فرم​ها";
+            this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
+            // 
+            // button12
+            // 
+            this.button12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button12.Location = new System.Drawing.Point(684, 123);
+            this.button12.Name = "button12";
+            this.button12.Size = new System.Drawing.Size(93, 35);
+            this.button12.TabIndex = 14;
+            this.button12.Text = "فیلدها";
+            this.button12.UseVisualStyleBackColor = true;
+            this.button12.Click += new System.EventHandler(this.button12_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 562);
+            this.Controls.Add(this.button12);
+            this.Controls.Add(this.button11);
             this.Controls.Add(this.button10);
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.button9);
@@ -425,8 +433,8 @@
         private System.Windows.Forms.ToolStrip toolStrip2;
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Button button10;
-        private System.Windows.Forms.ToolStripMenuItem فرمجدیدToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem دادهجدیدToolStripMenuItem;
+        private System.Windows.Forms.Button button11;
+        private System.Windows.Forms.Button button12;
     }
 }
 

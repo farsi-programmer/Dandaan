@@ -183,7 +183,7 @@ namespace Dandaan.Forms
         {
             if (addForm == null || addForm.IsDisposed)
             {
-                addForm = new Editor<T>(DandaanAttribute.Label);
+                addForm = new Editor<T>(DandaanAttribute.Label + " - اضافه");
                 var editor = new UserControls.Editor<T>(PropertyInfos, addForm, acceptAct: acceptAct);
                 addForm.setEditor(editor);
             }
@@ -245,7 +245,7 @@ namespace Dandaan.Forms
                 });
 
             panel.Height = editor.Height;
-            editor.Location = new Point(panel.Width - editor.Width, 0);
+            editor.Location = new Point(panel.Width - editor.Width - 18, 0);
             var half = View.Height / 2;
             if (panel.Height > half) panel.Height = half;
 
