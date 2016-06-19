@@ -490,6 +490,11 @@ end;");
             return Common.IsMatch(sql, @"[\s]+FOREIGN[\s]+KEY[\s]+");
         }
 
+        public static bool isNotNull(string sql)
+        {
+            return Common.IsMatch(sql, @"[\s]+NOT[\s]+NULL");
+        }
+
         public static string getForeignTable(string sql)
         {
             return Common.Match(sql, @"[\s]+FOREIGN[\s]+KEY[\s]+REFERENCES[\s]+\[dbo]\.\[([^]]+)]")

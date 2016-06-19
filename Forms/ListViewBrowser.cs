@@ -46,7 +46,7 @@ namespace Dandaan.Forms
 
                             var value = item.GetValue(row);
 
-                            if (SQL.isForeignKey(da.Sql))
+                            if (value != null && SQL.isForeignKey(da.Sql))
                             {
                                 var type = Type.GetType($"{nameof(Dandaan)}.{nameof(Tables)}.{SQL.getForeignTable(da.Sql)}");
 

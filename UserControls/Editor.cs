@@ -49,6 +49,14 @@ namespace Dandaan.UserControls
 
                 if (control is TextBox)
                 {
+                    if (da.Multiline)
+                    {
+                        (control as TextBox).Multiline = true;
+                        control.Height = 80;//55;
+                        (control as TextBox).ScrollBars = ScrollBars.Both;
+                        (control as TextBox).AcceptsReturn = true;
+                    }
+
                     if (kind != EditorKind.Search)
                     {
                         if (Common.IsMatch(da.Sql, @"[\s]+identity[\s]+"))
@@ -69,17 +77,33 @@ namespace Dandaan.UserControls
 
                 //
 
-                control.Text = null != obj ? item.GetValue(obj).ToString() : "";
+                if (null != obj)
+                {
+                    var value = item.GetValue(obj);
+                    control.Text = value != null ? value.ToString() : "";
+                }
 
                 if (control is TextBox)
                     (control as Controls.TextBox).DefaultText = control.Text;
                 else if (control is ComboBox)
                 {
-                    if (kind == EditorKind.Search && Nullable.GetUnderlyingType(item.PropertyType) != null)
+                    if (Nullable.GetUnderlyingType(item.PropertyType) != null)
                     {
-                        if (SQL.isForeignKey(da.Sql))
-                            (control as Controls.ComboBox).Items.Add(new ComboboxItem { Text = ""/*, Value = 0*/ });
-                        else (control as Controls.ComboBox).Items.Add("");
+                        if (kind == EditorKind.Search)
+                        {
+                            if (SQL.isForeignKey(da.Sql))
+                                (control as Controls.ComboBox).Items.Add(new ComboboxItem { Text = ""/*, Value = 0*/ });
+                            else (control as Controls.ComboBox).Items.Add("");
+                        }
+                        else
+                        {
+                            if (!SQL.isNotNull(da.Sql))
+                            {
+                                if (SQL.isForeignKey(da.Sql))
+                                    (control as Controls.ComboBox).Items.Add(new ComboboxItem { Text = ""/*, Value = 0*/ });
+                                else (control as Controls.ComboBox).Items.Add("");
+                            }
+                        }
                     }
 
                     if (SQL.isForeignKey(da.Sql))
@@ -120,7 +144,7 @@ namespace Dandaan.UserControls
 
                     (control as Controls.ComboBox).DefaultText = control.Text;
 
-                    (control as ComboBox).LostFocus += (_, __) =>
+                    (control as ComboBox)./*Leave*/LostFocus += (_, __) =>
                     {
                         if (!form.Disposing)
                         {
@@ -338,7 +362,7 @@ namespace Dandaan.UserControls
                                 else
                                 {
                                     (item as Controls.ComboBox).DefaultText = item.Text;
-                                    item.Text = "";
+                                    item.Text = item.Text + " ";
                                     item.Text = (item as Controls.ComboBox).DefaultText;
                                     // not working (item as Controls.ComboBox).RaiseTextChanged();
                                 }

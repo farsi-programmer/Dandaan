@@ -51,12 +51,6 @@ FOREIGN KEY REFERENCES [dbo].[" + nameof(UserTable) + "] ([" + nameof(UserTable.
             Label = "نوع")]
         public ColumnType? Type { get; set; }
 
-        //        [Column]
-        //        [DandaanColumn(Sql = "[int] CONSTRAINT [FK_" + nameof(Column) + "_" + nameof(Column) + @"]
-        //FOREIGN KEY REFERENCES [dbo].[" + nameof(Column) + "] ([" + nameof(Id) + "])",
-        //            Label = "فیلد مرجع")]
-        //        public int? ReferenceColumnId { get; set; }
-
         //[Column]
         //[DandaanColumn(Sql = "[int] NOT NULL")]
         //public NoOrYes Nullable { get; set; }
@@ -111,15 +105,32 @@ FOREIGN KEY REFERENCES [dbo].[" + nameof(UserTable) + "] ([" + nameof(UserTable.
         //[DandaanColumn(Sql = "[int] NOT NULL")]
         //public NoOrYes PrimaryKey { get; set; }
 
+        // بدون تکرار
         //[Column]
         //[DandaanColumn(Sql = "[int] NOT NULL",
         //    Label = "یکتا")]
-        //public NoOrYes Unique { get; set; }
-    }
+        //public NoOrYes? Unique { get; set; }
 
+        // فیلد خارجی
+        // فیلد از فرمی دیگر
+        // کپی
+        [Column]
+        [DandaanColumn(Sql = "[int] CONSTRAINT [FK_" + nameof(Column) + "_" + nameof(Column) + @"]
+FOREIGN KEY REFERENCES [dbo].[" + nameof(Column) + "] ([" + nameof(Id) + "])",
+            ForeignTableDisplayColumn = nameof(Label),
+            Label = "فیلد مرجع")]
+        public int? ReferenceColumnId { get; set; }
+    }
+    
     public enum ColumnType
     {
-        متن, متن_بدون_تکرار, عدد, عدد_بدون_تکرار, تاریخ, تاریخ_بدون_تکرار, فایل,
+        //متن, متن_بدون_تکرار,
+        متن_تک_خطی, متن_تک_خطی_بدون_تکرار, متن_چند_خطی, متن_چند_خطی_بدون_تکرار,
+        //عدد, عدد_بدون_تکرار,
+        عدد_صحیح, عدد_صحیح_بدون_تکرار, عدد_اعشاری, عدد_اعشاری_بدون_تکرار,
+        //تاریخ, تاریخ_بدون_تکرار,
+        تاریخ_با_دقت_دقیقه, تاریخ_با_دقت_دقیقه_بدون_تکرار, تاریخ_با_دقت_ثانیه, تاریخ_با_دقت_ثانیه_بدون_تکرار,
+        فایل,
         //ارجاع
         //کپی_فیلد_مرجع
     }
