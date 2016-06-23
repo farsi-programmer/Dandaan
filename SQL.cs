@@ -485,23 +485,23 @@ end;");
             return str;
         }
 
-        public static bool isForeignKey(string sql)
+        public static bool IsForeignKey(string sql)
         {
             return Common.IsMatch(sql, @"[\s]+FOREIGN[\s]+KEY[\s]+");
         }
 
-        public static bool isNotNull(string sql)
+        public static bool IsNotNull(string sql)
         {
             return Common.IsMatch(sql, @"[\s]+NOT[\s]+NULL");
         }
 
-        public static string getForeignTable(string sql)
+        public static string GetForeignTable(string sql)
         {
             return Common.Match(sql, @"[\s]+FOREIGN[\s]+KEY[\s]+REFERENCES[\s]+\[dbo]\.\[([^]]+)]")
                 .Groups[1].Value;
         }
 
-        public static string getForeignColumn(string sql)
+        public static string GetForeignColumn(string sql)
         {
             return Common.Match(sql, @"[\s]+FOREIGN[\s]+KEY[\s]+REFERENCES[\s]+\[dbo]\.\[[^]]+][\s]+\(\[([^]]+)]\)")
                 .Groups[1].Value;

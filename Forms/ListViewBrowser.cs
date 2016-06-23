@@ -46,13 +46,13 @@ namespace Dandaan.Forms
 
                             var value = item.GetValue(row);
 
-                            if (value != null && SQL.isForeignKey(da.Sql))
+                            if (value != null && SQL.IsForeignKey(da.Sql))
                             {
-                                var type = Type.GetType($"{nameof(Dandaan)}.{nameof(Tables)}.{SQL.getForeignTable(da.Sql)}");
+                                var type = Type.GetType($"{nameof(Dandaan)}.{nameof(Tables)}.{SQL.GetForeignTable(da.Sql)}");
 
                                 var obj = Activator.CreateInstance(type);
 
-                                type.GetProperties().Where(p => p.Name == SQL.getForeignColumn(da.Sql)).First()
+                                type.GetProperties().Where(p => p.Name == SQL.GetForeignColumn(da.Sql)).First()
                                 .SetValue(obj, value);
 
                                 var result = typeof(SQL).GetMethod(nameof(SQL.SelectFirst)).MakeGenericMethod(type)

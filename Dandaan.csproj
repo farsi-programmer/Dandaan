@@ -57,11 +57,23 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Debug\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CodeAnalysis, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\Microsoft.CodeAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+    </Reference>
     <Reference Include="Remote.Linq, Version=5.3.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Debug\Remote.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\System.Collections.Immutable.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Data.SQLite, Version=1.0.99.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
@@ -139,6 +151,12 @@
     </Compile>
     <Compile Include="Forms\Editor.Designer.cs">
       <DependentUpon>Editor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormBuilder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormBuilder.Designer.cs">
+      <DependentUpon>FormBuilder.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ListBoxBrowser.cs">
       <SubType>Form</SubType>
@@ -237,6 +255,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Editor.resx">
       <DependentUpon>Editor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormBuilder.resx">
+      <DependentUpon>FormBuilder.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ListViewBrowser.resx">
       <DependentUpon>ListViewBrowser.cs</DependentUpon>

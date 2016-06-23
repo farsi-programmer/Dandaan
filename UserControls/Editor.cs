@@ -18,6 +18,8 @@ namespace Dandaan.UserControls
         public Editor()
         {
             InitializeComponent();
+
+            //Anchor = AnchorStyles.None;
         }
 
         const string _info_ = "_info_";
@@ -27,6 +29,7 @@ namespace Dandaan.UserControls
 
         public Editor(PropertyInfo[] propertyInfos, Form form, EditorKind kind = EditorKind.Add,
             T obj = null, Action acceptAct = null, Action cancelAct = null, Action<T> searchAct = null)
+            : this()
         {
             _kind = kind;
             _obj = obj;
@@ -40,6 +43,7 @@ namespace Dandaan.UserControls
                 control.Width = textBoxWidth;
                 control.Margin = new Padding(0);
                 control.Padding = new Padding(0);
+                //control.Anchor = AnchorStyles.None;
                 control.Location = new Point(xMargin, y);
                 control.RightToLeft = RightToLeft.Yes;
                 control.Name = item.Name;
@@ -91,24 +95,24 @@ namespace Dandaan.UserControls
                     {
                         if (kind == EditorKind.Search)
                         {
-                            if (SQL.isForeignKey(da.Sql))
+                            if (SQL.IsForeignKey(da.Sql))
                                 (control as Controls.ComboBox).Items.Add(new ComboboxItem { Text = ""/*, Value = 0*/ });
                             else (control as Controls.ComboBox).Items.Add("");
                         }
                         else
                         {
-                            if (!SQL.isNotNull(da.Sql))
+                            if (!SQL.IsNotNull(da.Sql))
                             {
-                                if (SQL.isForeignKey(da.Sql))
+                                if (SQL.IsForeignKey(da.Sql))
                                     (control as Controls.ComboBox).Items.Add(new ComboboxItem { Text = ""/*, Value = 0*/ });
                                 else (control as Controls.ComboBox).Items.Add("");
                             }
                         }
                     }
 
-                    if (SQL.isForeignKey(da.Sql))
+                    if (SQL.IsForeignKey(da.Sql))
                     {
-                        var type = Type.GetType($"{nameof(Dandaan)}.{nameof(Tables)}.{SQL.getForeignTable(da.Sql)}");
+                        var type = Type.GetType($"{nameof(Dandaan)}.{nameof(Tables)}.{SQL.GetForeignTable(da.Sql)}");
 
                         var result = typeof(SQL).GetMethod(nameof(SQL.SelectAll)).MakeGenericMethod(type)
                         .Invoke(null, null);
@@ -116,7 +120,7 @@ namespace Dandaan.UserControls
                         foreach (var B in (System.Collections.IEnumerable)result)
                         {
                             var text = type.GetProperty(da.ForeignTableDisplayColumn).GetValue(B).ToString();
-                            var value = type.GetProperty(SQL.getForeignColumn(da.Sql)).GetValue(B);
+                            var value = type.GetProperty(SQL.GetForeignColumn(da.Sql)).GetValue(B);
 
                             var i = (control as ComboBox).Items.Add(new ComboboxItem
                             {
@@ -232,7 +236,7 @@ namespace Dandaan.UserControls
                 //
 
                 if (item.PropertyType.IsEnum || (ut != null && ut.IsEnum)
-                    || SQL.isForeignKey(da.Sql))
+                    || SQL.IsForeignKey(da.Sql))
                 {
                     control = new Controls.ComboBox();
                     act(control, item, da);
@@ -256,6 +260,7 @@ namespace Dandaan.UserControls
                     //BorderStyle = BorderStyle.FixedSingle,
                     Margin = new Padding(0),
                     Padding = new Padding(0),
+                    //Anchor = AnchorStyles.None,
                     RightToLeft = RightToLeft.Yes,
                     AutoSize = true,
                 };
@@ -302,6 +307,7 @@ namespace Dandaan.UserControls
                 Text = "انصراف",
                 AutoSize = true,
                 TabIndex = tabIndex + 1,
+                //Anchor = AnchorStyles.None,
             };
             buttonCancel.Location = new Point(maxX - buttonCancel.Width - 5, y);
             buttonCancel.Click += (_, __) => { if (cancelAct == null) form.Close(); else cancelAct(); };
@@ -317,6 +323,7 @@ namespace Dandaan.UserControls
                 TabIndex = tabIndex++,
                 Enabled = false,
                 Visible = kind != EditorKind.Search,
+                //Anchor = AnchorStyles.None,
             };
 
             if (kind != EditorKind.Search)
@@ -385,6 +392,7 @@ namespace Dandaan.UserControls
                 Padding = new Padding(0),
                 RightToLeft = RightToLeft.Yes,
                 AutoSize = true,
+                //Anchor = AnchorStyles.None,
                 Name = _info_,
                 Location = new Point(10, y + 4),
             };
@@ -469,8 +477,14 @@ namespace Dandaan.UserControls
             foreach (Control item in Controls)
             {
                 var p = item.GetType().GetProperty(nameof(TextBox.ReadOnly));
-                if (p != null && !(bool)p.GetValue(item))
-                { item.Select(); break; }
+
+                if (p == null)
+                {
+                    p = item.GetType().GetProperty(nameof(ComboBox.Enabled));
+
+                    if (!(item is Label) && p != null && (bool)p.GetValue(item)) { item.Select(); break; }
+                }
+                else if (!(bool)p.GetValue(item)) { item.Select(); break; }
             }
 
             base.OnLoad(e);

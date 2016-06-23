@@ -48,6 +48,10 @@ namespace Dandaan.Forms
         protected Control View;
         protected T SearchObj;
 
+        public event Action Edit;
+        public event Action Add;
+        public event Action Delete;
+
         private void buttonRefresh_Click(object sender, EventArgs e)
         {
             if (buttonRefresh.Enabled) loadData(Page);
@@ -176,7 +180,7 @@ namespace Dandaan.Forms
             var success = DeleteFunc();
 
             checkBox1.Checked = isChecked;
-            if (success) buttonRefresh.PerformClick();
+            if (success) { buttonRefresh.PerformClick(); Delete(); }
         }
 
         private void buttonAdd_Click(object sender, EventArgs e)
@@ -184,19 +188,21 @@ namespace Dandaan.Forms
             if (addForm == null || addForm.IsDisposed)
             {
                 addForm = new Editor<T>(DandaanAttribute.Label + " - اضافه");
-                var editor = new UserControls.Editor<T>(PropertyInfos, addForm, acceptAct: acceptAct);
+                var editor = new UserControls.Editor<T>(PropertyInfos, addForm, acceptAct: () => acceptAct(Add));
                 addForm.setEditor(editor);
             }
 
             ShowForm(ref addForm, false);
         }
 
-        Action acceptAct => () =>
+        Action<Action> acceptAct => (act) =>
         {
             if (Visible) buttonRefresh.PerformClick();
             else foreach (var item in Application.OpenForms)
                     if (item is Browser<T>)
                         (item as Browser<T>).buttonRefresh.PerformClick();
+
+            act?.Invoke();
         };
 
         private void buttonEdit_Click(object sender, EventArgs e)
@@ -204,7 +210,7 @@ namespace Dandaan.Forms
             bool isChecked = checkBox1.Checked;
             if (isChecked) checkBox1.Checked = false;
 
-            EditAct(acceptAct);
+            EditAct(() => acceptAct(Edit));
 
             checkBox1.Checked = isChecked;
         }
@@ -217,6 +223,7 @@ namespace Dandaan.Forms
             var panel = new Panel()
             {
                 Width = ClientSize.Width,
+                //Anchor = AnchorStyles.None,
                 AutoScroll = true,
             };
 

@@ -378,7 +378,11 @@ namespace Dandaan
             }
         }
 
-        public static DataContext DataContext => new DataContext(ConnectionString);
+        public static Type DataContextType = typeof(DataContext);
+
+        public static DataContext DataContext =>
+            //new DataContext(ConnectionString);
+            (DataContext)Activator.CreateInstance(DataContextType, new object[] { ConnectionString });
 
         public static void ContextRun(Action<DataContext> act)
         {

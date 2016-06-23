@@ -1,6 +1,7 @@
 ﻿// http://offtopic.blog.ir/
 
 using System;
+using System.IO;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,7 +21,7 @@ namespace Dandaan.Forms
         {
             // order is important
 
-            InitializeComponent();
+            InitializeComponent();            
 
             //Width += 30;
             //Height += 70;
@@ -69,14 +70,110 @@ namespace Dandaan.Forms
                     Application.OpenForms[i].Invoke(new Action(() => Application.OpenForms[i].Close()));
         }
 
-        private void Main_SizeChanged(object sender, EventArgs e)
-        {
-            ;
-        }
-
         private void Main_Load(object sender, EventArgs e)
         {
-            ;
+            AddButtons();
+        }
+
+        List<Control> defaultControls;
+        Dictionary<string, Form> userForms;
+
+        public void AddButtons()
+        { 
+            int margin = 6, left = ClientSize.Width, bottom = ClientSize.Height,
+                w = buttonPatients.Width, h = buttonPatients.Height;
+
+            Action<Control> act = (item) =>
+            {
+                if (item.Location.X < left || item.Location.X == left)
+                {
+                    left = item.Location.X;
+                    bottom = item.Location.Y + item.Height + margin;
+                }
+
+                if (bottom + h > ClientSize.Height)
+                {
+                    left = left - w - margin;
+                    bottom = buttonPatients.Location.Y;
+                }
+            };
+
+            /*
+                    Controls.Remove(item);
+                    item.Dispose();     
+            */
+
+            if(defaultControls == null)
+            {
+                defaultControls = new List<Control>();
+                foreach (Control item in Controls) defaultControls.Add(item);
+            }
+
+            Controls.Clear();
+            Controls.AddRange(defaultControls.ToArray());
+            foreach (Control item in Controls) if (item is Button) act(item);
+
+            //
+
+            var tables = SQL.SelectAll<Tables.UserTable>();
+
+            foreach (var item in tables)
+            {
+                Button button = new Button()
+                {
+                    Text = item.Label,
+                    Location = new Point(left, bottom),
+                    Anchor = buttonPatients.Anchor,
+                    Width = w,
+                    Height = h,
+                };
+
+                button.Click += (_, __) =>
+                {
+                    var name = nameof(Dandaan) + "." + nameof(Tables) + "." + nameof(Tables.UserTable) + item.Id;
+                    var path = Program.DataDirectory + "\\" + name + ".dll";
+                    var contextName = nameof(DataContext) + item.Id;
+
+                    Action B = () =>
+                    {
+                        Form form;
+
+                        if (userForms == null) userForms = new Dictionary<string, Form>();
+
+                        if (userForms.ContainsKey(button.Text)) form = userForms[button.Text];
+                        else
+                        {
+                            var assembly = System.Reflection.Assembly.LoadFile(path);
+
+                            DB.DataContextType = assembly.GetType(nameof(Dandaan) + "." + contextName);
+
+                            Type t = assembly.GetType(name);
+
+                            SQL.CreateTable(t);
+
+                            form = (Form)Activator.CreateInstance(
+                                typeof(ListViewBrowser<>).MakeGenericType(new[] { t }));
+
+                            userForms.Add(button.Text, form);
+                        }
+
+                        ShowForm(ref form);
+                    };
+
+                    if (File.Exists(path) && new FileInfo(path).Length > 0) B();
+                    else if (MessageBox.Show("این فرم هنوز ساخته نشده است، در صورت ساختن آن امکان تغییر دادن این فرم و فرم​های مرجع آن دیگر وجود نخواهد داشت!‏",
+                        Program.Title, MessageBoxButtons.OKCancel) == DialogResult.OK)
+                    {
+                        new FormBuilder(path, name).ShowDialog();
+                        B();
+                    }
+                };
+
+                Controls.Add(button);
+                act(button);
+            }
+
+            AutoScrollMinSize = new Size(ClientSize.Width - left + margin, AutoScrollMinSize.Height);
         }
 
         private void خروجToolStripMenuItem_Click(object sender, EventArgs e)
@@ -112,50 +209,6 @@ namespace Dandaan.Forms
             ShowForm(ref about);
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            SQL.Insert(new Tables.Log()
-            {
-                Message =
-                "00000000000000000000000000000000000000000000000000000000000000"
-                + "00000000000000000000000000000000000000000000000000000000000000"
-                + "00000000000000000000000000000000000000000000000000000000000000"
-                + "00000000000000000000000000000000000000000000000000000000000000"
-                + "00000000000000000000000000000000000000000000000000000000000000"
-                + "00000000000000000000000000000000000000000000000000000000000000"
-                + "00000000000000000000000000000000000000000000000000000000000000"
-                + "00000000000000000000000000000000000000000000000000000000000000"
-                + "00000000000000000000000000000000000000000000000000000000000000"
-                + "00000000000000000000000000000000000000000000000000000000000000"
-                + "00000000000000000000000000000000000000000000000000000000000000000"
-            });
-        }
-
-        private void Main_Shown(object sender, EventArgs e)
-        {
-            ;
-        }
-
-        private void Main_VisibleChanged(object sender, EventArgs e)
-        {
-            ;
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            ;
-        }
-
-        private void button7_Click(object sender, EventArgs e)
-        {
-            ;
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-
-        }
-
         ListViewBrowser<Tables.Patient> patients = null;
 
         private void button8_Click(object sender, EventArgs e)
@@ -163,38 +216,21 @@ namespace Dandaan.Forms
             ShowForm(ref patients);
         }
 
-        class ff : Form
-        {
-            public ff() { FormClosing += Ff_FormClosing; }
-
-            private void Ff_FormClosing(object sender, FormClosingEventArgs e)
-            {
-                MessageBox.Show("ff");
-            }
-        }
-
-        private void button9_Click(object sender, EventArgs e)
-        {
-            var f = new ff();
-            f.Show();
-        }
-
         private void button10_Click(object sender, EventArgs e)
         {
-            var rtb = new RichTextBox() { Location = new Point(Width, Height) };
-            rtb.SuspendLayout();
-            Controls.Add(rtb);
-            MessageBox.Show(rtb.Rtf);
-
-            MessageBox.Show((new RichTextBox() { Text = "" }.Rtf == richTextBox1.Rtf).ToString());
-            MessageBox.Show(new RichTextBox() { Text = "" }.Rtf);
-            MessageBox.Show(richTextBox1.Rtf);
+            ;
         }
 
         ListViewBrowser<Tables.UserTable> userTables = null;
 
         private void button11_Click(object sender, EventArgs e)
         {
+            if (userTables == null || userTables.IsDisposed)
+                userTables = new ListViewBrowser<Tables.UserTable>();
+
+            userTables.Add += AddButtons;
+            userTables.Delete += AddButtons;
+
             ShowForm(ref userTables);
         }
 
@@ -204,6 +240,11 @@ namespace Dandaan.Forms
         {
             ShowForm(ref columns);
         }
+
+        //صندوق خانواده نوبت ها
+
+
+
     }
 
 }
