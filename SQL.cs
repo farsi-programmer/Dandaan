@@ -320,15 +320,20 @@ end;");
             }
         }
 
-        public static T SelectFirst<T>(T obj) where T : class
+        public static T SelectFirst<T>() where T : class
         {
-            return Select(1, 1, obj).FirstOrDefault();
+            return Select<T>(1, 1).FirstOrDefault();
+        }
+
+        public static T SelectFirstWithWhere<T>(T obj, bool like) where T : class
+        {
+            return SelectWithWhere(1, 1, obj, like).FirstOrDefault();
         }
 
         // i am doing this because LINQ2SQL doesn't understand reflection
         // another method is to compile the c# code on the fly
 
-        public static IEnumerable<T> Select<T>(int page, int pageSize, T obj, bool like = false) where T : class
+        public static IEnumerable<T> SelectWithWhere<T>(int page, int pageSize, T obj, bool like) where T : class
         {
             if (page < 1) page = 1;
             int start = ((page - 1) * pageSize) + 1, end = start + pageSize - 1;
@@ -510,6 +515,11 @@ end;");
         public static IEnumerable<T> SelectAll<T>() where T : class
         {
             return Select<T>(1, int.MaxValue);
+        }
+
+        public static IEnumerable<T> SelectAllWithWhere<T>(T obj, bool like) where T : class
+        {
+            return SelectWithWhere(1, int.MaxValue, obj, like);
         }
     }
 }

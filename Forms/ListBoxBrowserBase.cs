@@ -23,7 +23,7 @@ namespace Dandaan.Forms
                 {
                     var ListBox = View as ListBox;
 
-                    var objs = SQL.Select<T>(Page, PageSize, SearchObj, true).Select((row) =>
+                    var objs = SQL.SelectWithWhere(Page, PageSize, SearchObj, true).Select((row) =>
                     {
                         var sb = new StringBuilder();
                         foreach (var item in PropertyInfos)

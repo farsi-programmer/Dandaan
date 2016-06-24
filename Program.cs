@@ -54,6 +54,8 @@ namespace Dandaan
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
+            // we never want to get here, it crashes the program
+
             var str = e.ExceptionObject.ToString();
 
             if (e.ExceptionObject is Exception)
@@ -67,24 +69,22 @@ namespace Dandaan
 
             DB.Log(str);
 
-            //MessageBox.Show("برنامه با مشکل مواجه شده است\r\n" + str, Title);
-            var f = new Forms.Message() { Text = Title };
-            f.textBox1.Text = "برنامه با مشکل مواجه شده است\r\n" + str;
-            f.button1.Select();
-            f.Show();
+            MessageBox.Show("برنامه با مشکل مواجه شده است\r\n" + str, Title);
         }
 
         private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
         {
-            // we never want to get in here, it crashes the program
-
             var ex = e.Exception;
 
             while (ex.InnerException != null) ex = ex.InnerException;
 
             DB.Log(ex.ToString());
 
-            MessageBox.Show("برنامه با مشکل مواجه شده است\r\n" + ex.ToString(), Title);
+            //MessageBox.Show("برنامه با مشکل مواجه شده است\r\n" + ex.ToString(), Title);
+            var f = new Forms.Message() { Text = Title };
+            f.textBox1.Text = "برنامه با مشکل مواجه شده است\r\n" + ex;
+            f.button1.Select();
+            f.Show();
         }
 
         private static void Application_ApplicationExit(object sender, EventArgs e)

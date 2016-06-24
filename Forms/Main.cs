@@ -75,7 +75,7 @@ namespace Dandaan.Forms
             AddButtons();
         }
 
-        List<Control> defaultControls;
+        List<string> userButtons;
         Dictionary<string, Form> userForms;
 
         public void AddButtons()
@@ -98,19 +98,19 @@ namespace Dandaan.Forms
                 }
             };
 
-            /*
-                    Controls.Remove(item);
-                    item.Dispose();     
-            */
-
-            if(defaultControls == null)
+            if (userButtons != null)
             {
-                defaultControls = new List<Control>();
-                foreach (Control item in Controls) defaultControls.Add(item);
-            }
+                foreach (var item in userButtons)
+                {
+                    var c = Controls[item];
+                    Controls.RemoveByKey(item);
+                    c.Dispose();
+                }
 
-            Controls.Clear();
-            Controls.AddRange(defaultControls.ToArray());
+                userButtons.Clear();
+            }
+            else userButtons = new List<string>();
+
             foreach (Control item in Controls) if (item is Button) act(item);
 
             //
@@ -136,23 +136,32 @@ namespace Dandaan.Forms
 
                     Action B = () =>
                     {
-                        Form form;
+                        var assembly = System.Reflection.Assembly.LoadFile(path);
+                        Type t = assembly.GetType(name);
+
+                        Form form = null;
+
+                        Action C = () =>
+                        {
+                            form = (Form)Activator.CreateInstance(
+                                typeof(ListViewBrowser<>).MakeGenericType(new[] { t }));
+                        };
 
                         if (userForms == null) userForms = new Dictionary<string, Form>();
 
-                        if (userForms.ContainsKey(button.Text)) form = userForms[button.Text];
+                        if (userForms.ContainsKey(button.Text))
+                        {
+                            form = userForms[button.Text];
+
+                            if (form.IsDisposed) C();
+                        }
                         else
                         {
-                            var assembly = System.Reflection.Assembly.LoadFile(path);
-
                             DB.DataContextType = assembly.GetType(nameof(Dandaan) + "." + contextName);
-
-                            Type t = assembly.GetType(name);
 
                             SQL.CreateTable(t);
 
-                            form = (Form)Activator.CreateInstance(
-                                typeof(ListViewBrowser<>).MakeGenericType(new[] { t }));
+                            C();
 
                             userForms.Add(button.Text, form);
                         }
@@ -164,11 +173,13 @@ namespace Dandaan.Forms
                     else if (MessageBox.Show("این فرم هنوز ساخته نشده است، در صورت ساختن آن امکان تغییر دادن این فرم و فرم​های مرجع آن دیگر وجود نخواهد داشت!‏",
                         Program.Title, MessageBoxButtons.OKCancel) == DialogResult.OK)
                     {
-                        new FormBuilder(path, name).ShowDialog();
+                        new FormBuilder(path, name, item);
                         B();
                     }
                 };
 
+                button.Name = GetHashCode().ToString();
+                userButtons.Add(button.Name);
                 Controls.Add(button);
                 act(button);
             }

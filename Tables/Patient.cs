@@ -16,7 +16,8 @@ namespace Dandaan.Tables
     public class Patient
     {
         [Column(IsPrimaryKey = true)]
-        [DandaanColumn(Sql = "[int] IDENTITY NOT NULL CONSTRAINT [PK_" + nameof(Patient) + "] PRIMARY KEY CLUSTERED",
+        [DandaanColumn(Sql = "[int] IDENTITY NOT NULL CONSTRAINT [PK_" + nameof(Patient) + @"]
+PRIMARY KEY CLUSTERED",
             Label = "شماره بیمار")]
         /// <summary>PatNum.</summary>
         public int? PatNum { get; set; } // i don't want to make SSN mandatory, so this is the primary key

@@ -22,7 +22,7 @@ namespace Dandaan.Forms
 
         bool working = true;
 
-        public FormBuilder(string path, string name) : this()
+        public FormBuilder(string path, string name, Tables.UserTable table) : this()
         {
             textBox1.AppendText("در حال ساختن فرم، لطفا اندکی صبر کنید...\r\n");
 
@@ -30,9 +30,15 @@ namespace Dandaan.Forms
             {
                 try
                 {
-                    var options = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
+                    var type = Type.GetType($"{nameof(Dandaan)}.{nameof(Tables)}.{nameof(Tables.Column)}");
 
-                    var tree = CSharpSyntaxTree.ParseText($@"
+                    var columns = (IEnumerable<Tables.Column>)typeof(SQL)
+                    .GetMethod(nameof(SQL.SelectAllWithWhere)).MakeGenericMethod(type)
+                    .Invoke(null, new object[] { new Tables.Column() { UserTableId = table.Id }, false });
+
+                    var tableName = "UserTable" + table.Id;
+
+                    var sb = new StringBuilder($@"
 using System;
 using System.ComponentModel;
 using System.Data;
@@ -42,45 +48,137 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using System.Data.Linq;
 using System.Data.SqlClient;
 
 namespace Dandaan.Tables
 {{
-    [Table(Name = nameof(UserTable32))]
-    [Dandaan(Label = ""فیلدها"", EnableAdd = true, EnableDelete = true, EnableSearch = true, EnableEdit = true)]
-    public class UserTable32
+    [Table(Name = nameof({tableName}))]
+    [Dandaan(Label = ""{table.Label}""");
+
+                    if (table.EnableSearch == Tables.YesOrNo.بله) sb.Append(@", EnableSearch = true");
+                    if (table.EnableEdit == Tables.YesOrNo.بله) sb.Append(@", EnableEdit = true");
+                    if (table.EnableAdd == Tables.YesOrNo.بله) sb.Append(@", EnableAdd = true");
+                    if (table.EnableDelete == Tables.YesOrNo.بله) sb.Append(@", EnableDelete = true");
+
+                    sb.Append($@")]
+    public class {tableName}
     {{
         [Column(IsPrimaryKey = true)]
-        [DandaanColumn(Sql = ""[int] NOT NULL CONSTRAINT[PK_"" + nameof(UserTable32) + @""] PRIMARY KEY CLUSTERED
-CONSTRAINT[FK_"" + nameof(UserTable32) + ""_"" + nameof(User) + @""]
-FOREIGN KEY REFERENCES[dbo].["" + nameof(User) + ""](["" + nameof(User.Id) + ""])"")]
-        public int UserId {{ get; set; }}
+        [DandaanColumn(Sql = ""[int] IDENTITY NOT NULL CONSTRAINT [PK_"" + nameof({tableName}) + @""]
+PRIMARY KEY CLUSTERED"",
+            Label = ""شماره"")]
+        public int? Id {{ get; set; }}
+");
+
+                    var columnType = "";
+                    var sqlColumnType = "";
+                    var unique = 0;
+                    var foreignTableId = 0;
+
+                    foreach (var item in columns)
+                    {
+                        sb.Append($@"
+        [Column]
+        [DandaanColumn(Sql = @""");
+
+                        columnType = item.Type.ToString();
+
+                        if (columnType.Contains("تاریخ_با_دقت_دقیقه"))
+                            sqlColumnType = nameof(SqlDbType.SmallDateTime);
+                        else if (columnType.Contains("تاریخ_با_دقت_ثانیه"))
+                            sqlColumnType = nameof(SqlDbType.DateTime);
+                        else if (columnType.Contains("عدد_اعشاری"))
+                            sqlColumnType = nameof(SqlDbType.Real);
+                        else if (columnType.Contains("متن"))
+                            sqlColumnType = nameof(SqlDbType.NVarChar) + "(4000)";
+                        else if (columnType.Contains("فایل"))
+                            sqlColumnType = nameof(SqlDbType.VarBinary) + "(max)";
+                        else
+                            sqlColumnType = nameof(SqlDbType.Int);
+
+                        if (item.ReferenceColumnId != null) sb.Append("int");
+                        else sb.Append(sqlColumnType);
+
+                        if (item.NotNull == Tables.YesOrNo.بله || columnType.Contains("بدون_تکرار"))
+                            sb.Append(" NOT NULL");
+
+                        if (columnType.Contains("بدون_تکرار"))
+                        {
+                            sb.Append($@" CONSTRAINT [IX_"" + nameof({tableName}) + @""_{unique}]
+UNIQUE NONCLUSTERED");
+                            unique++;
+                        }
+
+                        if (columnType.StartsWith("تاریخ")) columnType = "DateTime";
+                        else if (columnType.StartsWith("متن")) columnType = "string";
+                        else if (columnType.StartsWith("فایل")) columnType = "byte[]";
+                        else if (columnType.StartsWith("عدد_اعشاری")) columnType = "float";
+                        else columnType = "int";
+
+                        if (item.ReferenceColumnId != null)
+                        {
+                            foreignTableId = SQL.SelectFirstWithWhere(new Tables.Column() { Id = item.ReferenceColumnId.Value }, false).UserTableId.Value;
+
+                            sb.Append($@" CONSTRAINT [FK_{tableName}_UserTable{foreignTableId}_{item.Id}]
+FOREIGN KEY REFERENCES [dbo].[UserTable{foreignTableId}] ([Id])");
+
+                            columnType = "int";
+                        }
+
+                        sb.Append($@""",
+                Label = ""{item.Label}""{(item.Type.ToString().Contains("متن_چند_خطی") ? @",
+                " + nameof(DandaanColumnAttribute.Multiline) + " = True" : "")}{(item.ReferenceColumnId != null ? $@",
+                ForeignTableDisplayColumn = ""Column{item.ReferenceColumnId}""" : "")})]
+                    public {columnType}");
+
+                        if (columnType != "string") sb.Append("?");
+
+                        sb.Append($@" Column{item.Id} {{ get; set; }}{(item.Type.ToString().Contains("مقدار_پیش_فرض_اکنون") ? " = DateTime.Now;" : "")}");
+                    }
+                    
+                    sb.Append($@"
     }}
 }}
 
 namespace Dandaan
 {{
-    public class DataContext32 : {DB.DataContext.GetType().Name}
+    public class DataContext{table.Id} : {DB.DataContextType.Name}
     {{
-        public Table<Tables.UserTable32> UserTable32s;
+        public Table<Tables.UserTable{table.Id}> UserTable{table.Id}s;
 
-        public DataContext32(string connection) : base(connection) {{ }}
+        public DataContext{table.Id}(string connection) : base(connection) {{ }}
 
-        public DataContext32(SqlConnection connection) : base(connection) {{ }}
+        public DataContext{table.Id}(SqlConnection connection) : base(connection) {{ }}
     }}
 }}");
+
+                    var tree = CSharpSyntaxTree.ParseText(sb.ToString());
+
                     var references = new List<MetadataReference>()
-                {
-                    //MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-                    //MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location),
-                    MetadataReference.CreateFromFile(GetType().Assembly.Location),
-                    MetadataReference.CreateFromFile(DB.DataContextType.Assembly.Location),
-                };
+                    {
+                        //MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
+                        //MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location),
+                        MetadataReference.CreateFromFile(GetType().Assembly.Location),                        
+                    };
+
+                    if (DB.DataContextType != typeof(DataContext))
+                    {
+                        references.Add(MetadataReference.CreateFromFile(DB.DataContextType.Assembly.Location));
+
+                        var baseType = DB.DataContextType.BaseType;
+
+                        while (baseType != typeof(DataContext))
+                        {
+                            references.Add(MetadataReference.CreateFromFile(baseType.Assembly.Location));
+                            baseType = DB.DataContextType.BaseType;
+                        }
+                    }
 
                     references.AddRange(GetType().Assembly.GetReferencedAssemblies().Select((a) =>
                     MetadataReference.CreateFromFile(System.Reflection.Assembly.Load(a).Location)).ToArray());
+
+                    var options = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
 
                     var compiler = CSharpCompilation.Create(name, new[] { tree }, references, options);
 
@@ -98,12 +196,14 @@ namespace Dandaan
                             diagnostic.Severity == DiagnosticSeverity.Error);
 
                             foreach (Diagnostic diagnostic in failures)
-                                throw new Exception(diagnostic.ToString());
+                                throw new Exception(diagnostic + "" + sb);
                         }
                     }
                 }
-                finally { Invoke(() => working = false); }
+                finally { Invoke(() => { working = false; DialogResult = DialogResult.OK; }); }
             }).Start();
+
+            ShowDialog();
         }
 
         private void FormBuilder_FormClosing(object sender, FormClosingEventArgs e)

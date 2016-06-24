@@ -36,24 +36,24 @@ PRIMARY KEY CLUSTERED (Label DESC)",
         [Column]
         [DandaanColumn(Sql = "[int] NOT NULL",
             Label = "امکان اضافه")]
-        public NoOrYes? EnableAdd { get; set; }
+        public YesOrNo? EnableAdd { get; set; }
 
         [Column]
         [DandaanColumn(Sql = "[int] NOT NULL",
             Label = "امکان حذف")]
-        public NoOrYes? EnableDelete { get; set; }
+        public YesOrNo? EnableDelete { get; set; }
 
         [Column]
         [DandaanColumn(Sql = "[int] NOT NULL",
             Label = "امکان ویرایش")]
-        public NoOrYes? EnableEdit { get; set; }
+        public YesOrNo? EnableEdit { get; set; }
 
         [Column]
         [DandaanColumn(Sql = "[int] NOT NULL",
             Label = "امکان جستجو")]
-        public NoOrYes? EnableSearch { get; set; }
+        public YesOrNo? EnableSearch { get; set; }
     }
 
     //public enum NoOrYes { No, Yes }
-    public enum NoOrYes { خیر, بله }
+    public enum YesOrNo { بله, خیر }
 }

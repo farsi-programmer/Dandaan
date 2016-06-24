@@ -33,6 +33,7 @@ namespace Dandaan.UserControls
         {
             _kind = kind;
             _obj = obj;
+            var defaultObj = Activator.CreateInstance(typeof(T));
 
             int y = 15, maxX = 0, textBoxWidth = /*350*/400, margin = 2, xMargin = 15, tabIndex = 0;
             Label label;
@@ -144,7 +145,17 @@ namespace Dandaan.UserControls
                     }
 
                     if (control.Text == "" && (control as ComboBox).Items.Count > 0)
-                         (control as ComboBox).SelectedIndex = 0;
+                    {
+                        int i = 0;
+
+                        if (!SQL.IsForeignKey(da.Sql))
+                        {
+                            var v = item.GetValue(defaultObj);
+                            if (v != null) i = (int)v;
+                        }
+                        
+                        (control as ComboBox).SelectedIndex = i;
+                    }
 
                     (control as Controls.ComboBox).DefaultText = control.Text;
 

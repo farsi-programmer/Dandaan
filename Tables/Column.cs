@@ -95,7 +95,7 @@ FOREIGN KEY REFERENCES [dbo].[" + nameof(UserTable) + "] ([" + nameof(UserTable.
         [Column]
         [DandaanColumn(Sql = "[int] NOT NULL",
             Label = "الزامی")] // حتما باید وارد شود
-        public NoOrYes? NotNull { get; set; }
+        public YesOrNo? NotNull { get; set; } = YesOrNo.خیر;
 
         //[Column]
         //[DandaanColumn(Sql = "[int] NOT NULL")]

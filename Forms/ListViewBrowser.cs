@@ -36,7 +36,7 @@ namespace Dandaan.Forms
                 {
                     _original = new List<T>();
                     bool odd = true;
-                    var items = SQL.Select(Page, PageSize, SearchObj, true).Select((row) =>
+                    var items = SQL.SelectWithWhere(Page, PageSize, SearchObj, true).Select((row) =>
                     {
                         _original.Add(row);
                         odd = !odd;
@@ -52,11 +52,15 @@ namespace Dandaan.Forms
 
                                 var obj = Activator.CreateInstance(type);
 
+                                foreach (var A in type.GetProperties())                                
+                                    if (A.GetValue(obj) != null && Nullable.GetUnderlyingType(A.PropertyType) != null)
+                                        A.SetValue(obj, null);                                
+
                                 type.GetProperties().Where(p => p.Name == SQL.GetForeignColumn(da.Sql)).First()
                                 .SetValue(obj, value);
 
-                                var result = typeof(SQL).GetMethod(nameof(SQL.SelectFirst)).MakeGenericMethod(type)
-                                .Invoke(null, new object[] { obj });
+                                var result = typeof(SQL).GetMethod(nameof(SQL.SelectFirstWithWhere)).MakeGenericMethod(type)
+                                .Invoke(null, new object[] { obj, false });
 
                                 value = type.GetProperties().Where(p => p.Name == da.ForeignTableDisplayColumn).First()
                                 .GetValue(result);
