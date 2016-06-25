@@ -23,7 +23,7 @@ namespace Dandaan.Forms
 
             View = listView1;
 
-            LoadAct = () =>
+            LoadAct += () =>
             {
                 // testing
                 //browserMenu1.CountFunc = () => 1000;
@@ -50,11 +50,11 @@ namespace Dandaan.Forms
                             {
                                 var type = Type.GetType($"{nameof(Dandaan)}.{nameof(Tables)}.{SQL.GetForeignTable(da.Sql)}");
 
-                                var obj = Activator.CreateInstance(type);
+                                var obj = Activator.CreateInstance(type);//, new object[] { false});
 
                                 foreach (var A in type.GetProperties())                                
                                     if (A.GetValue(obj) != null && Nullable.GetUnderlyingType(A.PropertyType) != null)
-                                        A.SetValue(obj, null);                                
+                                        A.SetValue(obj, null);                       
 
                                 type.GetProperties().Where(p => p.Name == SQL.GetForeignColumn(da.Sql)).First()
                                 .SetValue(obj, value);
@@ -204,54 +204,62 @@ namespace Dandaan.Forms
                 return obj;
             };
 
-            DeleteFunc = () =>
+            DeleteFunc += () =>
             {
-                if (listView1.SelectedIndices.Count < 1) MessageBox.Show("لطفا یک رکورد را برای حذف کردن انتخاب کنید", Program.Title);
+                if (listView1.SelectedIndices.Count < 1) MessageBox.Show("لطفا یک رکورد را برای حذف کردن انتخاب کنید.‏", Program.Title);
                 else if (MessageBox.Show("آیا مطمئن هستید که میخواهید این رکورد را حذف کنید؟"
                      + "\r\n" + listView1.SelectedItems[0].Text,
                     Program.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Stop, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
                 {
-                    SQL.Delete(getObj());
+                    var obj = getObj();
 
-                    return true;
+                    if (BeforeDelete(obj))
+                    {
+                        SQL.Delete(obj);
+
+                        return true;
+                    }
                 }
 
                 return false;
             };
 
-            EditAct = (act) =>
+            EditAct += (act) =>
             {
-                if (listView1.SelectedIndices.Count < 1) MessageBox.Show("لطفا یک رکورد را برای ویرایش کردن انتخاب کنید", Program.Title);
+                if (listView1.SelectedIndices.Count < 1) MessageBox.Show("لطفا یک رکورد را برای ویرایش کردن انتخاب کنید.‏", Program.Title);
                 else
                 {
                     var obj = getObj();
 
-                    Func<T, bool> equals = (_obj) => 
+                    if (BeforeEdit(obj))
                     {
-                        foreach (var item in PropertyInfos)
-                            if (!item.GetValue(_obj).Equals(item.GetValue(obj)))
-                                return false;
+                        Func<T, bool> equals = (_obj) =>
+                        {
+                            foreach (var item in PropertyInfos)
+                                if (!item.GetValue(_obj).Equals(item.GetValue(obj)))
+                                    return false;
 
-                        return true;
-                    };
+                            return true;
+                        };
 
-                    foreach (Form item in Application.OpenForms)
-                        foreach (var A in item.Controls)
-                            if (A is UserControls.Editor<T>
-                            && (A as UserControls.Editor<T>)._kind == UserControls.EditorKind.Edit
-                            && equals((A as UserControls.Editor<T>)._obj))
-                            {
-                                var f = item;
-                                ShowForm(ref f, false);
+                        foreach (Form item in Application.OpenForms)
+                            foreach (var A in item.Controls)
+                                if (A is UserControls.Editor<T>
+                                && (A as UserControls.Editor<T>)._kind == UserControls.EditorKind.Edit
+                                && equals((A as UserControls.Editor<T>)._obj))
+                                {
+                                    var f = item;
+                                    ShowForm(ref f, false);
 
-                                return;
-                            }
+                                    return;
+                                }
 
-                    var editForm = new Editor<T>(DandaanAttribute.Label + " - ویرایش");
-                    var editor = new UserControls.Editor<T>(PropertyInfos, editForm, UserControls.EditorKind.Edit, obj, act);
-                    editForm.setEditor(editor);
+                        var editForm = new Editor<T>(DandaanAttribute.Label + " - ویرایش");
+                        var editor = new UserControls.Editor<T>(PropertyInfos, editForm, UserControls.EditorKind.Edit, obj, act);
+                        editForm.setEditor(editor);
 
-                    ShowForm(ref editForm, false);
+                        ShowForm(ref editForm, false);
+                    }
                 }
             };
         }        

@@ -67,11 +67,6 @@ FOREIGN KEY REFERENCES [dbo].[" + nameof(UserTable) + "] ([" + nameof(UserTable.
 
         //[Column]
         //[DandaanColumn(Sql = "[int] NOT NULL",
-        //    Label = "امکان حذف")]
-        //public NoOrYes? EnableDelete { get; set; }
-
-        //[Column]
-        //[DandaanColumn(Sql = "[int] NOT NULL",
         //    Label = "امکان ویرایش")]
         //public NoOrYes? EnableEdit { get; set; }
 
@@ -95,7 +90,7 @@ FOREIGN KEY REFERENCES [dbo].[" + nameof(UserTable) + "] ([" + nameof(UserTable.
         [Column]
         [DandaanColumn(Sql = "[int] NOT NULL",
             Label = "الزامی")] // حتما باید وارد شود
-        public YesOrNo? NotNull { get; set; } = YesOrNo.خیر;
+        public YesOrNo? NotNull { get; set; }
 
         //[Column]
         //[DandaanColumn(Sql = "[int] NOT NULL")]
@@ -120,6 +115,16 @@ FOREIGN KEY REFERENCES [dbo].[" + nameof(Column) + "] ([" + nameof(Id) + "])",
             ForeignTableDisplayColumn = nameof(Label),
             Label = "فیلد مرجع")]
         public int? ReferenceColumnId { get; set; }
+
+        public Column() : this(true) { }
+
+        public Column(bool withDefaults)
+        {
+            if(withDefaults)
+            {
+                 NotNull = YesOrNo.خیر;
+            }
+        }
     }
     
     public enum ColumnType

@@ -17,7 +17,7 @@ namespace Dandaan.Forms
         {
             InitializeComponent();
 
-            LoadAct = () =>
+            LoadAct += () =>
             {
                 Thread = Common.Thread(() =>
                 {

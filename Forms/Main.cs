@@ -2,6 +2,7 @@
 
 using System;
 using System.IO;
+using System.Reflection;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -77,6 +78,7 @@ namespace Dandaan.Forms
 
         List<string> userButtons;
         Dictionary<string, Form> userForms;
+        Dictionary<string, Assembly> assemblies;
 
         public void AddButtons()
         { 
@@ -136,7 +138,17 @@ namespace Dandaan.Forms
 
                     Action B = () =>
                     {
-                        var assembly = System.Reflection.Assembly.LoadFile(path);
+                        if (assemblies == null) assemblies = new Dictionary<string, Assembly>();
+
+                        Assembly assembly;
+
+                        if (assemblies.ContainsKey(path)) assembly = assemblies[path];
+                        else
+                        {
+                            assembly = Assembly.LoadFile(path);
+                            assemblies.Add(path, assembly);
+                        }
+
                         Type t = assembly.GetType(name);
 
                         Form form = null;
@@ -169,12 +181,54 @@ namespace Dandaan.Forms
                         ShowForm(ref form);
                     };
 
-                    if (File.Exists(path) && new FileInfo(path).Length > 0) B();
-                    else if (MessageBox.Show("این فرم هنوز ساخته نشده است، در صورت ساختن آن امکان تغییر دادن این فرم و فرم​های مرجع آن دیگر وجود نخواهد داشت!‏",
-                        Program.Title, MessageBoxButtons.OKCancel) == DialogResult.OK)
+                    Func<string, bool> exists = (p) =>
                     {
-                        new FormBuilder(path, name, item);
-                        B();
+                        if (!File.Exists(p) || new FileInfo(p).Length == 0)
+                        {
+                            var row = SQL.SelectFirstWithWhere(new Tables.UserTableAssembly()
+                            { UserTableId = item.Id }, false);
+
+                            if (row != null) File.WriteAllBytes(p, row.Assembly);
+                            else return false;
+                        }
+
+                        return true;
+                    };
+
+                    if (exists(path)) B();
+                    else
+                    {
+                        var unbuiltReferences = false;
+                        var unbuiltName = "";
+                        var columns = FormBuilder.GetColumns(item);
+
+                        foreach (var A in columns)
+                            if (A.ReferenceColumnId != null)
+                            {
+                                var n = nameof(Dandaan) + "." + nameof(Tables) + "." + nameof(Tables.UserTable) + A.ReferenceColumnId.Value;
+                                var p = Program.DataDirectory + "\\" + n + ".dll";
+
+                                if (!exists(p))
+                                {
+                                    unbuiltReferences = true;
+
+                                    unbuiltName = SQL.SelectFirstWithWhere(new Tables.UserTable()
+                                    {
+                                        Id = SQL.SelectFirstWithWhere(new Tables.Column(false)
+                                        { Id = A.ReferenceColumnId.Value }, false).UserTableId
+                                    }, false).Label;
+
+                                    break;
+                                }
+                            }
+
+                        if (unbuiltReferences) MessageBox.Show($"این فرم به فرم:‏\r\n{unbuiltName}\r\nارجاع داده است، لطفا ابتدا آنرا بسازید.‏", Program.Title);
+                        else if (MessageBox.Show("این فرم هنوز ساخته نشده است، در صورت ساختن آن امکان تغییر دادن این فرم یا فیلدهای آن دیگر وجود نخواهد داشت!‏",
+                     Program.Title, MessageBoxButtons.OKCancel) == DialogResult.OK)
+                        {
+                            new FormBuilder(path, name, item);
+                            B();
+                        }
                     }
                 };
 
@@ -237,10 +291,42 @@ namespace Dandaan.Forms
         private void button11_Click(object sender, EventArgs e)
         {
             if (userTables == null || userTables.IsDisposed)
+            {
                 userTables = new ListViewBrowser<Tables.UserTable>();
 
-            userTables.Add += AddButtons;
-            userTables.Delete += AddButtons;
+                userTables.AfterAdd += AddButtons;
+                userTables.AfterDelete += AddButtons;
+
+                Func<int, bool> exists = (id) =>
+                {
+                    var row = SQL.SelectFirstWithWhere(new Tables.UserTableAssembly()
+                    { UserTableId = id }, false);
+
+                    return row != null;
+                };
+
+                userTables.BeforeEdit += (o) =>
+                {
+                    if (exists(o.Id.Value))
+                    {
+                        MessageBox.Show("این فرم ساخته شده است و امکان ویرایش آن وجود ندارد.‏", Program.Title);
+
+                        return false;
+                    }
+                    else return true;
+                };
+
+                userTables.BeforeDelete += (o) =>
+                {
+                    if (exists(o.Id.Value))
+                    {
+                        MessageBox.Show("این فرم ساخته شده است و امکان حذف آن وجود ندارد.‏", Program.Title);
+
+                        return false;
+                    }
+                    else return true;
+                };
+            }
 
             ShowForm(ref userTables);
         }
@@ -249,6 +335,52 @@ namespace Dandaan.Forms
 
         private void button12_Click(object sender, EventArgs e)
         {
+            if (columns == null || columns.IsDisposed)
+            {
+                columns = new ListViewBrowser<Tables.Column>();
+
+                Func<int, bool> exists = (id) =>
+                {
+                    var row = SQL.SelectFirstWithWhere(new Tables.UserTableAssembly()
+                    { UserTableId = id }, false);
+
+                    return row != null;
+                };
+
+                columns.BeforeEdit += (o) =>
+                {
+                    if (exists(o.UserTableId.Value))
+                    {
+                        MessageBox.Show("این فیلد متعلق به فرمی ساخته شده است و امکان ویرایش آن وجود ندارد.‏", Program.Title);
+
+                        return false;
+                    }
+                    else return true;
+                };
+
+                columns.BeforeDelete += (o) =>
+                {
+                    if (exists(o.UserTableId.Value))
+                    {
+                        MessageBox.Show("این فیلد متعلق به فرمی ساخته شده است و امکان حذف آن وجود ندارد.‏", Program.Title);
+
+                        return false;
+                    }
+                    else return true;
+                };
+
+                columns.BeforeAdd += (o) =>
+                {
+                    if (exists(o.UserTableId.Value))
+                    {
+                        MessageBox.Show("فرم انتخاب شده ساخته شده است و امکان اضافه کردن فیلد به آن وجود ندارد.‏", Program.Title);
+
+                        return false;
+                    }
+                    else return true;
+                };
+            }
+
             ShowForm(ref columns);
         }
 

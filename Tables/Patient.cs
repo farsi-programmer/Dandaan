@@ -31,18 +31,30 @@ PRIMARY KEY CLUSTERED",
         [DandaanColumn(Sql = "[nvarchar](100) NOT NULL",// we don't use defaults, it makes things complicated  CONSTRAINT [DF_" + nameof(Patient) + "_" + nameof(FName) + "] DEFAULT (N'')",
             Label = "نام")]
         /// <summary>First name.</summary>
-        public string FName { get; set; } = "";
+        public string FName { get; set; }// = "";
 
         [Column]
         [DandaanColumn(Sql = "[nvarchar](100) NOT NULL",// CONSTRAINT [DF_" + nameof(Patient) + "_" + nameof(HmPhone) + "] DEFAULT (N'')",
             Label = "تلفن منزل")]
         /// <summary>Home phone. Includes any punctuation</summary>
-        public string HmPhone { get; set; } = "";
+        public string HmPhone { get; set; }// = "";
 
         [Column]
         [DandaanColumn(Sql = "[nvarchar](100) NOT NULL",// CONSTRAINT [DF_" + nameof(Patient) + "_" + nameof(WirelessPhone) + "] DEFAULT (N'')",
             Label = "شماره موبایل")]
         /// <summary>.</summary>
-        public string WirelessPhone { get; set; } = "";
+        public string WirelessPhone { get; set; }// = "";
+
+        public Patient() : this(true) { }
+
+        public Patient(bool withDefaults)
+        {
+            if (withDefaults)
+            {
+                WirelessPhone = "";
+                HmPhone = "";
+                FName = "";
+            }
+        }
     }
 }

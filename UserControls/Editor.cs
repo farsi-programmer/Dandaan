@@ -28,7 +28,8 @@ namespace Dandaan.UserControls
         public T _obj { get; protected set; }
 
         public Editor(PropertyInfo[] propertyInfos, Form form, EditorKind kind = EditorKind.Add,
-            T obj = null, Action acceptAct = null, Action cancelAct = null, Action<T> searchAct = null)
+            T obj = null, Action acceptAct = null, Action cancelAct = null, Action<T> searchAct = null,
+            Func<T, bool> beforeAdd = null)
             : this()
         {
             _kind = kind;
@@ -348,7 +349,10 @@ namespace Dandaan.UserControls
                     //else
                     {
                         if (kind == EditorKind.Add)
-                            SQL.Insert(obj);
+                        {
+                            if (beforeAdd(obj)) SQL.Insert(obj);
+                            else return;
+                        }
                         else if (kind == EditorKind.Edit)
                         {
                             SQL.Update(obj, _obj);

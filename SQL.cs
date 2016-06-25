@@ -144,7 +144,7 @@ COMMIT TRANSACTION;";
         // commits or rolls back.
         // Locks can be explicitly released with sp_releaseapplock.
 
-        public static string NonWaitableTransactionalLock(string sql, string mutexName)
+        public static string BeginNonWaitableTransactionalLock(string mutexName)
         {
             // an alternative to this is to set LOCK_TIMEOUT to zero, and try to lock a table row
             // (0 means to not wait at all and return a message as soon as a lock is encountered)
@@ -156,9 +156,19 @@ EXEC @getapplock_result=sp_getapplock @Resource=N'{mutexName}', @LockMode=N'Excl
 	@LockOwner=N'Transaction', @LockTimeout=0, @DbPrincipal=N'dbo';
 if @getapplock_result=0
 begin
-{sql}
+";
+        }
+
+        public static string EndNonWaitableTransactionalLock()
+        {
+            return $@"
 end;
 COMMIT TRANSACTION;";
+        }
+
+        public static string NonWaitableTransactionalLock(string sql, string mutexName)
+        {
+            return BeginNonWaitableTransactionalLock(mutexName) + sql + EndNonWaitableTransactionalLock();
         }
 
         public static string Insert(string table, List<string> columns, params string[] IfNotExists)

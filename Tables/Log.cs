@@ -25,21 +25,21 @@ PRIMARY KEY CLUSTERED (Id DESC)",
         [Column]//(IsDbGenerated = true)]
         [DandaanColumn(Sql = "[smalldatetime] NOT NULL",// we don't use defaults, it makes things complicated CONSTRAINT [DF_" + nameof(Log) + "_" + nameof(DateTime) + "] DEFAULT (getdate())",
             Label = "تاریخ")]
-        public DateTime? DateTime { get; set; } = System.DateTime.Now;
+        public DateTime? DateTime { get; set; }// = System.DateTime.Now;
 
         [Column]
         [DandaanColumn(Sql = "[nvarchar](1000) NOT NULL",
             Label = "پیام")]
         public string Message { get; set; }
 
-        /*public Log() : this(true) { }
+        public Log() : this(true) { }
 
-        public Log(bool setDefaults)
+        public Log(bool withDefaults)
         {
-            if (setDefaults)
+            if (withDefaults)
             {
                 DateTime = System.DateTime.Now;
             }
-        }*/
+        }
     }
 }

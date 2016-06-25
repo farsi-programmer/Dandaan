@@ -220,6 +220,7 @@
     </Compile>
     <Compile Include="Tables\Column.cs" />
     <Compile Include="Tables\UserTable.cs" />
+    <Compile Include="Tables\UserTableAssembly.cs" />
     <Compile Include="UserControls\Editor.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -30,11 +30,7 @@ namespace Dandaan.Forms
             {
                 try
                 {
-                    var type = Type.GetType($"{nameof(Dandaan)}.{nameof(Tables)}.{nameof(Tables.Column)}");
-
-                    var columns = (IEnumerable<Tables.Column>)typeof(SQL)
-                    .GetMethod(nameof(SQL.SelectAllWithWhere)).MakeGenericMethod(type)
-                    .Invoke(null, new object[] { new Tables.Column() { UserTableId = table.Id }, false });
+                    var columns = GetColumns(table);
 
                     var tableName = "UserTable" + table.Id;
 
@@ -65,15 +61,13 @@ namespace Dandaan.Tables
     public class {tableName}
     {{
         [Column(IsPrimaryKey = true)]
-        [DandaanColumn(Sql = ""[int] IDENTITY NOT NULL CONSTRAINT [PK_"" + nameof({tableName}) + @""]
-PRIMARY KEY CLUSTERED"",
+        [DandaanColumn(Sql = ""[int] IDENTITY NOT NULL CONSTRAINT [PK_{tableName}] PRIMARY KEY CLUSTERED"",
             Label = ""شماره"")]
         public int? Id {{ get; set; }}
 ");
 
                     var columnType = "";
                     var sqlColumnType = "";
-                    var unique = 0;
                     var foreignTableId = 0;
 
                     foreach (var item in columns)
@@ -104,11 +98,7 @@ PRIMARY KEY CLUSTERED"",
                             sb.Append(" NOT NULL");
 
                         if (columnType.Contains("بدون_تکرار"))
-                        {
-                            sb.Append($@" CONSTRAINT [IX_"" + nameof({tableName}) + @""_{unique}]
-UNIQUE NONCLUSTERED");
-                            unique++;
-                        }
+                            sb.Append($@" CONSTRAINT [IX_{tableName}_{item.Id}] UNIQUE NONCLUSTERED");
 
                         if (columnType.StartsWith("تاریخ")) columnType = "DateTime";
                         else if (columnType.StartsWith("متن")) columnType = "string";
@@ -118,7 +108,7 @@ UNIQUE NONCLUSTERED");
 
                         if (item.ReferenceColumnId != null)
                         {
-                            foreignTableId = SQL.SelectFirstWithWhere(new Tables.Column() { Id = item.ReferenceColumnId.Value }, false).UserTableId.Value;
+                            foreignTableId = SQL.SelectFirstWithWhere(new Tables.Column(false) { Id = item.ReferenceColumnId.Value }, false).UserTableId.Value;
 
                             sb.Append($@" CONSTRAINT [FK_{tableName}_UserTable{foreignTableId}_{item.Id}]
 FOREIGN KEY REFERENCES [dbo].[UserTable{foreignTableId}] ([Id])");
@@ -136,7 +126,7 @@ FOREIGN KEY REFERENCES [dbo].[UserTable{foreignTableId}] ([Id])");
 
                         sb.Append($@" Column{item.Id} {{ get; set; }}{(item.Type.ToString().Contains("مقدار_پیش_فرض_اکنون") ? " = DateTime.Now;" : "")}");
                     }
-                    
+
                     sb.Append($@"
     }}
 }}
@@ -159,7 +149,7 @@ namespace Dandaan
                     {
                         //MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
                         //MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location),
-                        MetadataReference.CreateFromFile(GetType().Assembly.Location),                        
+                        MetadataReference.CreateFromFile(GetType().Assembly.Location),
                     };
 
                     if (DB.DataContextType != typeof(DataContext))
@@ -198,12 +188,27 @@ namespace Dandaan
                             foreach (Diagnostic diagnostic in failures)
                                 throw new Exception(diagnostic + "" + sb);
                         }
+                        else
+                        {
+                            file.Close();
+                            SQL.Insert(new Tables.UserTableAssembly()
+                            { UserTableId = table.Id, Assembly = File.ReadAllBytes(path) });
+                        }
                     }
                 }
                 finally { Invoke(() => { working = false; DialogResult = DialogResult.OK; }); }
             }).Start();
 
             ShowDialog();
+        }
+
+        public static IEnumerable<Tables.Column> GetColumns(Tables.UserTable table)
+        {
+            var type = Type.GetType($"{nameof(Dandaan)}.{nameof(Tables)}.{nameof(Tables.Column)}");
+
+            return (IEnumerable<Tables.Column>)typeof(SQL)
+            .GetMethod(nameof(SQL.SelectAllWithWhere)).MakeGenericMethod(type)
+            .Invoke(null, new object[] { new Tables.Column(false) { UserTableId = table.Id }, false });
         }
 
         private void FormBuilder_FormClosing(object sender, FormClosingEventArgs e)

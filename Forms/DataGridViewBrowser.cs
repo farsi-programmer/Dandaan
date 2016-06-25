@@ -18,7 +18,7 @@ namespace Dandaan.Forms
 
             View = dataGridView1;
 
-            LoadAct = () =>
+            LoadAct += () =>
             {
                 // testing
                 CountFunc = (s) => 1000;

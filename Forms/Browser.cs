@@ -48,9 +48,13 @@ namespace Dandaan.Forms
         protected Control View;
         protected T SearchObj;
 
-        public event Action Edit;
-        public event Action Add;
-        public event Action Delete;
+        public Action AfterEdit = () => { };
+        public Action AfterAdd = () => { };
+        public Action AfterDelete = () => { };
+
+        public Func<T, bool> BeforeEdit = (_) => true;
+        public Func<T, bool> BeforeAdd = (_) => true;
+        public Func<T, bool> BeforeDelete = (_) => true;
 
         private void buttonRefresh_Click(object sender, EventArgs e)
         {
@@ -107,7 +111,7 @@ namespace Dandaan.Forms
 
             buttonRefresh.PerformClick();
 
-            timer = new Timer() { Interval = 3000, Enabled = true };
+            timer = new Timer() { Interval = /*3000*/10000, Enabled = true };
             timer.Tick += Timer_Tick;
         }
 
@@ -165,8 +169,7 @@ namespace Dandaan.Forms
         private void disable()
         {
             focused = null;
-            foreach (Control item in Controls)
-                if (item.Focused) { focused = item; break; }
+            foreach (Control item in Controls) if (item.Focused) { focused = item; break; }
 
             buttonRefresh.Enabled = buttonFirst.Enabled = buttonLast.Enabled = buttonNext.Enabled
             = buttonPrevious.Enabled = textBox2.Enabled = buttonDelete.Enabled = buttonEdit.Enabled = false;
@@ -180,7 +183,7 @@ namespace Dandaan.Forms
             var success = DeleteFunc();
 
             checkBox1.Checked = isChecked;
-            if (success) { buttonRefresh.PerformClick(); Delete(); }
+            if (success) { buttonRefresh.PerformClick(); AfterDelete(); }
         }
 
         private void buttonAdd_Click(object sender, EventArgs e)
@@ -188,7 +191,7 @@ namespace Dandaan.Forms
             if (addForm == null || addForm.IsDisposed)
             {
                 addForm = new Editor<T>(DandaanAttribute.Label + " - اضافه");
-                var editor = new UserControls.Editor<T>(PropertyInfos, addForm, acceptAct: () => acceptAct(Add));
+                var editor = new UserControls.Editor<T>(PropertyInfos, addForm, acceptAct: () => acceptAct(AfterAdd), beforeAdd: BeforeAdd);
                 addForm.setEditor(editor);
             }
 
@@ -210,7 +213,7 @@ namespace Dandaan.Forms
             bool isChecked = checkBox1.Checked;
             if (isChecked) checkBox1.Checked = false;
 
-            EditAct(() => acceptAct(Edit));
+            EditAct(() => acceptAct(AfterEdit));
 
             checkBox1.Checked = isChecked;
         }
@@ -277,6 +280,7 @@ namespace Dandaan.Forms
             else if (e.KeyCode == Keys.Insert) buttonAdd.PerformClick();
             else if (e.KeyCode == Keys.F3) buttonSearch.PerformClick();
             else if (e.KeyCode == Keys.Enter) buttonEdit.PerformClick();
+            else if (e.KeyCode == Keys.F5) buttonRefresh.PerformClick();
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Dandaan.Forms
         {
             InitializeComponent();
 
-            LoadAct = () =>
+            LoadAct += () =>
             {
 #if using_ef || using_sqlite
             DB.Run((context) =>

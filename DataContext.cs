@@ -24,6 +24,8 @@ namespace Dandaan
 
         public Table<Tables.Column> Columns;
 
+        public Table<Tables.UserTableAssembly> UserTableAssemblys;
+
         public DataContext(string connection) : base(connection) { }
 
         public DataContext(SqlConnection connection) : base(connection) { }
