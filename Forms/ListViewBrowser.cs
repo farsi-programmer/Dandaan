@@ -52,18 +52,21 @@ namespace Dandaan.Forms
 
                                 var obj = Activator.CreateInstance(type);//, new object[] { false});
 
-                                foreach (var A in type.GetProperties())                                
+                                foreach (var A in type.GetProperties())
                                     if (A.GetValue(obj) != null && Nullable.GetUnderlyingType(A.PropertyType) != null)
-                                        A.SetValue(obj, null);                       
+                                        A.SetValue(obj, null);
 
-                                type.GetProperties().Where(p => p.Name == SQL.GetForeignColumn(da.Sql)).First()
+                                var ps = type.GetProperties();
+                                
+                                ps.Where(p => p.Name == SQL.GetForeignColumn(da.Sql)).First()
                                 .SetValue(obj, value);
 
                                 var result = typeof(SQL).GetMethod(nameof(SQL.SelectFirstWithWhere)).MakeGenericMethod(type)
                                 .Invoke(null, new object[] { obj, false });
 
-                                value = type.GetProperties().Where(p => p.Name == da.ForeignTableDisplayColumn).First()
-                                .GetValue(result);
+                                foreach (var B in ps) if (B.Name != SQL.GetForeignColumn(da.Sql)
+                                    && !SQL.IsForeignKey(Reflection.GetDandaanColumnAttribute(B).Sql))
+                                        value += "  " + B.GetValue(result);
                             }
 
                             return value != null ? value.ToString() : "";
@@ -173,8 +176,10 @@ namespace Dandaan.Forms
                 Thread.Start();
             };
 
-            Func<T> getObj = () =>
+            GetObj += () =>
             {
+                if (listView1.SelectedItems.Count == 0) return null;
+
                 var obj = Activator.CreateInstance<T>();
 
                 for (int i = 0; i < PropertyInfos.Length; i++)
@@ -211,7 +216,7 @@ namespace Dandaan.Forms
                      + "\r\n" + listView1.SelectedItems[0].Text,
                     Program.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Stop, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
                 {
-                    var obj = getObj();
+                    var obj = GetObj();
 
                     if (BeforeDelete(obj))
                     {
@@ -229,7 +234,7 @@ namespace Dandaan.Forms
                 if (listView1.SelectedIndices.Count < 1) MessageBox.Show("لطفا یک رکورد را برای ویرایش کردن انتخاب کنید.‏", Program.Title);
                 else
                 {
-                    var obj = getObj();
+                    var obj = GetObj();
 
                     if (BeforeEdit(obj))
                     {

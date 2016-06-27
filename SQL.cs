@@ -505,6 +505,11 @@ end;");
             return Common.IsMatch(sql, @"[\s]+FOREIGN[\s]+KEY[\s]+");
         }
 
+        public static bool IsIdentity(string sql)
+        {
+            return Common.IsMatch(sql, @"[\s]+identity[\s]+");
+        }
+
         public static bool IsNotNull(string sql)
         {
             return Common.IsMatch(sql, @"[\s]+NOT[\s]+NULL");

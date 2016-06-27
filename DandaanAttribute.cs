@@ -25,10 +25,6 @@ namespace Dandaan
     {
         public string Sql { get; set; }
 
-        //public Type ForeignTable { get; set; }
-
-        public string ForeignTableDisplayColumn { get; set; }
-
         public bool Multiline { get; set; }
     }
 }

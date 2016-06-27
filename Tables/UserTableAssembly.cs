@@ -15,7 +15,6 @@ namespace Dandaan.Tables
         [DandaanColumn(Sql = "[int] NOT NULL CONSTRAINT [PK_" + nameof(UserTableAssembly) + @"]
 PRIMARY KEY CLUSTERED CONSTRAINT [FK_" + nameof(UserTableAssembly) + "_" + nameof(UserTable) + @"]
 FOREIGN KEY REFERENCES [dbo].[" + nameof(UserTable) + "] ([" + nameof(UserTable.Id) + "])",
-            ForeignTableDisplayColumn = nameof(UserTable.Label),
             Label = "فرم")]
         public int? UserTableId { get; set; }
         

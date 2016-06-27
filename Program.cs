@@ -18,8 +18,7 @@ namespace Dandaan
         {
             var name = nameof(Dandaan);
             var filePath = DataDirectory + "\\" + name + ".txt";
-            if (File.Exists(filePath))
-                LocalSettings = Serializer.Deserialize<LocalSettings>(filePath, name);
+            if (File.Exists(filePath)) LocalSettings = Serializer.Deserialize<LocalSettings>(filePath, name);
         }
 
         public static void WriteLocalSettings()

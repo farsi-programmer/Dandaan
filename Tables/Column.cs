@@ -36,8 +36,6 @@ PRIMARY KEY CLUSTERED ([Label] ASC, [UserTableId] ASC)",
         [Column(IsPrimaryKey = true)]
         [DandaanColumn(Sql = "[int] NOT NULL CONSTRAINT [FK_" + nameof(Column) + "_" + nameof(UserTable) + @"]
 FOREIGN KEY REFERENCES [dbo].[" + nameof(UserTable) + "] ([" + nameof(UserTable.Id) + "])",
-            //ForeignTable = typeof(UserTable),
-            ForeignTableDisplayColumn = nameof(UserTable.Label),
             Label = "فرم")]
         public int? UserTableId { get; set; }
 
@@ -112,7 +110,6 @@ FOREIGN KEY REFERENCES [dbo].[" + nameof(UserTable) + "] ([" + nameof(UserTable.
         [Column]
         [DandaanColumn(Sql = "[int] CONSTRAINT [FK_" + nameof(Column) + "_" + nameof(Column) + @"]
 FOREIGN KEY REFERENCES [dbo].[" + nameof(Column) + "] ([" + nameof(Id) + "])",
-            ForeignTableDisplayColumn = nameof(Label),
             Label = "فیلد مرجع")]
         public int? ReferenceColumnId { get; set; }
 

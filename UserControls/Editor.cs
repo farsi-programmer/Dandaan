@@ -36,20 +36,31 @@ namespace Dandaan.UserControls
             _obj = obj;
             var defaultObj = Activator.CreateInstance(typeof(T));
 
-            int y = 15, maxX = 0, textBoxWidth = /*350*/400, margin = 2, xMargin = 15, tabIndex = 0;
+            int y = 15, maxX = 0, width = /*350*/450, margin = 2, xMargin = 15, tabIndex = 0, yMargin = 8;
             Label label;
             Color color = Color.Empty;
 
             Action<Control, PropertyInfo, DandaanColumnAttribute> act = (control, item, da) =>
             {
-                control.Width = textBoxWidth;
-                control.Margin = new Padding(0);
-                control.Padding = new Padding(0);
-                //control.Anchor = AnchorStyles.None;
-                control.Location = new Point(xMargin, y);
-                control.RightToLeft = RightToLeft.Yes;
-                control.Name = item.Name;
-                control.TabIndex = tabIndex++;
+                Action<Control> common = (c) =>
+                {
+                    c.Width = width;
+                    c.Margin = new Padding(0);
+                    c.Padding = new Padding(0);
+                    //c.Anchor = AnchorStyles.None;
+                    c.Location = new Point(xMargin, y);
+                    if (!(c is UserControl)) c.RightToLeft = RightToLeft.Yes;
+                    c.Name = item.Name;
+                    c.TabIndex = tabIndex++;
+
+                    if (null != obj)
+                    {
+                        var value = item.GetValue(obj);
+                        c.Text = value != null ? value.ToString() : "";
+                    }
+                };
+
+                common(control);
 
                 //
 
@@ -65,11 +76,13 @@ namespace Dandaan.UserControls
 
                     if (kind != EditorKind.Search)
                     {
-                        if (Common.IsMatch(da.Sql, @"[\s]+identity[\s]+"))
+                        if (SQL.IsIdentity(da.Sql))
                             (control as TextBox).ReadOnly = true;
                         else if (kind == EditorKind.Edit && Reflection.GetColumnAttribute(item).IsPrimaryKey)
                             (control as TextBox).ReadOnly = true;
                     }
+
+                    (control as Controls.TextBox).DefaultText = control.Text;
                 }
                 else if (control is ComboBox)
                 {
@@ -79,82 +92,34 @@ namespace Dandaan.UserControls
 
                     if (kind == EditorKind.Edit && Reflection.GetColumnAttribute(item).IsPrimaryKey)
                         control.Enabled = false;
-                }
 
-                //
-
-                if (null != obj)
-                {
-                    var value = item.GetValue(obj);
-                    control.Text = value != null ? value.ToString() : "";
-                }
-
-                if (control is TextBox)
-                    (control as Controls.TextBox).DefaultText = control.Text;
-                else if (control is ComboBox)
-                {
                     if (Nullable.GetUnderlyingType(item.PropertyType) != null)
                     {
                         if (kind == EditorKind.Search)
                         {
-                            if (SQL.IsForeignKey(da.Sql))
-                                (control as Controls.ComboBox).Items.Add(new ComboboxItem { Text = ""/*, Value = 0*/ });
-                            else (control as Controls.ComboBox).Items.Add("");
+                            (control as Controls.ComboBox).Items.Add("");
                         }
                         else
                         {
                             if (!SQL.IsNotNull(da.Sql))
                             {
-                                if (SQL.IsForeignKey(da.Sql))
-                                    (control as Controls.ComboBox).Items.Add(new ComboboxItem { Text = ""/*, Value = 0*/ });
-                                else (control as Controls.ComboBox).Items.Add("");
+                                (control as Controls.ComboBox).Items.Add("");
                             }
                         }
                     }
 
-                    if (SQL.IsForeignKey(da.Sql))
-                    {
-                        var type = Type.GetType($"{nameof(Dandaan)}.{nameof(Tables)}.{SQL.GetForeignTable(da.Sql)}");
-
-                        var result = typeof(SQL).GetMethod(nameof(SQL.SelectAll)).MakeGenericMethod(type)
-                        .Invoke(null, null);
-
-                        foreach (var B in (System.Collections.IEnumerable)result)
-                        {
-                            var text = type.GetProperty(da.ForeignTableDisplayColumn).GetValue(B).ToString();
-                            var value = type.GetProperty(SQL.GetForeignColumn(da.Sql)).GetValue(B);
-
-                            var i = (control as ComboBox).Items.Add(new ComboboxItem
-                            {
-                                Value = value,
-                                Text = text
-                            });
-
-                            if (control.Text == value.ToString())
-                            {
-                                control.Text = text;
-                                (control as ComboBox).SelectedIndex = i;
-                            }
-                        }
-                    }
+                    if (item.PropertyType.IsEnum)
+                        (control as Controls.ComboBox).Items.AddRange(Enum.GetNames(item.PropertyType));
                     else
-                    {
-                        if (item.PropertyType.IsEnum)
-                            (control as Controls.ComboBox).Items.AddRange(Enum.GetNames(item.PropertyType));
-                        else
-                            (control as Controls.ComboBox).Items.AddRange(Enum.GetNames(Nullable.GetUnderlyingType(item.PropertyType)));
-                    }
+                        (control as Controls.ComboBox).Items.AddRange(Enum.GetNames(Nullable.GetUnderlyingType(item.PropertyType)));
 
                     if (control.Text == "" && (control as ComboBox).Items.Count > 0)
                     {
                         int i = 0;
 
-                        if (!SQL.IsForeignKey(da.Sql))
-                        {
-                            var v = item.GetValue(defaultObj);
-                            if (v != null) i = (int)v;
-                        }
-                        
+                        var v = item.GetValue(defaultObj);
+                        if (v != null) i = (int)v;
+
                         (control as ComboBox).SelectedIndex = i;
                     }
 
@@ -180,30 +145,177 @@ namespace Dandaan.UserControls
                         if (__.KeyCode == Keys.Enter) (control as Controls.ComboBox).RaiseLostFocus();
                     };
                 }
+                else if (control is UserControl)
+                {
+                    var button = new Controls.ButtonEdit();
+                    common(button);
+                    button.Location = new Point(0, 0);
+                    button.Name = button.Name + nameof(Dandaan.Controls.ButtonEdit);
+                    control.Controls.Add(button);
+
+                    button.TextAlign = ContentAlignment.MiddleLeft;
+                    button.Height = 32;
+                    control.Height = 32;
+
+                    if (kind == EditorKind.Edit && Reflection.GetColumnAttribute(item).IsPrimaryKey)
+                        control.Enabled = false;
+
+                    if (Nullable.GetUnderlyingType(item.PropertyType) != null)
+                    {
+                        Action addClear = () =>
+                        {
+                            var clear = new Button();
+                            common(clear);
+                            clear.Location = new Point(0, 0);
+                            clear.Name = clear.Name + nameof(Button);
+                            control.Controls.Add(clear);
+
+                            clear.TextAlign = ContentAlignment.MiddleLeft;
+                            clear.Text = "پاک";
+                            clear.Width = 40;
+                            clear.Height = 32;
+                            button.Width = button.Width - clear.Width - 3;
+                            button.Location = new Point(button.Location.X + clear.Width + 3, button.Location.Y);
+
+                            clear.Click += (_, __) => { button.Text = ""; button.Obj = null; };
+                        };
+
+                        if (kind == EditorKind.Search)
+                        {
+                            addClear();
+                        }
+                        else
+                        {
+                            if (!SQL.IsNotNull(da.Sql))
+                            {
+                                addClear();
+                            }
+                        }
+                    }
+
+                    var name = $"{nameof(Dandaan)}.{nameof(Tables)}.{SQL.GetForeignTable(da.Sql)}";
+                    var type = Type.GetType(name);
+
+                    if (type == null)
+                    {
+                        var assembly = Reflection.LoadAssembly(Program.DataDirectory + "\\" + name + ".dll");
+                        type = assembly.GetType(name);
+                    }
+
+                    if (control.Text != "")
+                    {
+                        var instance = Activator.CreateInstance(type);
+
+                        foreach (var A in type.GetProperties())
+                            if (A.GetValue(instance) != null && Nullable.GetUnderlyingType(A.PropertyType) != null)
+                                A.SetValue(instance, null);
+
+                        var ps = type.GetProperties();
+
+                        var property = ps.Where(p => p.Name == SQL.GetForeignColumn(da.Sql)).First();
+
+                        property.SetValue(instance, /*control.Text*/item.GetValue(obj));
+
+                        var result = typeof(SQL).GetMethod(nameof(SQL.SelectFirstWithWhere)).MakeGenericMethod(type)
+                        .Invoke(null, new object[] { instance, false });
+
+                        button.Obj = result;
+
+                        string s = "", sql = "";
+
+                        foreach (var B in ps)
+                        {
+                            sql = Reflection.GetDandaanColumnAttribute(B).Sql;
+
+                            if (!SQL.IsForeignKey(sql) || (SQL.IsForeignKey(sql) && SQL.IsIdentity(sql)))
+                                s += B.GetValue(result) + "  ";
+                        }
+
+                        button.DefaultText = button.Text = s.Trim();
+                    }
+
+                    /*var result = typeof(SQL).GetMethod(nameof(SQL.SelectAll)).MakeGenericMethod(type)
+                    .Invoke(null, null);
+
+                    foreach (var B in (System.Collections.IEnumerable)result)
+                    {
+                        var text = type.GetProperty(da.ForeignTableDisplayColumn).GetValue(B).ToString();
+                        var value = type.GetProperty(SQL.GetForeignColumn(da.Sql)).GetValue(B);
+
+                        var i = (control as ComboBox).Items.Add(new ComboboxItem
+                        {
+                            Value = value,
+                            Text = text
+                        });
+
+                        if (control.Text == value.ToString())
+                        {
+                            control.Text = text;
+                            (control as ComboBox).SelectedIndex = i;
+                        }
+                    }*/
+                    
+                    button.Click += (_, __) =>
+                    {
+                        var t = typeof(Forms.ListViewBrowser<>).MakeGenericType(new Type[] { type });
+
+                        var selectedObj = t.GetMethod(nameof(Forms.Browser<object>.ShowAndReturnSelection))
+                        .Invoke(Activator.CreateInstance(t), null);
+
+                        (button as Controls.ButtonEdit).Obj = selectedObj;
+
+                        if (selectedObj != null)
+                        {
+                            var ps = type.GetProperties();
+
+                            string s = "", sql = "";
+
+                            foreach (var B in ps)
+                            {
+                                sql = Reflection.GetDandaanColumnAttribute(B).Sql;
+
+                                if (!SQL.IsForeignKey(sql) || (SQL.IsForeignKey(sql) && SQL.IsIdentity(sql)))
+                                    s += B.GetValue(selectedObj) + "  ";
+                            }
+
+                            button.Text = s.Trim();
+                        }
+                    };
+                }
 
                 //
-
-                color = control.BackColor;
-
-                var textChanged = new EventHandler((_, __) =>
+                
+                var textChanged = new Func<Control, EventHandler>((c) => new EventHandler((_, __) =>
                 {
-                    if ((control is TextBox && control.Text != (control as Controls.TextBox).DefaultText)
-                    || (control is ComboBox && control.Text != (control as Controls.ComboBox).DefaultText))
+                    if ((c is TextBox && c.Text != (c as Controls.TextBox).DefaultText)
+                    || (c is ComboBox && c.Text != (c as Controls.ComboBox).DefaultText)
+                    || (c is Button && c.Text != (c as Controls.ButtonEdit).DefaultText))
                     {
-                        control.BackColor = Color.LightYellow;//LightGoldenrodYellow;//MistyRose;
+                        c.BackColor = Color.LightYellow;//LightGoldenrodYellow;//MistyRose;
+
                         if (kind != EditorKind.Search)
                             (form.AcceptButton as Button).Enabled = true;
                     }
                     else
                     {
-                        control.BackColor = color;
+                        if (c is TextBox)
+                            c.BackColor = (c as Controls.TextBox).DefaultBackColor;
+                        else if (c is ComboBox)
+                            c.BackColor = (c as Controls.ComboBox).DefaultBackColor;
+                        else if (c is Button)
+                        {
+                            c.BackColor = (c as Controls.ButtonEdit).DefaultBackColor;
+                            (c as Controls.ButtonEdit).UseVisualStyleBackColor = true;
+                        }
+
                         if (kind != EditorKind.Search)
                         {
                             (form.AcceptButton as Button).Enabled = false;
 
                             foreach (Control A in Controls)
                                 if ((A is TextBox && A.Text != (A as Controls.TextBox).DefaultText && !(A as TextBox).ReadOnly)
-                                || (A is ComboBox && A.Text != (A as Controls.ComboBox).DefaultText))
+                                || (A is ComboBox && A.Text != (A as Controls.ComboBox).DefaultText)
+                                || (A is UserControl && A.Controls[A.Name + nameof(Dandaan.Controls.ButtonEdit)].Text != (A.Controls[A.Name + nameof(Dandaan.Controls.ButtonEdit)] as Controls.ButtonEdit).DefaultText))
                                     (form.AcceptButton as Button).Enabled = true;
                         }
                     }
@@ -212,25 +324,28 @@ namespace Dandaan.UserControls
                     {
                         var contains = false;
 
-                        if (control is ComboBox)
+                        if (c is ComboBox)
                         {
-                            contains = (control as ComboBox).Items.Contains(control.Text);
+                            contains = (c as ComboBox).Items.Contains(c.Text);
 
-                            if (!contains && (control as ComboBox).Items.Count > 0 && (control as ComboBox).Items[0] is ComboboxItem)
-                                foreach (ComboboxItem B in (control as ComboBox).Items)
-                                    if (B.Text == control.Text) { contains = true; break; }
+                            if (!contains && (c as ComboBox).Items.Count > 0 && (c as ComboBox).Items[0] is ComboboxItem)
+                                foreach (ComboboxItem B in (c as ComboBox).Items)
+                                    if (B.Text == c.Text) { contains = true; break; }
                         }
 
-                        if (!(control is ComboBox && !contains)) searchAct(getObj(propertyInfos, kind));
+                        if (!(c is ComboBox && !contains)) searchAct(getObj(propertyInfos, kind));
                     }
-                });
+                }));
 
                 //
 
                 if (control is TextBox)
-                    (control as TextBox).TextChanged += textChanged;
+                    (control as TextBox).TextChanged += textChanged(control);
                 else if (control is ComboBox)
-                    (control as ComboBox).TextChanged += textChanged;
+                    (control as ComboBox).TextChanged += textChanged(control);
+                else if (control is UserControl)
+                    control.Controls[control.Name + nameof(Dandaan.Controls.ButtonEdit)].TextChanged 
+                    += textChanged(control.Controls[control.Name + nameof(Dandaan.Controls.ButtonEdit)]);
 
                 //
 
@@ -247,19 +362,27 @@ namespace Dandaan.UserControls
 
                 //
 
-                if (item.PropertyType.IsEnum || (ut != null && ut.IsEnum)
-                    || SQL.IsForeignKey(da.Sql))
+                if (item.PropertyType.IsEnum || (ut != null && ut.IsEnum))
                 {
                     control = new Controls.ComboBox();
-                    act(control, item, da);
+                }
+                else if (SQL.IsForeignKey(da.Sql)/* || item.PropertyType == typeof(DateTime)
+                    || (ut != null && ut == typeof(DateTime))*/)
+                {
+                    control = new UserControl();
                 }
                 else
                 {
                     control = new Controls.TextBox();
-                    act(control, item, da);
 
                     control.MouseClick += (_, __) => (control as Controls.TextBox).SelectAll();
                 }
+
+                //
+
+                Controls.Add(control);
+
+                act(control, item, da);
 
                 //
 
@@ -277,6 +400,8 @@ namespace Dandaan.UserControls
                     AutoSize = true,
                 };
 
+                Controls.Add(label);
+
                 /*Size s;
 
                 using (var g = label.CreateGraphics())
@@ -293,12 +418,7 @@ namespace Dandaan.UserControls
                 else if (control.Height > label.Height) label.Location = new Point(label.Location.X, label.Location.Y
                     + (control.Height - label.Height) / 2);
 
-                y += (label.Height > control.Height ? label.Height : control.Height) + xMargin;
-
-                //
-
-                Controls.Add(label);
-                Controls.Add(control);
+                y += (label.Height > control.Height ? label.Height : control.Height) + yMargin;
             }
 
             //
@@ -389,6 +509,19 @@ namespace Dandaan.UserControls
                                     // not working (item as Controls.ComboBox).RaiseTextChanged();
                                 }
                             }
+                            else if (item is UserControl)
+                            {
+                                if (kind == EditorKind.Add)
+                                    item.Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)].Text =
+                                    (item.Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)] as Controls.ButtonEdit).DefaultText;
+                                else
+                                {
+                                    (item.Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)] as Controls.ButtonEdit).DefaultText = item.Text;
+                                    (item.Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)]).Text = item.Text + " ";
+                                    (item.Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)]).Text = (item.Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)] as Controls.ButtonEdit).DefaultText;
+                                    // not working (item as Controls.ComboBox).RaiseTextChanged();
+                                }
+                            }
                     }
                 };
 
@@ -444,7 +577,19 @@ namespace Dandaan.UserControls
 
                 var p = Controls[item.Name].GetType().GetProperty(nameof(TextBox.ReadOnly));
 
-                if (Controls[item.Name] is ComboBox || p != null)
+                if (Controls[item.Name] is UserControl)
+                {
+                    var o = (Controls[item.Name].Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)] as Controls.ButtonEdit).Obj;
+                    if (o != null)
+                    {
+                        var type = o.GetType();
+                        var ps = type.GetProperties();
+                        var property = ps.Where(_p => _p.Name == SQL.GetForeignColumn(Reflection.GetDandaanColumnAttribute(item).Sql)).First();
+                        var value = property.GetValue(o);
+                        item.SetValue(obj, value);
+                    }
+                }
+                else if (Controls[item.Name] is ComboBox || p != null)
                 {
                     var value = Controls[item.Name].Text;
 
@@ -495,7 +640,7 @@ namespace Dandaan.UserControls
 
                 if (p == null)
                 {
-                    p = item.GetType().GetProperty(nameof(ComboBox.Enabled));
+                    p = item.GetType().GetProperty(nameof(Enabled));
 
                     if (!(item is Label) && p != null && (bool)p.GetValue(item)) { item.Select(); break; }
                 }

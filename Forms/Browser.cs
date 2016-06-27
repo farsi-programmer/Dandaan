@@ -45,6 +45,7 @@ namespace Dandaan.Forms
         protected Action LoadAct;
         protected Func<bool> DeleteFunc;
         protected Action<Action> EditAct;
+        protected Func<T> GetObj;
         protected Control View;
         protected T SearchObj;
 
@@ -117,7 +118,8 @@ namespace Dandaan.Forms
 
         private void View_DoubleClick(object sender, EventArgs e)
         {
-            buttonEdit.PerformClick();
+            if (selectOnDoubleClick) Close();
+            else buttonEdit.PerformClick();
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -279,8 +281,50 @@ namespace Dandaan.Forms
             if (e.KeyCode == Keys.Delete) buttonDelete.PerformClick();
             else if (e.KeyCode == Keys.Insert) buttonAdd.PerformClick();
             else if (e.KeyCode == Keys.F3) buttonSearch.PerformClick();
-            else if (e.KeyCode == Keys.Enter) buttonEdit.PerformClick();
+            else if (e.KeyCode == Keys.Enter)
+            {
+                if (selectOnDoubleClick) Close();
+                else buttonEdit.PerformClick();
+            }
             else if (e.KeyCode == Keys.F5) buttonRefresh.PerformClick();
+        }
+
+        bool selectOnDoubleClick = false;
+        bool cancelSelection = false;
+
+        private void Browser_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape && selectOnDoubleClick) Close();
+        }
+
+        public T ShowAndReturnSelection()
+        {
+            selectOnDoubleClick = true;
+            KeyPreview = true;
+
+            buttonEdit.Visible = buttonDelete.Visible = buttonAdd.Visible = false;
+
+            var buttonSelect = new Button()
+            {
+                Text = "انتخاب",
+                Height = buttonEdit.Height,
+                Location = new Point(buttonEdit.Location.X - 21, buttonEdit.Location.Y)
+            };
+            buttonSelect.Click += (_, __) => { Close(); };
+            Controls.Add(buttonSelect);
+
+            var buttonCancel = new Button()
+            {
+                Text = "انصراف",
+                Height = buttonEdit.Height,
+                Location = new Point(buttonSelect.Location.X - buttonSelect.Width - 3, buttonSelect.Location.Y)
+            };
+            buttonCancel.Click += (_, __) => { cancelSelection = true; Close(); };
+            Controls.Add(buttonCancel);
+
+            ShowDialog();
+
+            return cancelSelection ? null : GetObj();
         }
     }
 }

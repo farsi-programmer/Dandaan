@@ -15,9 +15,13 @@ namespace Dandaan.Controls
         public ComboBox()
         {
             InitializeComponent();
+
+            DefaultBackColor = BackColor;
         }
 
         public string DefaultText { get; set; }
+
+        public Color DefaultBackColor { get; set; }
 
         protected override void OnPaint(PaintEventArgs pe)
         {

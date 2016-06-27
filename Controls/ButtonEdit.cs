@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace Dandaan.Controls
 {
-    public partial class TextBox : System.Windows.Forms.TextBox
+    public partial class ButtonEdit : System.Windows.Forms.Button
     {
-        public TextBox()
+        public ButtonEdit()
         {
             InitializeComponent();
 
@@ -22,6 +22,8 @@ namespace Dandaan.Controls
         public string DefaultText { get; set; } = "";
 
         public Color DefaultBackColor { get; set; }
+
+        public object Obj { get; set; }
 
         protected override void OnPaint(PaintEventArgs pe)
         {

@@ -102,6 +102,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common.cs" />
+    <Compile Include="Controls\ButtonEdit.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ButtonEdit.Designer.cs">
+      <DependentUpon>ButtonEdit.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -218,6 +224,7 @@
     <Compile Include="Forms\Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tables\Appointment.cs" />
     <Compile Include="Tables\Column.cs" />
     <Compile Include="Tables\UserTable.cs" />
     <Compile Include="Tables\UserTableAssembly.cs" />

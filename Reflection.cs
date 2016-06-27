@@ -68,5 +68,23 @@ namespace Dandaan
 
             return "";
         }
+
+        static Dictionary<string, Assembly> assemblies;
+
+        public static Assembly LoadAssembly(string path)
+        {
+            if (assemblies == null) assemblies = new Dictionary<string, Assembly>();
+
+            Assembly assembly;
+
+            if (assemblies.ContainsKey(path)) assembly = assemblies[path];
+            else
+            {
+                assembly = Assembly.LoadFile(path);
+                assemblies.Add(path, assembly);
+            }
+
+            return assembly;
+        }
     }
 }

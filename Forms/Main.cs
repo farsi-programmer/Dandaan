@@ -78,7 +78,6 @@ namespace Dandaan.Forms
 
         List<string> userButtons;
         Dictionary<string, Form> userForms;
-        Dictionary<string, Assembly> assemblies;
 
         public void AddButtons()
         { 
@@ -138,16 +137,7 @@ namespace Dandaan.Forms
 
                     Action B = () =>
                     {
-                        if (assemblies == null) assemblies = new Dictionary<string, Assembly>();
-
-                        Assembly assembly;
-
-                        if (assemblies.ContainsKey(path)) assembly = assemblies[path];
-                        else
-                        {
-                            assembly = Assembly.LoadFile(path);
-                            assemblies.Add(path, assembly);
-                        }
+                        var assembly = Reflection.LoadAssembly(path);
 
                         Type t = assembly.GetType(name);
 
@@ -344,6 +334,7 @@ namespace Dandaan.Forms
                     var row = SQL.SelectFirstWithWhere(new Tables.UserTableAssembly()
                     { UserTableId = id }, false);
 
+                    //return row != DB.DataContext.UserTableAssemblys.Where(r => r.UserTableId == id).FirstOrDefault();
                     return row != null;
                 };
 
@@ -383,6 +374,7 @@ namespace Dandaan.Forms
 
             ShowForm(ref columns);
         }
+
 
         //صندوق خانواده نوبت ها
 

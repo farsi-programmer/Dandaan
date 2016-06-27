@@ -232,6 +232,7 @@
             this.Name = "Browser";
             this.Text = "Browser";
             this.Load += new System.EventHandler(this.Browser_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Browser_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 
