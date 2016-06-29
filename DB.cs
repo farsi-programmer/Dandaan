@@ -433,11 +433,27 @@ namespace Dandaan
 
         public static void Init()
         {
-            //Thread.Sleep(5000);            
-
             attachOrCreateDatabase();
 
             createTablesAndMigrateData();
+
+            //
+
+            var name = nameof(Dandaan) + "." + nameof(Tables) + "." + nameof(Tables.UserTable);
+            var path = "";
+
+            foreach (var item in DataContext.UserTableAssemblys)
+            {
+                path = Program.DataDirectory + "\\" + name + item.UserTableId + ".dll";
+
+                if (!File.Exists(path) || new FileInfo(path).Length == 0)
+                    File.WriteAllBytes(path, item.Assembly);
+
+                var assembly = Reflection.LoadAssembly(path);
+                var type = assembly.GetType($"{nameof(Dandaan)}.DataContext{item.UserTableId}");
+
+                if (type.IsSubclassOf(DataContextType)) DataContextType = type;
+            }
         }
 
         private static void createTablesAndMigrateData()

@@ -28,13 +28,6 @@ namespace Dandaan
             return Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
         }
 
-        internal static Type GetType(string name)
-        {
-            System.Reflection.Assembly assembly = typeof(Common).Assembly;
-
-            return assembly.GetType(name);
-        }
-
         public static Action Action(Action act) => act;
 
         public static Thread Thread(Action act)

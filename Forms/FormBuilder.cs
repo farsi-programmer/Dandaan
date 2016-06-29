@@ -30,7 +30,7 @@ namespace Dandaan.Forms
             {
                 try
                 {
-                    var columns = GetColumns(table);
+                    var columns = DB.DataContext.Columns.Where(_ => _.UserTableId == table.Id);
 
                     var tableName = "UserTable" + table.Id;
 
@@ -70,13 +70,13 @@ namespace Dandaan.Tables
                     var sqlColumnType = "";
                     var foreignTableId = 0;
 
-                    foreach (var item in columns)
+                    foreach (var column in columns)
                     {
                         sb.Append($@"
         [Column]
         [DandaanColumn(Sql = @""");
 
-                        columnType = item.Type.ToString();
+                        columnType = column.Type.ToString();
 
                         if (columnType.Contains("تاریخ_شمسی_با_دقت_دقیقه") || columnType.Contains("تاریخ_میلادی_با_دقت_دقیقه"))
                             sqlColumnType = nameof(SqlDbType.SmallDateTime);
@@ -91,14 +91,14 @@ namespace Dandaan.Tables
                         else
                             sqlColumnType = nameof(SqlDbType.Int);
 
-                        if (item.ReferenceColumnId != null) sb.Append("int");
+                        if (column.ReferenceColumnId != null) sb.Append("int");
                         else sb.Append(sqlColumnType);
 
-                        if (item.NotNull == Tables.YesOrNo.بله || columnType.Contains("بدون_تکرار"))
+                        if (column.NotNull == Tables.YesOrNo.بله || columnType.Contains("بدون_تکرار"))
                             sb.Append(" NOT NULL");
 
                         if (columnType.Contains("بدون_تکرار"))
-                            sb.Append($@" CONSTRAINT [IX_{tableName}_{item.Id}] UNIQUE NONCLUSTERED");
+                            sb.Append($@" CONSTRAINT [IX_{tableName}_{column.Id}] UNIQUE NONCLUSTERED");
 
                         if (columnType.StartsWith("تاریخ")) columnType = "DateTime";
                         else if (columnType.StartsWith("متن")) columnType = "string";
@@ -106,26 +106,25 @@ namespace Dandaan.Tables
                         else if (columnType.StartsWith("عدد_اعشاری")) columnType = "float";
                         else columnType = "int";
 
-                        if (item.ReferenceColumnId != null)
+                        if (column.ReferenceColumnId != null)
                         {
-                            foreignTableId = SQL.SelectFirstWithWhere(new Tables.Column(false) { Id = item.ReferenceColumnId.Value }, false).UserTableId.Value;
+                            foreignTableId = SQL.SelectFirstWithWhere(new Tables.Column(false) { Id = column.ReferenceColumnId.Value }, false).UserTableId.Value;
 
-                            sb.Append($@" CONSTRAINT [FK_{tableName}_UserTable{foreignTableId}_{item.Id}]
+                            sb.Append($@" CONSTRAINT [FK_{tableName}_UserTable{foreignTableId}_{column.Id}]
 FOREIGN KEY REFERENCES [dbo].[UserTable{foreignTableId}] ([Id])");
 
                             columnType = "int";
                         }
 
                         sb.Append($@""",
-                Label = ""{item.Label}""{((item.Type.ToString().Contains("متن_فارسی_چند_خطی")
-                || item.Type.ToString().Contains("متن_انگلیسی_چند_خطی")) ? @",
-                " + nameof(DandaanColumnAttribute.Multiline) + " = True" : "")}{(item.ReferenceColumnId != null ? $@",
-                ForeignTableDisplayColumn = ""Column{item.ReferenceColumnId}""" : "")})]
+                Label = ""{column.Label}""{((column.Type.ToString().Contains("متن_فارسی_چند_خطی")
+                || column.Type.ToString().Contains("متن_انگلیسی_چند_خطی")) ? @",
+                " + nameof(DandaanColumnAttribute.Multiline) + " = true" : "")})]
                     public {columnType}");
 
                         if (columnType != "string") sb.Append("?");
 
-                        sb.Append($@" Column{item.Id} {{ get; set; }}{(item.Type.ToString().Contains("مقدار_پیش_فرض_اکنون") ? " = DateTime.Now;" : "")}");
+                        sb.Append($@" Column{column.Id} {{ get; set; }}{(column.Type.ToString().Contains("مقدار_پیش_فرض_اکنون") ? " = DateTime.Now;" : "")}");
                     }
 
                     sb.Append($@"
@@ -162,7 +161,7 @@ namespace Dandaan
                         while (baseType != typeof(DataContext))
                         {
                             references.Add(MetadataReference.CreateFromFile(baseType.Assembly.Location));
-                            baseType = DB.DataContextType.BaseType;
+                            baseType = baseType.BaseType;
                         }
                     }
 
@@ -194,6 +193,9 @@ namespace Dandaan
                             file.Close();
                             SQL.Insert(new Tables.UserTableAssembly()
                             { UserTableId = table.Id, Assembly = File.ReadAllBytes(path) });
+
+                            var assembly = Reflection.LoadAssembly(path);
+                            DB.DataContextType = assembly.GetType($"{nameof(Dandaan)}.DataContext{table.Id}");
                         }
                     }
                 }
@@ -201,15 +203,6 @@ namespace Dandaan
             }).Start();
 
             ShowDialog();
-        }
-
-        public static IEnumerable<Tables.Column> GetColumns(Tables.UserTable table)
-        {
-            var type = Type.GetType($"{nameof(Dandaan)}.{nameof(Tables)}.{nameof(Tables.Column)}");
-
-            return (IEnumerable<Tables.Column>)typeof(SQL)
-            .GetMethod(nameof(SQL.SelectAllWithWhere)).MakeGenericMethod(type)
-            .Invoke(null, new object[] { new Tables.Column(false) { UserTableId = table.Id }, false });
         }
 
         private void FormBuilder_FormClosing(object sender, FormClosingEventArgs e)

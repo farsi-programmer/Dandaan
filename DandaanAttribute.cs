@@ -17,8 +17,6 @@ namespace Dandaan
         public bool EnableEdit { get; set; }
 
         public bool EnableSearch { get; set; }
-
-        //public Type[] References { get; set; }
     }
 
     public class DandaanColumnAttribute : DandaanAttribute

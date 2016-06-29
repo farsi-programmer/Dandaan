@@ -69,6 +69,13 @@ namespace Dandaan
             return "";
         }
 
+        internal static Type GetType(string name)
+        {
+            Assembly assembly = typeof(Common).Assembly;
+
+            return assembly.GetType(name);
+        }
+
         static Dictionary<string, Assembly> assemblies;
 
         public static Assembly LoadAssembly(string path)

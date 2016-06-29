@@ -98,10 +98,10 @@
             // button1
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(684, 205);
+            this.button1.Location = new System.Drawing.Point(675, 205);
             this.button1.Margin = new System.Windows.Forms.Padding(6);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(93, 35);
+            this.button1.Size = new System.Drawing.Size(102, 35);
             this.button1.TabIndex = 1;
             this.button1.Text = "تست";
             this.button1.UseVisualStyleBackColor = true;
@@ -121,9 +121,9 @@
             // buttonPatients
             // 
             this.buttonPatients.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonPatients.Location = new System.Drawing.Point(684, 41);
+            this.buttonPatients.Location = new System.Drawing.Point(675, 41);
             this.buttonPatients.Name = "buttonPatients";
-            this.buttonPatients.Size = new System.Drawing.Size(93, 35);
+            this.buttonPatients.Size = new System.Drawing.Size(102, 35);
             this.buttonPatients.TabIndex = 1;
             this.buttonPatients.Text = "بیماران";
             this.buttonPatients.UseVisualStyleBackColor = true;
@@ -132,9 +132,9 @@
             // button10
             // 
             this.button10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button10.Location = new System.Drawing.Point(684, 164);
+            this.button10.Location = new System.Drawing.Point(675, 164);
             this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(93, 35);
+            this.button10.Size = new System.Drawing.Size(102, 35);
             this.button10.TabIndex = 12;
             this.button10.Text = "تست";
             this.button10.UseVisualStyleBackColor = true;
@@ -143,9 +143,9 @@
             // buttonForms
             // 
             this.buttonForms.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonForms.Location = new System.Drawing.Point(684, 82);
+            this.buttonForms.Location = new System.Drawing.Point(675, 82);
             this.buttonForms.Name = "buttonForms";
-            this.buttonForms.Size = new System.Drawing.Size(93, 35);
+            this.buttonForms.Size = new System.Drawing.Size(102, 35);
             this.buttonForms.TabIndex = 13;
             this.buttonForms.Text = "فرم​ها";
             this.buttonForms.UseVisualStyleBackColor = true;
@@ -154,9 +154,9 @@
             // buttonFields
             // 
             this.buttonFields.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonFields.Location = new System.Drawing.Point(684, 123);
+            this.buttonFields.Location = new System.Drawing.Point(675, 123);
             this.buttonFields.Name = "buttonFields";
-            this.buttonFields.Size = new System.Drawing.Size(93, 35);
+            this.buttonFields.Size = new System.Drawing.Size(102, 35);
             this.buttonFields.TabIndex = 14;
             this.buttonFields.Text = "فیلدها";
             this.buttonFields.UseVisualStyleBackColor = true;
