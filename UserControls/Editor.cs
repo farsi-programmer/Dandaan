@@ -257,9 +257,9 @@ namespace Dandaan.UserControls
                     
                     button.Click += (_, __) =>
                     {
-                        var t = typeof(Forms.ListViewBrowser<>).MakeGenericType(new Type[] { type });
+                        var t = typeof(Forms.Browser<,>).MakeGenericType(new Type[] { type, typeof(ListView) });
 
-                        var selectedObj = t.GetMethod(nameof(Forms.Browser<object>.ShowAndReturnSelection))
+                        var selectedObj = t.GetMethod(nameof(Forms.Browser<object, Control>.ShowAndReturnSelection))
                         .Invoke(Activator.CreateInstance(t), null);
 
                         (button as Controls.ButtonEdit).Obj = selectedObj;
@@ -516,8 +516,8 @@ namespace Dandaan.UserControls
                                     (item.Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)] as Controls.ButtonEdit).DefaultText;
                                 else
                                 {
-                                    (item.Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)] as Controls.ButtonEdit).DefaultText = item.Text;
-                                    (item.Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)]).Text = item.Text + " ";
+                                    (item.Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)] as Controls.ButtonEdit).DefaultText = (item.Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)] as Controls.ButtonEdit).Text;
+                                    (item.Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)]).Text = (item.Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)] as Controls.ButtonEdit).Text + " ";
                                     (item.Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)]).Text = (item.Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)] as Controls.ButtonEdit).DefaultText;
                                     // not working (item as Controls.ComboBox).RaiseTextChanged();
                                 }

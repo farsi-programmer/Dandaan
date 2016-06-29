@@ -146,7 +146,7 @@ namespace Dandaan.Forms
                         Action C = () =>
                         {
                             form = (Form)Activator.CreateInstance(
-                                typeof(ListViewBrowser<>).MakeGenericType(new[] { t }));
+                                typeof(Browser<,>).MakeGenericType(new[] { t, typeof(ListView) }));
                         };
 
                         if (userForms == null) userForms = new Dictionary<string, Form>();
@@ -250,7 +250,7 @@ namespace Dandaan.Forms
             })))).Start();
         }
 
-        RichTextBoxBrowser<Tables.Log> log = null;
+        Browser<Tables.Log, RichTextBox> log = null;
 
         private void لاگToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -264,7 +264,7 @@ namespace Dandaan.Forms
             ShowForm(ref about);
         }
 
-        ListViewBrowser<Tables.Patient> patients = null;
+        Browser<Tables.Patient, ListView> patients = null;
 
         private void button8_Click(object sender, EventArgs e)
         {
@@ -276,13 +276,13 @@ namespace Dandaan.Forms
             ;
         }
 
-        ListViewBrowser<Tables.UserTable> userTables = null;
+        Browser<Tables.UserTable, ListView> userTables = null;
 
         private void button11_Click(object sender, EventArgs e)
         {
             if (userTables == null || userTables.IsDisposed)
             {
-                userTables = new ListViewBrowser<Tables.UserTable>();
+                userTables = new Browser<Tables.UserTable, ListView>();
 
                 userTables.AfterAdd += AddButtons;
                 userTables.AfterDelete += AddButtons;
@@ -321,13 +321,13 @@ namespace Dandaan.Forms
             ShowForm(ref userTables);
         }
 
-        ListViewBrowser<Tables.Column> columns = null;
+        Browser<Tables.Column, ListView> columns = null;
 
         private void button12_Click(object sender, EventArgs e)
         {
             if (columns == null || columns.IsDisposed)
             {
-                columns = new ListViewBrowser<Tables.Column>();
+                columns = new Browser<Tables.Column, ListView>();
 
                 Func<int, bool> exists = (id) =>
                 {

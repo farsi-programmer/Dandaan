@@ -134,23 +134,11 @@
     <Compile Include="Forms\Browser.Designer.cs">
       <DependentUpon>Browser.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\CheckedListBoxBrowser.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\CheckedListBoxBrowser.Designer.cs">
-      <DependentUpon>CheckedListBoxBrowser.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\ConnectDB.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\ConnectDB.Designer.cs">
       <DependentUpon>ConnectDB.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\DataGridViewBrowser.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\DataGridViewBrowser.Designer.cs">
-      <DependentUpon>DataGridViewBrowser.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Editor.cs">
       <SubType>Form</SubType>
@@ -164,47 +152,11 @@
     <Compile Include="Forms\FormBuilder.Designer.cs">
       <DependentUpon>FormBuilder.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ListBoxBrowser.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ListBoxBrowser.Designer.cs">
-      <DependentUpon>ListBoxBrowser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\ListBoxBrowserBase.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ListBoxBrowserBase.Designer.cs">
-      <DependentUpon>ListBoxBrowserBase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\ListViewBrowser.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ListViewBrowser.Designer.cs">
-      <DependentUpon>ListViewBrowser.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\Message.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\Message.Designer.cs">
       <DependentUpon>Message.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\RichTextBoxBrowser.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\RichTextBoxBrowser.Designer.cs">
-      <DependentUpon>RichTextBoxBrowser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\TextBoxBrowser.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\TextBoxBrowser.Designer.cs">
-      <DependentUpon>TextBoxBrowser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\TextBoxBrowserBase.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\TextBoxBrowserBase.Designer.cs">
-      <DependentUpon>TextBoxBrowserBase.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Form.cs">
       <SubType>Form</SubType>
@@ -267,14 +219,8 @@
     <EmbeddedResource Include="Forms\FormBuilder.resx">
       <DependentUpon>FormBuilder.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ListViewBrowser.resx">
-      <DependentUpon>ListViewBrowser.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Message.resx">
       <DependentUpon>Message.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\RichTextBoxBrowser.resx">
-      <DependentUpon>RichTextBoxBrowser.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Form.resx">
       <DependentUpon>Form.cs</DependentUpon>

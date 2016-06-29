@@ -1,6 +1,6 @@
 ﻿namespace Dandaan.Forms
 {
-    partial class Browser<T>
+    partial class Browser<T, C>
     {
         /// <summary>
         /// Required designer variable.
@@ -240,18 +240,18 @@
 
         #endregion
 
-        protected System.Windows.Forms.Button buttonLast;
-        protected System.Windows.Forms.Button buttonNext;
-        protected System.Windows.Forms.Button buttonPrevious;
-        protected System.Windows.Forms.Button buttonFirst;
-        protected System.Windows.Forms.Label label1;
-        protected System.Windows.Forms.Button buttonRefresh;
-        protected System.Windows.Forms.TextBox textBox2;
-        protected System.Windows.Forms.CheckBox checkBox1;
-        protected System.Windows.Forms.Button buttonDelete;
-        protected System.Windows.Forms.Button buttonAdd;
-        protected System.Windows.Forms.Button buttonSearch;
-        protected System.Windows.Forms.Button buttonEdit;
+        System.Windows.Forms.Button buttonLast;
+        System.Windows.Forms.Button buttonNext;
+        System.Windows.Forms.Button buttonPrevious;
+        System.Windows.Forms.Button buttonFirst;
+        System.Windows.Forms.Label label1;
+        System.Windows.Forms.Button buttonRefresh;
+        System.Windows.Forms.TextBox textBox2;
+        System.Windows.Forms.CheckBox checkBox1;
+        System.Windows.Forms.Button buttonDelete;
+        System.Windows.Forms.Button buttonAdd;
+        System.Windows.Forms.Button buttonSearch;
+        System.Windows.Forms.Button buttonEdit;
 
     }
 }

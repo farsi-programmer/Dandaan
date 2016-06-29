@@ -78,9 +78,9 @@ namespace Dandaan.Tables
 
                         columnType = item.Type.ToString();
 
-                        if (columnType.Contains("تاریخ_با_دقت_دقیقه"))
+                        if (columnType.Contains("تاریخ_شمسی_با_دقت_دقیقه") || columnType.Contains("تاریخ_میلادی_با_دقت_دقیقه"))
                             sqlColumnType = nameof(SqlDbType.SmallDateTime);
-                        else if (columnType.Contains("تاریخ_با_دقت_ثانیه"))
+                        else if (columnType.Contains("تاریخ_شمسی_با_دقت_ثانیه") || columnType.Contains("تاریخ_میلادی_با_دقت_ثانیه"))
                             sqlColumnType = nameof(SqlDbType.DateTime);
                         else if (columnType.Contains("عدد_اعشاری"))
                             sqlColumnType = nameof(SqlDbType.Real);
@@ -117,7 +117,8 @@ FOREIGN KEY REFERENCES [dbo].[UserTable{foreignTableId}] ([Id])");
                         }
 
                         sb.Append($@""",
-                Label = ""{item.Label}""{(item.Type.ToString().Contains("متن_چند_خطی") ? @",
+                Label = ""{item.Label}""{((item.Type.ToString().Contains("متن_فارسی_چند_خطی")
+                || item.Type.ToString().Contains("متن_انگلیسی_چند_خطی")) ? @",
                 " + nameof(DandaanColumnAttribute.Multiline) + " = True" : "")}{(item.ReferenceColumnId != null ? $@",
                 ForeignTableDisplayColumn = ""Column{item.ReferenceColumnId}""" : "")})]
                     public {columnType}");
