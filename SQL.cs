@@ -293,6 +293,8 @@ end;");
         {
             SqlParameter p = null;
 
+            desc = desc.ToLower();
+
             if (desc.Contains("[nvarchar]"))
             {
                 var len = Common.Match(desc, $@"\[nvarchar][\s]*\(([\d]+)\)").Groups[1].Value;

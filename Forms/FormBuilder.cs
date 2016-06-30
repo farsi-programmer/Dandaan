@@ -79,19 +79,19 @@ namespace Dandaan.Tables
                         columnType = column.Type.ToString();
 
                         if (columnType.Contains("تاریخ_شمسی_با_دقت_دقیقه") || columnType.Contains("تاریخ_میلادی_با_دقت_دقیقه"))
-                            sqlColumnType = nameof(SqlDbType.SmallDateTime);
+                            sqlColumnType = "[" + nameof(SqlDbType.SmallDateTime).ToLower() + "]";
                         else if (columnType.Contains("تاریخ_شمسی_با_دقت_ثانیه") || columnType.Contains("تاریخ_میلادی_با_دقت_ثانیه"))
-                            sqlColumnType = nameof(SqlDbType.DateTime);
+                            sqlColumnType = "[" + nameof(SqlDbType.DateTime).ToLower() + "]";
                         else if (columnType.Contains("عدد_اعشاری"))
-                            sqlColumnType = nameof(SqlDbType.Real);
+                            sqlColumnType = "[" + nameof(SqlDbType.Real).ToLower() + "]";
                         else if (columnType.Contains("متن"))
-                            sqlColumnType = nameof(SqlDbType.NVarChar) + "(4000)";
+                            sqlColumnType = "[" + nameof(SqlDbType.NVarChar).ToLower() + "]" + "(4000)";
                         else if (columnType.Contains("فایل"))
-                            sqlColumnType = nameof(SqlDbType.VarBinary) + "(max)";
+                            sqlColumnType = "[" + nameof(SqlDbType.VarBinary).ToLower() + "]" + "(max)";
                         else
-                            sqlColumnType = nameof(SqlDbType.Int);
+                            sqlColumnType = "[" + nameof(SqlDbType.Int).ToLower() + "]";
 
-                        if (column.ReferenceColumnId != null) sb.Append("int");
+                        if (column.ReferenceColumnId != null) sb.Append("[int]");
                         else sb.Append(sqlColumnType);
 
                         if (column.NotNull == Tables.YesOrNo.بله || columnType.Contains("بدون_تکرار"))

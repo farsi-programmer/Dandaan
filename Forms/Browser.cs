@@ -34,7 +34,7 @@ namespace Dandaan.Forms
             View.Location = new Point(12, 12);
             View.RightToLeft = RightToLeft.Yes;
             View.Size = new Size(760, 495);
-            View.TabIndex = 1;
+            View.TabIndex = 0;
 
             if (View is DataGridView)
             {
@@ -657,7 +657,6 @@ namespace Dandaan.Forms
             Thread.Start();
         }
 
-
         void enable()
         {
             if (count > PageSize)
@@ -687,7 +686,6 @@ namespace Dandaan.Forms
         {
             View.KeyDown += View_KeyDown;
             View.DoubleClick += View_DoubleClick;
-            View.TabIndex = 0;
 
             Text = DandaanAttribute.Label;
 
