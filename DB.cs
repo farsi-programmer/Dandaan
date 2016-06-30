@@ -437,20 +437,23 @@ namespace Dandaan
 
             createTablesAndMigrateData();
 
-            //
+            loadAssemblies();
+        }
 
-            var name = nameof(Dandaan) + "." + nameof(Tables) + "." + nameof(Tables.UserTable);
+        static void loadAssemblies()
+        { 
+            var name = $"{nameof(Dandaan)}.{nameof(Tables)}.{nameof(Tables.UserTable)}";
             var path = "";
 
             foreach (var item in DataContext.UserTableAssemblys)
             {
-                path = Program.DataDirectory + "\\" + name + item.UserTableId + ".dll";
+                path = $"{Program.DataDirectory}\\{name}{item.UserTableId}.dll";
 
                 if (!File.Exists(path) || new FileInfo(path).Length == 0)
                     File.WriteAllBytes(path, item.Assembly);
 
                 var assembly = Reflection.LoadAssembly(path);
-                var type = assembly.GetType($"{nameof(Dandaan)}.DataContext{item.UserTableId}");
+                var type = assembly.GetType($"{nameof(Dandaan)}.{nameof(DataContext)}{item.UserTableId}");
 
                 if (type.IsSubclassOf(DataContextType)) DataContextType = type;
             }
@@ -463,7 +466,7 @@ namespace Dandaan
             var tables = Assembly.GetExecutingAssembly().GetTypes()
                 .Where(t => t.IsClass && t.Namespace == nameof(Dandaan) + "." + nameof(Tables)
                 && t.IsPublic/*this is necessary because of ienumerable*/);
-
+            
             var done = new List<Type>();
 
             // this is the first table
@@ -594,12 +597,11 @@ where table_name=N'{tableName}'") > 0;
                 {
                     var name = nameof(Dandaan);
 
-                    mutex = new Mutex(false, "Global\\" + name + "Log");
+                    mutex = new Mutex(false, $"Global\\{name}Log");
                     mutex.WaitOne();
 
-                    File.AppendAllText(Program.DataDirectory + "\\" + name + "Log.txt",
-                        name + "\t\t" + DateTime.Now.ToString(CultureInfo.InvariantCulture)
-                        + "\r\n" + message + "\r\n\r\n");
+                    File.AppendAllText($"{Program.DataDirectory}\\{name}Log.txt",
+                        $"{name}\t\t{DateTime.Now.ToString(CultureInfo.InvariantCulture)}\r\n{message}\r\n\r\n");
                 }
                 catch { }
                 //catch (Exception ex) { MessageBox.Show(ex.ToString()); }

@@ -69,7 +69,7 @@ namespace Dandaan.UserControls
                     if (da.Multiline)
                     {
                         (control as TextBox).Multiline = true;
-                        control.Height = 80;//55;
+                        control.Height = 105;//80;
                         (control as TextBox).ScrollBars = ScrollBars.Both;
                         (control as TextBox).AcceptsReturn = true;
                     }

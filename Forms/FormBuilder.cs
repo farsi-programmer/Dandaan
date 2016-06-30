@@ -195,11 +195,11 @@ namespace Dandaan
                             { UserTableId = table.Id, Assembly = File.ReadAllBytes(path) });
 
                             var assembly = Reflection.LoadAssembly(path);
-                            DB.DataContextType = assembly.GetType($"{nameof(Dandaan)}.DataContext{table.Id}");
+                            DB.DataContextType = assembly.GetType($"{nameof(Dandaan)}.{nameof(DataContext)}{table.Id}");
                         }
                     }
                 }
-                finally { Invoke(() => { working = false; DialogResult = DialogResult.OK; }); }
+                finally { Invoke(() => { working = false; Close(); }); }
             }).Start();
 
             ShowDialog();

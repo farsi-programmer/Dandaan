@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Windows.Forms;
 using System.ComponentModel;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Data.Linq.Mapping;
 using System.Linq;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -88,6 +90,24 @@ namespace Dandaan
             else
             {
                 assembly = Assembly.LoadFile(path);
+
+                foreach (AssemblyName reference in assembly.GetReferencedAssemblies())
+                {
+                    var p = $"{Path.GetDirectoryName(assembly.Location)}\\{reference.Name}.dll";
+
+                    var ut = $"{nameof(Dandaan)}.{nameof(Tables)}.{nameof(Tables.UserTable)}";
+
+                    if (reference.Name.StartsWith(ut))
+                        if (!File.Exists(p) || new FileInfo(p).Length == 0)
+                        {
+                            File.WriteAllBytes(p, DB.DataContext.UserTableAssemblys
+                                .Where(uta => uta.UserTableId == int.Parse(reference.Name.Substring(ut.Length)))
+                                .First().Assembly);
+                            LoadAssembly(p);
+                        }
+                        else LoadAssembly(p);
+                }
+
                 assemblies.Add(path, assembly);
             }
 

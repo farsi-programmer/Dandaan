@@ -123,7 +123,7 @@ FOREIGN KEY REFERENCES [dbo].[" + nameof(Column) + "] ([" + nameof(Id) + "])",
             }
         }
     }
-    
+
     public enum ColumnType
     {
         //متن, متن_بدون_تکرار,

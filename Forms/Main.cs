@@ -84,7 +84,7 @@ namespace Dandaan.Forms
             int margin = 6, left = ClientSize.Width, bottom = ClientSize.Height,
                 w = buttonPatients.Width, h = buttonPatients.Height;
 
-            Action<Control> act = (item) =>
+            Action<Control> act = item =>
             {
                 if (item.Location.X < left || item.Location.X == left)
                 {
@@ -116,7 +116,7 @@ namespace Dandaan.Forms
 
             //
 
-            foreach (var userTable in DB.DataContext.UserTables)
+            foreach (var userTable in DB.DataContext.UserTables.OrderBy(_ => _.Id))
             {
                 Button button = new Button()
                 {
@@ -129,15 +129,13 @@ namespace Dandaan.Forms
 
                 button.Click += (_, __) =>
                 {
-                    var name = nameof(Dandaan) + "." + nameof(Tables) + "." + nameof(Tables.UserTable) + userTable.Id;
-                    var path = Program.DataDirectory + "\\" + name + ".dll";
+                    var name = $"{nameof(Dandaan)}.{nameof(Tables)}.{nameof(Tables.UserTable)}{userTable.Id}";
+                    var path = $"{Program.DataDirectory}\\{name}.dll";
                     var contextName = nameof(DataContext) + userTable.Id;
 
                     Action B = () =>
                     {
-                        var assembly = Reflection.LoadAssembly(path);
-
-                        Type t = assembly.GetType(name);
+                        Type t = Reflection.LoadAssembly(path).GetType(name);
 
                         Form form = null;
 
@@ -167,14 +165,14 @@ namespace Dandaan.Forms
                         ShowForm(ref form);
                     };
 
-                    Func<string, bool> exists = (p) =>
+                    Func<string, bool> exists = p =>
                     {
                         if (!File.Exists(p) || new FileInfo(p).Length == 0)
                         {
-                            var row = SQL.SelectFirstWithWhere(new Tables.UserTableAssembly()
-                            { UserTableId = userTable.Id }, false);
+                            var result = DB.DataContext.UserTableAssemblys
+                            .Where(uta => uta.UserTableId == userTable.Id).FirstOrDefault();                            
 
-                            if (row != null) File.WriteAllBytes(p, row.Assembly);
+                            if(result != null) File.WriteAllBytes(p, result.Assembly);
                             else return false;
                         }
 
@@ -185,7 +183,7 @@ namespace Dandaan.Forms
                     else
                     {
                         var unbuiltReferences = false;
-                        var unbuiltName = "";
+                        var unbuiltLabel = "";
 
                         foreach (var A in DB.DataContext.Columns.Where(c => c.UserTableId == userTable.Id))
                             if (A.ReferenceColumnId != null)
@@ -193,21 +191,26 @@ namespace Dandaan.Forms
                                 var userTableId = DB.DataContext.Columns.Where(c =>
                                 c.Id == A.ReferenceColumnId.Value).First().UserTableId;
 
-                                var n = nameof(Dandaan) + "." + nameof(Tables) + "." + nameof(Tables.UserTable) + userTableId;
-                                var p = Program.DataDirectory + "\\" + n + ".dll";
+                                var n = $"{nameof(Dandaan)}.{nameof(Tables)}.{nameof(Tables.UserTable)}{userTableId}";
+                                var p = $"{Program.DataDirectory}\\{n}.dll";
 
                                 if (userTable.Id != userTableId && !exists(p))
                                 {
                                     unbuiltReferences = true;
 
-                                    unbuiltName = DB.DataContext.UserTables.Where(utb =>
+                                    unbuiltLabel = DB.DataContext.UserTables.Where(utb =>
                                     utb.Id == userTableId).First().Label;
                                     
                                     break;
                                 }
                             }
 
-                        if (unbuiltReferences) MessageBox.Show($"این فرم به فرم:‏\r\n{unbuiltName}\r\nارجاع داده است، لطفا ابتدا آنرا بسازید.‏", Program.Title);
+                        if (unbuiltReferences)
+                            MessageBox.Show($"این فرم به فرم:‏\r\n{unbuiltLabel}\r\nارجاع داده است، لطفا ابتدا آنرا بسازید.‏",
+                                Program.Title);
+                        else if (DB.DataContext.Columns.Where(c => c.UserTableId == userTable.Id).Count() == 0)
+                            MessageBox.Show("به این فرم هیچ فیلدی اضافه نشده است، لطفا ابتدا یک یا چند فیلد به آن اضافه کنید.‏",
+                                Program.Title);
                         else if (MessageBox.Show("این فرم هنوز ساخته نشده است، در صورت ساختن آن امکان تغییر دادن این فرم یا فیلدهای آن دیگر وجود نخواهد داشت!‏",
                             Program.Title, MessageBoxButtons.OKCancel) == DialogResult.OK)
                         {
@@ -282,12 +285,12 @@ namespace Dandaan.Forms
                 userTables.AfterAdd += AddButtons;
                 userTables.AfterDelete += AddButtons;
 
-                Func<int, bool> exists = (id) =>
+                Func<int, bool> exists = id =>
                 null != DB.DataContext.UserTableAssemblys.Where(_ => _.UserTableId == id).FirstOrDefault();
 
-                userTables.BeforeEdit += (o) =>
+                userTables.BeforeEdit += ut =>
                 {
-                    if (exists(o.Id.Value))
+                    if (exists(ut.Id.Value))
                     {
                         MessageBox.Show("این فرم ساخته شده است و امکان ویرایش آن وجود ندارد.‏", Program.Title);
 
@@ -296,9 +299,9 @@ namespace Dandaan.Forms
                     else return true;
                 };
 
-                userTables.BeforeDelete += (o) =>
+                userTables.BeforeDelete += ut =>
                 {
-                    if (exists(o.Id.Value))
+                    if (exists(ut.Id.Value))
                     {
                         MessageBox.Show("این فرم ساخته شده است و امکان حذف آن وجود ندارد.‏", Program.Title);
 
@@ -319,12 +322,12 @@ namespace Dandaan.Forms
             {
                 columns = new Browser<Tables.Column, ListView>();
 
-                Func<int, bool> exists = (id) =>
+                Func<int, bool> exists = id =>
                 null != DB.DataContext.UserTableAssemblys.Where(_ => _.UserTableId == id).FirstOrDefault();
 
-                columns.BeforeEdit += (o) =>
+                columns.BeforeEdit += c =>
                 {
-                    if (exists(o.UserTableId.Value))
+                    if (exists(c.UserTableId.Value))
                     {
                         MessageBox.Show("این فیلد متعلق به فرمی ساخته شده است و امکان ویرایش آن وجود ندارد.‏", Program.Title);
 
@@ -333,9 +336,9 @@ namespace Dandaan.Forms
                     else return true;
                 };
 
-                columns.BeforeDelete += (o) =>
+                columns.BeforeDelete += c =>
                 {
-                    if (exists(o.UserTableId.Value))
+                    if (exists(c.UserTableId.Value))
                     {
                         MessageBox.Show("این فیلد متعلق به فرمی ساخته شده است و امکان حذف آن وجود ندارد.‏", Program.Title);
 
@@ -344,9 +347,9 @@ namespace Dandaan.Forms
                     else return true;
                 };
 
-                columns.BeforeAdd += (o) =>
+                columns.BeforeAdd += c =>
                 {
-                    if (exists(o.UserTableId.Value))
+                    if (exists(c.UserTableId.Value))
                     {
                         MessageBox.Show("فرم انتخاب شده ساخته شده است و امکان اضافه کردن فیلد به آن وجود ندارد.‏", Program.Title);
 
