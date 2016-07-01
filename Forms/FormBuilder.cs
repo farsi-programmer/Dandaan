@@ -108,7 +108,8 @@ namespace Dandaan.Tables
 
                         if (column.ReferenceColumnId != null)
                         {
-                            foreignTableId = SQL.SelectFirstWithWhere(new Tables.Column(false) { Id = column.ReferenceColumnId.Value }, false).UserTableId.Value;
+                            foreignTableId = DB.DataContext.Columns
+                            .Where(_ => _.Id == column.ReferenceColumnId.Value).First().UserTableId.Value;
 
                             sb.Append($@" CONSTRAINT [FK_{tableName}_UserTable{foreignTableId}_{column.Id}]
 FOREIGN KEY REFERENCES [dbo].[UserTable{foreignTableId}] ([Id])");
@@ -122,9 +123,16 @@ FOREIGN KEY REFERENCES [dbo].[UserTable{foreignTableId}] ([Id])");
                 " + nameof(DandaanColumnAttribute.Multiline) + " = true" : "")})]
                     public {columnType}");
 
-                        if (columnType != "string") sb.Append("?");
+                        if (columnType != "string" && columnType != "byte[]") sb.Append("?");
 
                         sb.Append($@" Column{column.Id} {{ get; set; }}{(column.Type.ToString().Contains("مقدار_پیش_فرض_اکنون") ? " = DateTime.Now;" : "")}");
+
+                        if (column.Type.ToString().Contains("فایل"))
+                            sb.Append($@"
+        [Column]
+        [DandaanColumn(Sql = @""[nvarchar](1000) NOT NULL"",
+            Label = ""نام فایل"")]
+        public string Column{column.Id}FileName {{ get; set; }}");
                     }
 
                     sb.Append($@"

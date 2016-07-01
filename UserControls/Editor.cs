@@ -36,7 +36,7 @@ namespace Dandaan.UserControls
             _obj = obj;
             var defaultObj = Activator.CreateInstance(typeof(T));
 
-            int y = 15, maxX = 0, width = /*350*/450, margin = 2, xMargin = 15, tabIndex = 0, yMargin = 8;
+            int y = 15, maxX = 0, width = 500, margin = 2, xMargin = 15, tabIndex = 0, yMargin = 8;
             Label label;
             Color color = Color.Empty;
 
@@ -69,7 +69,7 @@ namespace Dandaan.UserControls
                     if (da.Multiline)
                     {
                         (control as TextBox).Multiline = true;
-                        control.Height = 105;//80;
+                        control.Height = 105;
                         (control as TextBox).ScrollBars = ScrollBars.Both;
                         (control as TextBox).AcceptsReturn = true;
                     }
@@ -193,80 +193,35 @@ namespace Dandaan.UserControls
                         }
                     }
 
-                    var name = $"{nameof(Dandaan)}.{nameof(Tables)}.{SQL.GetForeignTable(da.Sql)}";
-                    var type = Type.GetType(name);
-
-                    if (type == null)
+                    if (SQL.IsForeignKey(da.Sql))
                     {
-                        var assembly = Reflection.LoadAssembly(Program.DataDirectory + "\\" + name + ".dll");
-                        type = assembly.GetType(name);
-                    }
+                        var name = $"{nameof(Dandaan)}.{nameof(Tables)}.{SQL.GetForeignTable(da.Sql)}";
+                        var type = Type.GetType(name);
 
-                    if (control.Text != "")
-                    {
-                        var instance = Activator.CreateInstance(type);
-
-                        foreach (var A in type.GetProperties())
-                            if (A.GetValue(instance) != null && Nullable.GetUnderlyingType(A.PropertyType) != null)
-                                A.SetValue(instance, null);
-
-                        var ps = type.GetProperties();
-
-                        var property = ps.Where(p => p.Name == SQL.GetForeignColumn(da.Sql)).First();
-
-                        property.SetValue(instance, /*control.Text*/item.GetValue(obj));
-
-                        var result = typeof(SQL).GetMethod(nameof(SQL.SelectFirstWithWhere)).MakeGenericMethod(type)
-                        .Invoke(null, new object[] { instance, false });
-
-                        button.Obj = result;
-
-                        string s = "", sql = "";
-
-                        foreach (var B in ps)
+                        if (type == null)
                         {
-                            sql = Reflection.GetDandaanColumnAttribute(B).Sql;
-
-                            if (!SQL.IsForeignKey(sql) || (SQL.IsForeignKey(sql) && SQL.IsIdentity(sql)))
-                                s += B.GetValue(result) + "  ";
+                            var assembly = Reflection.LoadAssembly(Program.DataDirectory + "\\" + name + ".dll");
+                            type = assembly.GetType(name);
                         }
 
-                        button.DefaultText = button.Text = s.Trim();
-                    }
-
-                    /*var result = typeof(SQL).GetMethod(nameof(SQL.SelectAll)).MakeGenericMethod(type)
-                    .Invoke(null, null);
-
-                    foreach (var B in (System.Collections.IEnumerable)result)
-                    {
-                        var text = type.GetProperty(da.ForeignTableDisplayColumn).GetValue(B).ToString();
-                        var value = type.GetProperty(SQL.GetForeignColumn(da.Sql)).GetValue(B);
-
-                        var i = (control as ComboBox).Items.Add(new ComboboxItem
+                        if (control.Text != "")
                         {
-                            Value = value,
-                            Text = text
-                        });
+                            var instance = Activator.CreateInstance(type);
 
-                        if (control.Text == value.ToString())
-                        {
-                            control.Text = text;
-                            (control as ComboBox).SelectedIndex = i;
-                        }
-                    }*/
-                    
-                    button.Click += (_, __) =>
-                    {
-                        var t = typeof(Forms.Browser<,>).MakeGenericType(new Type[] { type, typeof(ListView) });
+                            foreach (var A in type.GetProperties())
+                                if (A.GetValue(instance) != null && Nullable.GetUnderlyingType(A.PropertyType) != null)
+                                    A.SetValue(instance, null);
 
-                        var selectedObj = t.GetMethod(nameof(Forms.Browser<object, Control>.ShowAndReturnSelection))
-                        .Invoke(Activator.CreateInstance(t), null);
-
-                        (button as Controls.ButtonEdit).Obj = selectedObj;
-
-                        if (selectedObj != null)
-                        {
                             var ps = type.GetProperties();
+
+                            var property = ps.Where(p => p.Name == SQL.GetForeignColumn(da.Sql)).First();
+
+                            property.SetValue(instance, /*control.Text*/item.GetValue(obj));
+
+                            var result = typeof(SQL).GetMethod(nameof(SQL.SelectFirstWithWhere)).MakeGenericMethod(type)
+                            .Invoke(null, new object[] { instance, false });
+
+                            button.Obj = result;
 
                             string s = "", sql = "";
 
@@ -275,12 +230,60 @@ namespace Dandaan.UserControls
                                 sql = Reflection.GetDandaanColumnAttribute(B).Sql;
 
                                 if (!SQL.IsForeignKey(sql) || (SQL.IsForeignKey(sql) && SQL.IsIdentity(sql)))
-                                    s += B.GetValue(selectedObj) + "  ";
+                                    s += B.GetValue(result) + "  ";
                             }
 
-                            button.Text = s.Trim();
+                            button.DefaultText = button.Text = s.Trim();
                         }
-                    };
+
+                        /*var result = typeof(SQL).GetMethod(nameof(SQL.SelectAll)).MakeGenericMethod(type)
+                        .Invoke(null, null);
+
+                        foreach (var B in (System.Collections.IEnumerable)result)
+                        {
+                            var text = type.GetProperty(da.ForeignTableDisplayColumn).GetValue(B).ToString();
+                            var value = type.GetProperty(SQL.GetForeignColumn(da.Sql)).GetValue(B);
+
+                            var i = (control as ComboBox).Items.Add(new ComboboxItem
+                            {
+                                Value = value,
+                                Text = text
+                            });
+
+                            if (control.Text == value.ToString())
+                            {
+                                control.Text = text;
+                                (control as ComboBox).SelectedIndex = i;
+                            }
+                        }*/
+
+                        button.Click += (_, __) =>
+                        {
+                            var t = typeof(Forms.Browser<,>).MakeGenericType(new Type[] { type, typeof(ListView) });
+
+                            var selectedObj = t.GetMethod(nameof(Forms.Browser<object, Control>.ShowAndReturnSelection))
+                            .Invoke(Activator.CreateInstance(t), null);
+
+                            (button as Controls.ButtonEdit).Obj = selectedObj;
+
+                            if (selectedObj != null)
+                            {
+                                var ps = type.GetProperties();
+
+                                string s = "", sql = "";
+
+                                foreach (var B in ps)
+                                {
+                                    sql = Reflection.GetDandaanColumnAttribute(B).Sql;
+
+                                    if (!SQL.IsForeignKey(sql) || (SQL.IsForeignKey(sql) && SQL.IsIdentity(sql)))
+                                        s += B.GetValue(selectedObj) + "  ";
+                                }
+
+                                button.Text = s.Trim();
+                            }
+                        };
+                    }
                 }
 
                 //
@@ -299,12 +302,12 @@ namespace Dandaan.UserControls
                     else
                     {
                         if (c is TextBox)
-                            c.BackColor = (c as Controls.TextBox).DefaultBackColor;
+                            c.BackColor = (c as Controls.TextBox)._DefaultBackColor;
                         else if (c is ComboBox)
-                            c.BackColor = (c as Controls.ComboBox).DefaultBackColor;
+                            c.BackColor = (c as Controls.ComboBox)._DefaultBackColor;
                         else if (c is Button)
                         {
-                            c.BackColor = (c as Controls.ButtonEdit).DefaultBackColor;
+                            c.BackColor = (c as Controls.ButtonEdit)._DefaultBackColor;
                             (c as Controls.ButtonEdit).UseVisualStyleBackColor = true;
                         }
 
@@ -366,8 +369,8 @@ namespace Dandaan.UserControls
                 {
                     control = new Controls.ComboBox();
                 }
-                else if (SQL.IsForeignKey(da.Sql)/* || item.PropertyType == typeof(DateTime)
-                    || (ut != null && ut == typeof(DateTime))*/)
+                else if (SQL.IsForeignKey(da.Sql) || item.PropertyType == typeof(DateTime)
+                    || (ut != null && ut == typeof(DateTime)) || item.PropertyType == typeof(byte[]))
                 {
                     control = new UserControl();
                 }
