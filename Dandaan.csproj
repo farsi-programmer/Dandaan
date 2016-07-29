@@ -180,6 +180,12 @@
     <Compile Include="Tables\Column.cs" />
     <Compile Include="Tables\UserTable.cs" />
     <Compile Include="Tables\UserTableAssembly.cs" />
+    <Compile Include="UserControls\DateTimeEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\DateTimeEditor.Designer.cs">
+      <DependentUpon>DateTimeEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\Editor.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -231,6 +237,9 @@
     <EmbeddedResource Include="Forms\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\DateTimeEditor.resx">
+      <DependentUpon>DateTimeEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UserControls\Editor.resx">
       <DependentUpon>Editor.cs</DependentUpon>
     </EmbeddedResource>
@@ -272,7 +281,12 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="DandaanFS\DandaanFS.fsproj">
+      <Project>{a8fa2ede-0af2-4351-a8f9-a153cde15af3}</Project>
+      <Name>DandaanFS</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -19,6 +19,13 @@ namespace Dandaan.Forms
             CancelButton = button1;
         }
 
+        public Message(string title, string message) : this()
+        {
+            Text = title;
+            textBox1.Text = message;
+            button1.Select();
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             Close();

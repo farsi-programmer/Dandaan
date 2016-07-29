@@ -118,9 +118,8 @@ FOREIGN KEY REFERENCES [dbo].[UserTable{foreignTableId}] ([Id])");
                         }
 
                         sb.Append($@""",
-                Label = ""{column.Label}""{((column.Type.ToString().Contains("متن_فارسی_چند_خطی")
-                || column.Type.ToString().Contains("متن_انگلیسی_چند_خطی")) ? @",
-                " + nameof(DandaanColumnAttribute.Multiline) + " = true" : "")})]
+                Label = ""{column.Label}"",
+                ColumnType = {nameof(Tables)}.{nameof(Tables.ColumnType)}.{column.Type})]
                     public {columnType}");
 
                         if (columnType != "string" && columnType != "byte[]") sb.Append("?");

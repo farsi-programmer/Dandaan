@@ -512,6 +512,11 @@ end;");
             return Common.IsMatch(sql, @"[\s]+identity[\s]+");
         }
 
+        public static bool IsSmallDateTime(string sql)
+        {
+            return Common.IsMatch(sql, @"\[smalldatetime][\s]+");
+        }
+
         public static bool IsNotNull(string sql)
         {
             return Common.IsMatch(sql, @"[\s]+NOT[\s]+NULL");

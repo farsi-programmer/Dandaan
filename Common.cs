@@ -45,10 +45,7 @@ namespace Dandaan
 
                     DB.Log(ex.ToString());
 
-                    var f = new Forms.Message() { Text = Program.Title };
-                    f.textBox1.Text = "برنامه با مشکل مواجه شده است:‏\r\n" + ex.ToString();
-                    f.button1.Select();
-                    f.ShowDialog();
+                    new Forms.Message(Program.Title, "برنامه با مشکل مواجه شده است:‏\r\n" + ex).ShowDialog();
                 }
             });
         }

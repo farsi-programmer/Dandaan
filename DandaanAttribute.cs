@@ -23,6 +23,6 @@ namespace Dandaan
     {
         public string Sql { get; set; }
 
-        public bool Multiline { get; set; }
+        public Tables.ColumnType ColumnType { get; set; }
     }
 }

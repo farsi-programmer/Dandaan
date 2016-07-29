@@ -6,9 +6,9 @@ namespace Dandaan
 {
     static class Program
     {
-        public static readonly string DataDirectory = Application.StartupPath;
-
         public const string Title = "مدیریت دندانپزشکی";
+
+        public static readonly string DataDirectory = Application.StartupPath;
 
         public static int UserId { get; set; }
 
@@ -79,10 +79,7 @@ namespace Dandaan
 
             DB.Log(ex.ToString());
 
-            var f = new Forms.Message() { Text = Title };
-            f.textBox1.Text = "برنامه با مشکل مواجه شده است:‏\r\n" + ex;
-            f.button1.Select();
-            f.Show();
+            new Forms.Message(Title, "برنامه با مشکل مواجه شده است:‏\r\n" + ex).Show();
         }
 
         private static void Application_ApplicationExit(object sender, EventArgs e)

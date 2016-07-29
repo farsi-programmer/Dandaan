@@ -40,7 +40,7 @@ namespace Dandaan.UserControls
             Label label;
             Color color = Color.Empty;
 
-            Action<Control, PropertyInfo, DandaanColumnAttribute> act = (control, item, da) =>
+            Action<Control, PropertyInfo, DandaanColumnAttribute, Type> act = (control, item, da, ut) =>
             {
                 Action<Control> common = (c) =>
                 {
@@ -66,13 +66,15 @@ namespace Dandaan.UserControls
 
                 if (control is TextBox)
                 {
-                    if (da.Multiline)
+                    if (IsMultiline(da.ColumnType))
                     {
                         (control as TextBox).Multiline = true;
                         control.Height = 105;
                         (control as TextBox).ScrollBars = ScrollBars.Both;
                         (control as TextBox).AcceptsReturn = true;
                     }
+
+                    if (IsLTR(da.ColumnType)) control.RightToLeft = RightToLeft.No;
 
                     if (kind != EditorKind.Search)
                     {
@@ -147,54 +149,66 @@ namespace Dandaan.UserControls
                 }
                 else if (control is UserControl)
                 {
-                    var button = new Controls.ButtonEdit();
-                    common(button);
-                    button.Location = new Point(0, 0);
-                    button.Name = button.Name + nameof(Dandaan.Controls.ButtonEdit);
-                    control.Controls.Add(button);
-
-                    button.TextAlign = ContentAlignment.MiddleLeft;
-                    button.Height = 32;
-                    control.Height = 32;
-
                     if (kind == EditorKind.Edit && Reflection.GetColumnAttribute(item).IsPrimaryKey)
                         control.Enabled = false;
 
-                    if (Nullable.GetUnderlyingType(item.PropertyType) != null)
+                    if (item.PropertyType == typeof(DateTime) || (ut != null && ut == typeof(DateTime)))
                     {
-                        Action addClear = () =>
+                        if (SQL.IsSmallDateTime(da.Sql))
                         {
-                            var clear = new Button();
-                            common(clear);
-                            clear.Location = new Point(0, 0);
-                            clear.Name = clear.Name + nameof(Button);
-                            control.Controls.Add(clear);
-
-                            clear.TextAlign = ContentAlignment.MiddleLeft;
-                            clear.Text = "پاک";
-                            clear.Width = 40;
-                            clear.Height = 32;
-                            button.Width = button.Width - clear.Width - 3;
-                            button.Location = new Point(button.Location.X + clear.Width + 3, button.Location.Y);
-
-                            clear.Click += (_, __) => { button.Text = ""; button.Obj = null; };
-                        };
-
-                        if (kind == EditorKind.Search)
-                        {
-                            addClear();
+                            (control as DateTimeEditor).labelSecond.Visible =
+                            (control as DateTimeEditor).comboBoxSecond.Visible = false;
                         }
-                        else
+                    }
+                    else if(item.PropertyType == typeof(byte[]))
+                    {
+                        ;
+                    }
+                    else if (SQL.IsForeignKey(da.Sql))
+                    {
+                        var button = new Controls.ButtonEdit();
+                        common(button);
+                        button.Location = new Point(0, 0);
+                        button.Name = button.Name + nameof(Dandaan.Controls.ButtonEdit);
+                        control.Controls.Add(button);
+
+                        button.TextAlign = ContentAlignment.MiddleLeft;
+                        button.Height = 32;
+                        control.Height = 32;
+
+                        if (Nullable.GetUnderlyingType(item.PropertyType) != null)
                         {
-                            if (!SQL.IsNotNull(da.Sql))
+                            Action addClear = () =>
+                            {
+                                var clear = new Button();
+                                common(clear);
+                                clear.Location = new Point(0, 0);
+                                clear.Name = clear.Name + nameof(Button);
+                                control.Controls.Add(clear);
+
+                                clear.TextAlign = ContentAlignment.MiddleLeft;
+                                clear.Text = "پاک";
+                                clear.Width = 40;
+                                clear.Height = 32;
+                                button.Width = button.Width - clear.Width - 3;
+                                button.Location = new Point(button.Location.X + clear.Width + 3, button.Location.Y);
+
+                                clear.Click += (_, __) => { button.Text = ""; button.Obj = null; };
+                            };
+
+                            if (kind == EditorKind.Search)
                             {
                                 addClear();
                             }
+                            else
+                            {
+                                if (!SQL.IsNotNull(da.Sql))
+                                {
+                                    addClear();
+                                }
+                            }
                         }
-                    }
 
-                    if (SQL.IsForeignKey(da.Sql))
-                    {
                         var name = $"{nameof(Dandaan)}.{nameof(Tables)}.{SQL.GetForeignTable(da.Sql)}";
                         var type = Type.GetType(name);
 
@@ -347,8 +361,14 @@ namespace Dandaan.UserControls
                 else if (control is ComboBox)
                     (control as ComboBox).TextChanged += textChanged(control);
                 else if (control is UserControl)
-                    control.Controls[control.Name + nameof(Dandaan.Controls.ButtonEdit)].TextChanged 
-                    += textChanged(control.Controls[control.Name + nameof(Dandaan.Controls.ButtonEdit)]);
+                {
+                    if (SQL.IsForeignKey(da.Sql))
+                    {
+                        control.Controls[control.Name + nameof(Dandaan.Controls.ButtonEdit)].TextChanged
+                        += textChanged(control.Controls[control.Name + nameof(Dandaan.Controls.ButtonEdit)]);
+                    }
+                    //else if(
+                }
 
                 //
 
@@ -369,8 +389,11 @@ namespace Dandaan.UserControls
                 {
                     control = new Controls.ComboBox();
                 }
-                else if (SQL.IsForeignKey(da.Sql) || item.PropertyType == typeof(DateTime)
-                    || (ut != null && ut == typeof(DateTime)) || item.PropertyType == typeof(byte[]))
+                else if (item.PropertyType == typeof(DateTime) || (ut != null && ut == typeof(DateTime)))
+                {
+                    control = new DateTimeEditor(IsIranian(da.ColumnType));
+                }
+                else if (SQL.IsForeignKey(da.Sql) || item.PropertyType == typeof(byte[]))
                 {
                     control = new UserControl();
                 }
@@ -385,7 +408,7 @@ namespace Dandaan.UserControls
 
                 Controls.Add(control);
 
-                act(control, item, da);
+                act(control, item, da, ut);
 
                 //
 
@@ -651,6 +674,21 @@ namespace Dandaan.UserControls
             }
 
             base.OnLoad(e);
+        }
+
+        public static bool IsMultiline(Tables.ColumnType columnType)
+        {
+            return columnType.ToString().Contains("چند_خطی");
+        }
+
+        public static bool IsLTR(Tables.ColumnType columnType)
+        {
+            return columnType.ToString().Contains("انگلیسی");
+        }
+
+        public static bool IsIranian(Tables.ColumnType columnType)
+        {
+            return columnType.ToString().Contains("شمسی");
         }
     }
 
