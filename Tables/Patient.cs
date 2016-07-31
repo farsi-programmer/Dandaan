@@ -45,11 +45,12 @@ PRIMARY KEY CLUSTERED",
         /// <summary>.</summary>
         public string WirelessPhone { get; set; }// = "";
 
-        public Patient() : this(true) { }
+        [Obsolete("For Linq2Sql.", true)]
+        public Patient() { }
 
-        public Patient(bool withDefaults)
+        public Patient(bool withDefaultValuesForInsert)
         {
-            if (withDefaults)
+            if (withDefaultValuesForInsert)
             {
                 WirelessPhone = "";
                 HmPhone = "";

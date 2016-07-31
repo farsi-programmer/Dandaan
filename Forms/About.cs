@@ -16,12 +16,6 @@ namespace Dandaan.Forms
         public About()
         {
             InitializeComponent();
-
-            //var act = (_) => Process.Start(_);
-
-            //linkLabel1.LinkClicked += (_, __) => Process.Start(linkLabel1.Text);
-
-            //linkLabel2.LinkClicked += (_, __) => Process.Start(linkLabel2.Text);
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

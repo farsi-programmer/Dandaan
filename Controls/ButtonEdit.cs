@@ -16,12 +16,12 @@ namespace Dandaan.Controls
         {
             InitializeComponent();
 
-            _DefaultBackColor = BackColor;
+            DefaultBackColor_ = BackColor;
         }
 
         public string DefaultText { get; set; } = "";
 
-        public Color _DefaultBackColor { get; set; }
+        public Color DefaultBackColor_ { get; }
 
         public object Obj { get; set; }
 

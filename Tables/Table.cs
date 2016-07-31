@@ -32,14 +32,5 @@ PRIMARY KEY CLUSTERED ([Name] ASC, [Version] DESC)")]
         [Column]
         [DandaanColumn(Sql = "[nvarchar](1000) NOT NULL")]
         public string SQL { get; set; }
-
-        public static Table Select(Table table)
-        {
-            using (var context = DB.DataContext)
-                return context.Tables
-                    .Where(t => t.Name == table.Name)
-                    .OrderByDescending(t => t.Version)
-                    .FirstOrDefault();
-        }
     }
 }

@@ -23,6 +23,7 @@ namespace Dandaan.UserControls
         }
 
         const string _info_ = "_info_";
+        public static Color EditColor = Color.LightYellow;//LightGoldenrodYellow;//MistyRose;
 
         public EditorKind _kind { get; }
         public T _obj { get; protected set; }
@@ -157,7 +158,7 @@ namespace Dandaan.UserControls
                         if (SQL.IsSmallDateTime(da.Sql))
                         {
                             (control as DateTimeEditor).labelSecond.Visible =
-                            (control as DateTimeEditor).comboBoxSecond.Visible = false;
+                            (control as DateTimeEditor).textBoxSecond.Visible = false;
                         }
                     }
                     else if(item.PropertyType == typeof(byte[]))
@@ -308,7 +309,7 @@ namespace Dandaan.UserControls
                     || (c is ComboBox && c.Text != (c as Controls.ComboBox).DefaultText)
                     || (c is Button && c.Text != (c as Controls.ButtonEdit).DefaultText))
                     {
-                        c.BackColor = Color.LightYellow;//LightGoldenrodYellow;//MistyRose;
+                        c.BackColor = EditColor;
 
                         if (kind != EditorKind.Search)
                             (form.AcceptButton as Button).Enabled = true;
@@ -316,12 +317,12 @@ namespace Dandaan.UserControls
                     else
                     {
                         if (c is TextBox)
-                            c.BackColor = (c as Controls.TextBox)._DefaultBackColor;
+                            c.BackColor = (c as Controls.TextBox).DefaultBackColor_;
                         else if (c is ComboBox)
-                            c.BackColor = (c as Controls.ComboBox)._DefaultBackColor;
+                            c.BackColor = (c as Controls.ComboBox).DefaultBackColor_;
                         else if (c is Button)
                         {
-                            c.BackColor = (c as Controls.ButtonEdit)._DefaultBackColor;
+                            c.BackColor = (c as Controls.ButtonEdit).DefaultBackColor_;
                             (c as Controls.ButtonEdit).UseVisualStyleBackColor = true;
                         }
 

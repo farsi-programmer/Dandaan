@@ -20,6 +20,8 @@ namespace Dandaan
 
         public Table<Tables.Patient> Patients;
 
+        public Table<Tables.Appointment> Appointments;
+
         public Table<Tables.UserTable> UserTables;
 
         public Table<Tables.Column> Columns;

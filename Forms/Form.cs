@@ -33,13 +33,13 @@ namespace Dandaan.Forms
 
         protected object Invoke(Action act) => base.Invoke(act);
 
-        List<Form> openForms = new List<Form>();
+        List<Form> formsToClose = new List<Form>();
 
         protected void ShowForm<T>(ref T f, bool shouldClose = true) where T : Form, new()
         {
             if (f == null || f.IsDisposed) f = new T();//Activator.CreateInstance<T>();
 
-            if (shouldClose && !openForms.Contains(f)) openForms.Add(f);
+            if (shouldClose && !formsToClose.Contains(f)) formsToClose.Add(f);
 
             if (f.Visible == true)
             {
@@ -52,7 +52,7 @@ namespace Dandaan.Forms
 
         private void Form_FormClosing(object sender, FormClosingEventArgs e)
         {
-            foreach (var item in openForms) item?.Close();
+            foreach (var item in formsToClose) item?.Close();
         }
     }
 }

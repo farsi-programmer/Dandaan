@@ -40,9 +40,10 @@ namespace Dandaan.Forms
                 }
             });
 #else
-            var s = Tables.Setting.SelectOrInsertDefault(Program.UserId);
-            if (s.MainFormWindowState != FormWindowState.Minimized)
-                WindowState = s.MainFormWindowState;
+            var s = SQL.SelectOrInsert(new Tables.Setting(false) { UserId = Program.UserId },
+                new Tables.Setting(true) { UserId = Program.UserId });
+            if ((FormWindowState)s.MainFormWindowState != FormWindowState.Minimized)
+                WindowState = (FormWindowState)s.MainFormWindowState;
 #endif
         }
 
@@ -61,9 +62,13 @@ namespace Dandaan.Forms
                 c.SaveChanges();
             });
 #else
-            var s = Tables.Setting.SelectOrInsertDefault(Program.UserId);
-            s.MainFormWindowState = WindowState;
-            Tables.Setting.Update(s);
+            Func<Tables.Setting> fun = () => SQL.SelectOrInsert(new Tables.Setting(false)
+            { UserId = Program.UserId }, new Tables.Setting(true) { UserId = Program.UserId });
+
+            var s = fun();
+            s.MainFormWindowState = (int)WindowState;
+
+            SQL.Update(s, fun());
 #endif
 
             for (int i = 0; i < Application.OpenForms.Count; i++)
@@ -242,7 +247,7 @@ namespace Dandaan.Forms
 #if using_ef || using_sqlite
                 DB.Run((c) => FormLogger.Log("تست " + c.Logs.Count()));
 #else
-                SQL.Insert(new Tables.Log() { Message = i + @"123
+                SQL.Insert(new Tables.Log(true) { Message = i + @"123
 456" });
 #endif
             })))).Start();

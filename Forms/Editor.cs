@@ -15,8 +15,6 @@ namespace Dandaan.Forms
         public Editor()
         {
             InitializeComponent();
-
-            AutoScroll = true;
         }
 
         public Editor(string text) : this() // this is called first
@@ -36,15 +34,13 @@ namespace Dandaan.Forms
             FormClosing += (_, __) =>
             {
                 foreach (Control item in editor.Controls)
-                {
-                    if (item.BackColor == Color.LightYellow)
+                    if (item.BackColor == UserControls.Editor<object>.EditColor)
                     {
                         if (MessageBox.Show("آیا مطمئن هستید؟", Text, MessageBoxButtons.YesNo) == DialogResult.No)
                             __.Cancel = true;
 
                         break;
                     }
-                }
             };
         }
     }

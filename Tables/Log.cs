@@ -32,14 +32,15 @@ PRIMARY KEY CLUSTERED (Id DESC)",
             Label = "پیام")]
         public string Message { get; set; }
 
-        public Log() : this(true) { }
+        [Obsolete("For Linq2Sql.", true)]
+        public Log() { }
 
-        public Log(bool withDefaults)
+        public Log(bool withDefaultValuesForInsert)
         {
-            if (withDefaults)
+            if (withDefaultValuesForInsert)
             {
                 DateTime = System.DateTime.Now;
-            }
+            }        
         }
     }
 }

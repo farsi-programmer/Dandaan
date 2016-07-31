@@ -65,7 +65,6 @@
             this.Controls.Add(this.textBox1);
             this.Name = "Message";
             this.Text = "Message";
-            this.Load += new System.EventHandler(this.Message_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

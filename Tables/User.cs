@@ -30,46 +30,36 @@ PRIMARY KEY CLUSTERED")]
 
         [Column]//(IsDbGenerated = true)]
         [DandaanColumn(Sql = "[int] NOT NULL")]// CONSTRAINT [DF_" + nameof(User) + "_" + nameof(Enabled) + "] DEFAULT ((1))")]
-        public UserState State { get; set; }
+        public int? State { get; set; }
 
-        public static int Count()
+        [Obsolete("For Linq2Sql.", true)]
+        public User() { }
+
+        public User(bool withDefaultValuesForInsert)
         {
-            using (var context = DB.DataContext) return context.Users.Count();
+            if (withDefaultValuesForInsert)
+            {
+                State = 0;
+            }
         }
 
         public static int Login(string name, string password)
         {
-            using (var context = DB.DataContext)
-            {
-                var user = context.Users.Where(u => u.Name == name && u.Password == password)         
-                    .FirstOrDefault();
-
-                return user != null ? user.Id.Value : 0;
-            }
+            var user = SQL.SelectFirstWithWhere(new User(false) { Name = name, Password = password }, false);
+            return user != null ? user.Id.Value : 0;
         }
 
         public static bool IsEnabled(int id)
         {
-            using (var context = DB.DataContext)
-            {
-                var user = context.Users.Where(u => u.Id == id).FirstOrDefault();
-
-                return user != null ? (user.State == UserState.Enabled) : false;
-            }
+            var user = SQL.SelectFirstWithWhere(new User(false) { Id = id }, false);
+            return user != null ? (user.State == (int)UserState.Enabled) : false;
         }
 
-        public static int Insert(User user)
+        public static int Add(User user)
         {
             var id = SQL.Insert(user, nameof(Name));
 
-            /*DB.DataContextRun((context) =>
-            {
-                if (user.Name.Length > 100) user.Name = user.Name.Substring(0, 100);
-                context.Users.InsertOnSubmit(user);
-                context.SubmitChanges();
-            });*/
-
-            if (id > 0) Setting.SelectOrInsertDefault(id);            
+            if (id > 0) SQL.SelectOrInsert(new Setting(false) { UserId = id }, new Setting(true) { UserId = id });
 
             return id;
         }

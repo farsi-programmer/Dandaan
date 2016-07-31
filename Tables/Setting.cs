@@ -21,39 +21,22 @@ FOREIGN KEY REFERENCES [dbo].[" + nameof(User) + "] ([" + nameof(User.Id) + "])"
 
         [Column]
         [DandaanColumn(Sql = "[int] NOT NULL")]
-        public System.Windows.Forms.FormWindowState MainFormWindowState { get; set; }
+        public int? MainFormWindowState { get; set; }
 
-        public static Setting SelectOrInsertDefault(int userId)
+        [Obsolete("For Linq2Sql.", true)]
+        public Setting() { }
+
+        public Setting(bool withDefaultValuesForInsert)
         {
-            Setting setting = null;
-
-            using (var context = DB.DataContext)
-                setting = context.Settings.Where(s => s.UserId == userId).FirstOrDefault();
-
-            if (setting == null) // this can happen
-                Insert(new Setting() { UserId = userId });
-            else return setting;
-
-            return SelectOrInsertDefault(userId);
+            if (withDefaultValuesForInsert)
+            {
+                MainFormWindowState = 0;
+            }
         }
 
         /*public static void MigrateTo1()
         {
             ;
         }*/
-
-        private static void Insert(Setting setting)
-        {
-            SQL.Insert(setting, nameof(UserId));
-        }
-
-        public static void Update(Setting setting)
-        {
-            using (var context = DB.DataContext)
-            {
-                context.Settings.Attach(setting, SelectOrInsertDefault(setting.UserId));
-                context.SubmitChanges();
-            }
-        }
     }
 }

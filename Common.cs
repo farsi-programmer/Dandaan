@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +13,10 @@ namespace Dandaan
 {
     class Common
     {
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        [DllImport("user32.dll")]
         static extern bool SetCaretPos(int X, int Y);
 
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        [DllImport("user32.dll")]
         static extern bool GetCaretPos(out Point lpPoint);
 
         public static Match Match(string input, string pattern)

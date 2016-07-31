@@ -28,115 +28,116 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.comboBoxSecond = new System.Windows.Forms.ComboBox();
-            this.comboBoxMinute = new System.Windows.Forms.ComboBox();
-            this.comboBoxHour = new System.Windows.Forms.ComboBox();
-            this.comboBoxDay = new System.Windows.Forms.ComboBox();
-            this.comboBoxMonth = new System.Windows.Forms.ComboBox();
-            this.comboBoxYear = new System.Windows.Forms.ComboBox();
             this.labelSecond = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.textBoxSecond = new System.Windows.Forms.TextBox();
+            this.textBoxMinute = new System.Windows.Forms.TextBox();
+            this.textBoxYear = new System.Windows.Forms.TextBox();
+            this.textBoxMonth = new System.Windows.Forms.TextBox();
+            this.textBoxDay = new System.Windows.Forms.TextBox();
+            this.labelDay = new System.Windows.Forms.Label();
+            this.textBoxHour = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
-            // 
-            // comboBoxSecond
-            // 
-            this.comboBoxSecond.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxSecond.FormattingEnabled = true;
-            this.comboBoxSecond.Location = new System.Drawing.Point(88, 0);
-            this.comboBoxSecond.Name = "comboBoxSecond";
-            this.comboBoxSecond.Size = new System.Drawing.Size(50, 32);
-            this.comboBoxSecond.TabIndex = 5;
-            // 
-            // comboBoxMinute
-            // 
-            this.comboBoxMinute.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxMinute.FormattingEnabled = true;
-            this.comboBoxMinute.Location = new System.Drawing.Point(152, 0);
-            this.comboBoxMinute.Name = "comboBoxMinute";
-            this.comboBoxMinute.Size = new System.Drawing.Size(50, 32);
-            this.comboBoxMinute.TabIndex = 4;
-            // 
-            // comboBoxHour
-            // 
-            this.comboBoxHour.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxHour.FormattingEnabled = true;
-            this.comboBoxHour.Location = new System.Drawing.Point(216, 0);
-            this.comboBoxHour.Name = "comboBoxHour";
-            this.comboBoxHour.Size = new System.Drawing.Size(50, 32);
-            this.comboBoxHour.TabIndex = 3;
-            // 
-            // comboBoxDay
-            // 
-            this.comboBoxDay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxDay.FormattingEnabled = true;
-            this.comboBoxDay.Location = new System.Drawing.Point(285, 0);
-            this.comboBoxDay.Name = "comboBoxDay";
-            this.comboBoxDay.Size = new System.Drawing.Size(50, 32);
-            this.comboBoxDay.TabIndex = 2;
-            // 
-            // comboBoxMonth
-            // 
-            this.comboBoxMonth.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxMonth.FormattingEnabled = true;
-            this.comboBoxMonth.Location = new System.Drawing.Point(341, 0);
-            this.comboBoxMonth.Name = "comboBoxMonth";
-            this.comboBoxMonth.Size = new System.Drawing.Size(50, 32);
-            this.comboBoxMonth.TabIndex = 1;
-            // 
-            // comboBoxYear
-            // 
-            this.comboBoxYear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxYear.FormattingEnabled = true;
-            this.comboBoxYear.Location = new System.Drawing.Point(397, 0);
-            this.comboBoxYear.Name = "comboBoxYear";
-            this.comboBoxYear.Size = new System.Drawing.Size(72, 32);
-            this.comboBoxYear.TabIndex = 0;
             // 
             // labelSecond
             // 
             this.labelSecond.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelSecond.Location = new System.Drawing.Point(139, 3);
+            this.labelSecond.Location = new System.Drawing.Point(139, 0);
             this.labelSecond.Name = "labelSecond";
             this.labelSecond.Size = new System.Drawing.Size(12, 28);
-            this.labelSecond.TabIndex = 6;
+            this.labelSecond.TabIndex = 5;
             this.labelSecond.Text = ":";
             // 
             // label2
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label2.Location = new System.Drawing.Point(203, 3);
+            this.label2.Location = new System.Drawing.Point(75, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(12, 28);
             this.label2.TabIndex = 7;
             this.label2.Text = ":";
             // 
+            // textBoxSecond
+            // 
+            this.textBoxSecond.Location = new System.Drawing.Point(24, 0);
+            this.textBoxSecond.Name = "textBoxSecond";
+            this.textBoxSecond.Size = new System.Drawing.Size(50, 29);
+            this.textBoxSecond.TabIndex = 8;
+            // 
+            // textBoxMinute
+            // 
+            this.textBoxMinute.Location = new System.Drawing.Point(88, 0);
+            this.textBoxMinute.Name = "textBoxMinute";
+            this.textBoxMinute.Size = new System.Drawing.Size(50, 29);
+            this.textBoxMinute.TabIndex = 6;
+            // 
+            // textBoxYear
+            // 
+            this.textBoxYear.Location = new System.Drawing.Point(397, 0);
+            this.textBoxYear.Name = "textBoxYear";
+            this.textBoxYear.Size = new System.Drawing.Size(73, 29);
+            this.textBoxYear.TabIndex = 0;
+            // 
+            // textBoxMonth
+            // 
+            this.textBoxMonth.Location = new System.Drawing.Point(341, 0);
+            this.textBoxMonth.Name = "textBoxMonth";
+            this.textBoxMonth.Size = new System.Drawing.Size(50, 29);
+            this.textBoxMonth.TabIndex = 1;
+            // 
+            // textBoxDay
+            // 
+            this.textBoxDay.Location = new System.Drawing.Point(285, 0);
+            this.textBoxDay.Name = "textBoxDay";
+            this.textBoxDay.Size = new System.Drawing.Size(50, 29);
+            this.textBoxDay.TabIndex = 2;
+            // 
+            // labelDay
+            // 
+            this.labelDay.AutoSize = true;
+            this.labelDay.Location = new System.Drawing.Point(246, 3);
+            this.labelDay.Name = "labelDay";
+            this.labelDay.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.labelDay.Size = new System.Drawing.Size(37, 24);
+            this.labelDay.TabIndex = 3;
+            this.labelDay.Text = "شنبه";
+            // 
+            // textBoxHour
+            // 
+            this.textBoxHour.Location = new System.Drawing.Point(152, 0);
+            this.textBoxHour.Name = "textBoxHour";
+            this.textBoxHour.Size = new System.Drawing.Size(50, 29);
+            this.textBoxHour.TabIndex = 4;
+            // 
             // DateTimeEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.textBoxHour);
+            this.Controls.Add(this.labelDay);
+            this.Controls.Add(this.textBoxDay);
+            this.Controls.Add(this.textBoxMonth);
+            this.Controls.Add(this.textBoxYear);
+            this.Controls.Add(this.textBoxMinute);
+            this.Controls.Add(this.textBoxSecond);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.labelSecond);
-            this.Controls.Add(this.comboBoxYear);
-            this.Controls.Add(this.comboBoxMonth);
-            this.Controls.Add(this.comboBoxDay);
-            this.Controls.Add(this.comboBoxHour);
-            this.Controls.Add(this.comboBoxMinute);
-            this.Controls.Add(this.comboBoxSecond);
             this.Name = "DateTimeEditor";
-            this.Size = new System.Drawing.Size(470, 32);
+            this.Size = new System.Drawing.Size(470, 29);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-
-        public System.Windows.Forms.ComboBox comboBoxSecond;
-        public System.Windows.Forms.ComboBox comboBoxMinute;
-        public System.Windows.Forms.ComboBox comboBoxHour;
-        public System.Windows.Forms.ComboBox comboBoxDay;
-        public System.Windows.Forms.ComboBox comboBoxMonth;
-        public System.Windows.Forms.ComboBox comboBoxYear;
         public System.Windows.Forms.Label labelSecond;
         public System.Windows.Forms.Label label2;
+        public System.Windows.Forms.TextBox textBoxSecond;
+        public System.Windows.Forms.TextBox textBoxMinute;
+        public System.Windows.Forms.TextBox textBoxYear;
+        public System.Windows.Forms.TextBox textBoxMonth;
+        public System.Windows.Forms.TextBox textBoxDay;
+        public System.Windows.Forms.Label labelDay;
+        public System.Windows.Forms.TextBox textBoxHour;
     }
 }

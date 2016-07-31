@@ -58,7 +58,13 @@ namespace Dandaan
                 if (Insert(new Tables.Table() { Name = t.Name, SQL = sql, Version = 0 },
                     nameof(Tables.Table.Name)) == 0)
                 {
-                    var last = Tables.Table.Select(new Tables.Table() { Name = t.Name });
+                    Tables.Table last;
+
+                    using (var context = DB.DataContext)
+                        last = context.Tables
+                            .Where(table => table.Name == t.Name)
+                            .OrderByDescending(table => table.Version)
+                            .FirstOrDefault();
 
                     if (sql != last.SQL)
                     {
@@ -266,24 +272,24 @@ end;");
             editOrDelete(obj, null);
         }
 
-        public static void Update<T>(T obj, T _obj) where T : class
+        public static void Update<T>(T obj, T original) where T : class
         {
-            editOrDelete(obj, _obj);
+            editOrDelete(obj, original);
         }
 
-        private static void editOrDelete<T>(T obj, T _obj) where T : class
+        private static void editOrDelete<T>(T obj, T original) where T : class
         {
             using (var context = DB.DataContext)
             {
                 var pi = context.GetType().GetField(typeof(T).Name + "s");
                 var table = ((System.Data.Linq.Table<T>)(pi.GetValue(context)));
 
-                if (_obj == null)
+                if (original == null)
                 {
                     table.Attach(obj);
                     table.DeleteOnSubmit(obj);
                 }
-                else table.Attach(obj, _obj);
+                else table.Attach(obj, original);
 
                 context.SubmitChanges();
             }
@@ -340,6 +346,21 @@ end;");
         public static T SelectFirstWithWhere<T>(T obj, bool like) where T : class
         {
             return SelectWithWhere(1, 1, obj, like).FirstOrDefault();
+        }
+
+        public static T SelectOrInsert<T>(T select, T insert) where T : class
+        {
+            Func<T> fun = () => SelectFirstWithWhere(select, false);
+
+            var obj = fun();
+
+            if (obj == null) // this can happen
+            {
+                Insert(insert);
+
+                return fun();
+            }
+            else return obj;
         }
 
         // i am doing this because LINQ2SQL doesn't understand reflection

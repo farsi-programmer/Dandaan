@@ -19,27 +19,18 @@ namespace Dandaan.UserControls
 
         public DateTimeEditor(bool iranian):this()
         {
-            foreach (var item in Controls)
-            {
-                if (item is ComboBox)
-                {
-                    (item as ComboBox).AutoCompleteSource = AutoCompleteSource.ListItems;
-                    (item as ComboBox).AutoCompleteMode = AutoCompleteMode.Append;
-                }
-            }
+            //for (int i = 0; i < 60; i++) comboBoxSecond.Items.Add(i);
 
-            for (int i = 0; i < 60; i++) comboBoxSecond.Items.Add(i);
+            //for (int i = 0; i < 60; i++) comboBoxMinute.Items.Add(i);
 
-            for (int i = 0; i < 60; i++) comboBoxMinute.Items.Add(i);
+            //for (int i = 0; i < 24; i++) comboBoxHour.Items.Add(i);
 
-            for (int i = 0; i < 24; i++) comboBoxHour.Items.Add(i);
+            //for (int i = 1; i < 32; i++) comboBoxDay.Items.Add(i);
 
-            for (int i = 1; i < 32; i++) comboBoxDay.Items.Add(i);
+            //for (int i = 1; i < 13; i++) comboBoxMonth.Items.Add(i);
 
-            for (int i = 1; i < 13; i++) comboBoxMonth.Items.Add(i);
-
-            if(iranian) for (int i = 1300; i < 1400; i++) comboBoxYear.Items.Add(i);
-            else for (int i = 1920; i < 2020; i++) comboBoxYear.Items.Add(i);
+            //if(iranian) for (int i = 1300; i < 1400; i++) comboBoxYear.Items.Add(i);
+            //else for (int i = 1920; i < 2020; i++) comboBoxYear.Items.Add(i);
         }
     }
 }

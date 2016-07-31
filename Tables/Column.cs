@@ -113,13 +113,14 @@ FOREIGN KEY REFERENCES [dbo].[" + nameof(Column) + "] ([" + nameof(Id) + "])",
             Label = "فیلد مرجع")]
         public int? ReferenceColumnId { get; set; }
 
-        public Column() : this(true) { }
+        [Obsolete("For Linq2Sql.", true)]
+        public Column() { }
 
-        public Column(bool withDefaults)
+        public Column(bool withDefaultValuesForInsert)
         {
-            if(withDefaults)
+            if (withDefaultValuesForInsert)
             {
-                 NotNull = YesOrNo.خیر;
+                NotNull = YesOrNo.خیر;
             }
         }
     }

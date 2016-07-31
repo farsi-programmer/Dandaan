@@ -587,7 +587,7 @@ where table_name=N'{tableName}'") > 0;
         {
             try
             {
-                SQL.Insert(new Tables.Log() { Message = message });
+                SQL.Insert(new Tables.Log(true) { Message = message });
             }
             catch
             {
