@@ -11,23 +11,24 @@ using System.Threading.Tasks;
 
 namespace Dandaan
 {
-    class Common
+    public static class Common
     {
+        public static void Iter<T>(this IEnumerable<T> source, Action<T> act)
+        {
+            foreach (T element in source) act(element);
+        }
+
         [DllImport("user32.dll")]
         static extern bool SetCaretPos(int X, int Y);
 
         [DllImport("user32.dll")]
         static extern bool GetCaretPos(out Point lpPoint);
 
-        public static Match Match(string input, string pattern)
-        {
-            return Regex.Match(input, pattern, RegexOptions.IgnoreCase);
-        }
+        public static Match Match(string input, string pattern) => 
+            Regex.Match(input, pattern, RegexOptions.IgnoreCase);
 
-        public static bool IsMatch(string input, string pattern)
-        {
-            return Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
-        }
+        public static bool IsMatch(string input, string pattern) =>
+            Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
 
         public static Action Action(Action act) => act;
 

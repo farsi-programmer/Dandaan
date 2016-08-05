@@ -13,39 +13,20 @@ namespace Dandaan
 {
     class Reflection
     {
-        public static ColumnAttribute GetColumnAttribute(MemberInfo m)
-        {
-            var attributes = (ColumnAttribute[])m.GetCustomAttributes<ColumnAttribute>();
+        public static ColumnAttribute GetColumnAttribute(MemberInfo m) => 
+            m.GetCustomAttributes<ColumnAttribute>().First();        
 
-            return attributes[0];
-        }
+        public static DandaanAttribute GetDandaanAttribute(MemberInfo m) =>        
+            m.GetCustomAttributes<DandaanAttribute>().First();
 
-        public static DandaanAttribute GetDandaanAttribute(MemberInfo m)
-        {
-            var attributes = (DandaanAttribute[])m.GetCustomAttributes<DandaanAttribute>();
+        public static DandaanColumnAttribute GetDandaanColumnAttribute(MemberInfo m) =>
+            (DandaanColumnAttribute)GetDandaanAttribute(m);
 
-            return attributes[0];
-        }
+        public static DandaanAttribute GetDandaanAttribute(Type t) =>
+            t.GetCustomAttributes<DandaanAttribute>().First();
 
-        public static DandaanColumnAttribute GetDandaanColumnAttribute(MemberInfo m)
-        {
-            return (DandaanColumnAttribute)GetDandaanAttribute(m);
-        }
-
-        public static DandaanAttribute GetDandaanAttribute(Type t)
-        {
-            var attributes = (DandaanAttribute[])t.GetCustomAttributes<DandaanAttribute>();
-
-            if (attributes[0] is DandaanColumnAttribute)
-                return (DandaanColumnAttribute)attributes[0];
-            else
-                return attributes[0];
-        }
-
-        public static DandaanColumnAttribute GetDandaanColumnAttribute(Type t)
-        {
-            return (DandaanColumnAttribute)GetDandaanAttribute(t);
-        }
+        public static DandaanColumnAttribute GetDandaanColumnAttribute(Type t) =>
+            (DandaanColumnAttribute)GetDandaanAttribute(t);
 
         public static string GetDescriptionAttribute(MemberInfo m, bool shouldHave = true)
         {
@@ -63,55 +44,57 @@ namespace Dandaan
 
         private static string GetFirstDescription(DescriptionAttribute[] attributes, bool shouldHave)
         {
-            if (shouldHave)
-                return attributes[0].Description;
-            else if (attributes != null && attributes.Length > 0)
-                return attributes[0].Description;
+            if (shouldHave) return attributes[0].Description;
+            else if (attributes != null && attributes.Length > 0) return attributes[0].Description;
 
             return "";
         }
 
-        internal static Type GetType(string name)
-        {
-            Assembly assembly = typeof(Common).Assembly;
+        internal static Type GetType(string name) => typeof(Common).Assembly.GetType(name);
+    }
 
-            return assembly.GetType(name);
-        }
-
+    class Assemblies
+    {
         static Dictionary<string, Assembly> assemblies;
 
-        public static Assembly LoadAssembly(string path)
+        public static Assembly Load(string path)
         {
             if (assemblies == null) assemblies = new Dictionary<string, Assembly>();
 
-            Assembly assembly;
-
-            if (assemblies.ContainsKey(path)) assembly = assemblies[path];
+            if (assemblies.ContainsKey(path)) return assemblies[path];
             else
             {
-                assembly = Assembly.LoadFile(path);
-
-                foreach (AssemblyName reference in assembly.GetReferencedAssemblies())
-                {
-                    var p = $"{Path.GetDirectoryName(assembly.Location)}\\{reference.Name}.dll";
-
-                    var ut = $"{nameof(Dandaan)}.{nameof(Tables)}.{nameof(Tables.UserTable)}";
-
-                    if (reference.Name.StartsWith(ut))
-                        if (!File.Exists(p) || new FileInfo(p).Length == 0)
-                        {
-                            File.WriteAllBytes(p, DB.DataContext.UserTableAssemblys
-                                .Where(uta => uta.UserTableId == int.Parse(reference.Name.Substring(ut.Length)))
-                                .First().Assembly);
-                            LoadAssembly(p);
-                        }
-                        else LoadAssembly(p);
-                }
-
+                var assembly = Assembly.LoadFile(path);
                 assemblies.Add(path, assembly);
+
+                var dir = Path.GetDirectoryName(assembly.Location);
+                var u = typeof(Tables.UserTable).FullName;
+
+                foreach (var reference in assembly.GetReferencedAssemblies())
+                    if (reference.Name.StartsWith(u))
+                    {
+                        var p = $"{dir}\\{reference.Name}.dll";
+
+                        FromDbToFile(int.Parse(reference.Name.Substring(u.Length)), p);
+
+                        Load(p);
+                    }
+
+                return assembly;
+            }
+        }
+
+        public static bool FromDbToFile(int id, string path)
+        {
+            if (!File.Exists(path) || new FileInfo(path).Length == 0)
+            {
+                var result = DB.DataContext.UserTableAssemblys.Where(_ => _.UserTableId == id).FirstOrDefault();
+
+                if (result == null) return false;
+                else File.WriteAllBytes(path, result.Assembly);
             }
 
-            return assembly;
+            return true;
         }
     }
 }

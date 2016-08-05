@@ -43,8 +43,7 @@ namespace Dandaan.Forms
 
             if (f.Visible == true)
             {
-                if (f.WindowState == FormWindowState.Minimized)
-                    f.WindowState = f.lastFormWindowState;
+                if (f.WindowState == FormWindowState.Minimized) f.WindowState = f.lastFormWindowState;
                 else f.Activate();//Select();//Focus();//BringToFront();
             }
             else f.Show();//(this); this keeps the form on top, which i don't like
@@ -52,7 +51,7 @@ namespace Dandaan.Forms
 
         private void Form_FormClosing(object sender, FormClosingEventArgs e)
         {
-            foreach (var item in formsToClose) item?.Close();
+            formsToClose.Iter(_ => _?.Close());
         }
     }
 }

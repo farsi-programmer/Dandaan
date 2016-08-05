@@ -72,9 +72,6 @@ namespace Dandaan.Forms
             textBox1.Focus();
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void button2_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
     }
 }

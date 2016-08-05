@@ -25,15 +25,9 @@ namespace Dandaan.Forms
             //MessageBox.Show((LicenseManager.UsageMode == LicenseUsageMode.Designtime).ToString());
         }
 
-        private void ConnectDB_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            thread?.Abort();
-        }
+        private void ConnectDB_FormClosing(object sender, FormClosingEventArgs e) => thread?.Abort();
 
-        private void ConnectDB_Load(object sender, EventArgs e)
-        {
-            connect();
-        }
+        private void ConnectDB_Load(object sender, EventArgs e) => connect();
 
         Thread thread;
 
@@ -83,8 +77,7 @@ namespace Dandaan.Forms
                             catch { }
 
                             // i want to see errors
-                            if (new Login().ShowDialog() == DialogResult.OK)
-                                new Main().ShowDialog();
+                            if (new Login().ShowDialog() == DialogResult.OK) new Main().ShowDialog();
 
                             try
                             {
@@ -131,9 +124,6 @@ namespace Dandaan.Forms
             connect();
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
+        private void button2_Click(object sender, EventArgs e) => Close();
     }
 }

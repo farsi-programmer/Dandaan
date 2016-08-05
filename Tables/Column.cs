@@ -111,7 +111,7 @@ FOREIGN KEY REFERENCES [dbo].[" + nameof(UserTable) + "] ([" + nameof(UserTable.
         [DandaanColumn(Sql = "[int] CONSTRAINT [FK_" + nameof(Column) + "_" + nameof(Column) + @"]
 FOREIGN KEY REFERENCES [dbo].[" + nameof(Column) + "] ([" + nameof(Id) + "])",
             Label = "فیلد مرجع")]
-        public int? ReferenceColumnId { get; set; }
+        public int? ColumnId { get; set; }
 
         [Obsolete("For Linq2Sql.", true)]
         public Column() { }

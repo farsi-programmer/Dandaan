@@ -23,19 +23,10 @@ namespace Dandaan.Controls
 
         public Color DefaultBackColor_ { get; }
 
-        protected override void OnPaint(PaintEventArgs pe)
-        {
-            base.OnPaint(pe);
-        }
-        
-        public void RaiseTextChanged()
-        {
-            OnTextChanged(new EventArgs());
-        }
+        protected override void OnPaint(PaintEventArgs pe) => base.OnPaint(pe);
 
-        public void RaiseLostFocus()
-        {
-            OnLostFocus(new EventArgs());
-        }
+        public void RaiseTextChanged() => OnTextChanged(new EventArgs());
+
+        public void RaiseLostFocus() => OnLostFocus(new EventArgs());
     }
 }

@@ -52,6 +52,17 @@ PRIMARY KEY CLUSTERED (Label DESC)",
         [DandaanColumn(Sql = "[int] NOT NULL",
             Label = "امکان جستجو")]
         public YesOrNo? EnableSearch { get; set; }
+
+        [Obsolete("For Linq2Sql.", true)]
+        public UserTable() { }
+
+        public UserTable(bool withDefaultValuesForInsert)
+        {
+            if (withDefaultValuesForInsert)
+            {
+                ;
+            }
+        }
     }
 
     //public enum NoOrYes { No, Yes }

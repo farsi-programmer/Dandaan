@@ -18,14 +18,10 @@ namespace Dandaan.Forms
             InitializeComponent();
         }
 
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) =>
             Process.Start(linkLabel1.Text);
-        }
 
-        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
+        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) =>
             Process.Start(linkLabel2.Text);
-        }
     }
 }

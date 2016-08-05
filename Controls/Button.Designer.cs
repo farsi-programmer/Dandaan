@@ -1,6 +1,6 @@
 ﻿namespace Dandaan.Controls
 {
-    partial class ButtonEdit
+    partial class Button
     {
         /// <summary>
         /// Required designer variable.
@@ -19,7 +19,7 @@
             }
             base.Dispose(disposing);
         }
-
+                
         #region Component Designer generated code
 
         /// <summary>

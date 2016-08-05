@@ -55,7 +55,7 @@ namespace Dandaan
                 // if the table has changed, there should be a migration method for it
 
                 // first we insert, if there is nothing for this table
-                if (Insert(new Tables.Table() { Name = t.Name, SQL = sql, Version = 0 },
+                if (Insert(new Tables.Table(true) { Name = t.Name, SQL = sql, Version = 0 },
                     nameof(Tables.Table.Name)) == 0)
                 {
                     Tables.Table last;
@@ -73,7 +73,7 @@ namespace Dandaan
                         // what if the program is closed here, can we call MigrateTo more than once?
                         // should we make these two lines atomic?
 
-                        Insert(new Tables.Table() { Name = t.Name, SQL = sql, Version = last.Version + 1 });
+                        Insert(new Tables.Table(true) { Name = t.Name, SQL = sql, Version = last.Version + 1 });
                     }
                 }
             }

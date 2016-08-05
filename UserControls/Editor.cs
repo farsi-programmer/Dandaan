@@ -167,10 +167,10 @@ namespace Dandaan.UserControls
                     }
                     else if (SQL.IsForeignKey(da.Sql))
                     {
-                        var button = new Controls.ButtonEdit();
+                        var button = new Controls.Button();
                         common(button);
                         button.Location = new Point(0, 0);
-                        button.Name = button.Name + nameof(Dandaan.Controls.ButtonEdit);
+                        button.Name = button.Name + nameof(Dandaan.Controls.Button);
                         control.Controls.Add(button);
 
                         button.TextAlign = ContentAlignment.MiddleLeft;
@@ -215,7 +215,7 @@ namespace Dandaan.UserControls
 
                         if (type == null)
                         {
-                            var assembly = Reflection.LoadAssembly(Program.DataDirectory + "\\" + name + ".dll");
+                            var assembly = Assemblies.Load(Program.DataDirectory + "\\" + name + ".dll");
                             type = assembly.GetType(name);
                         }
 
@@ -279,7 +279,7 @@ namespace Dandaan.UserControls
                             var selectedObj = t.GetMethod(nameof(Forms.Browser<object, Control>.ShowAndReturnSelection))
                             .Invoke(Activator.CreateInstance(t), null);
 
-                            (button as Controls.ButtonEdit).Obj = selectedObj;
+                            (button as Controls.Button).Obj = selectedObj;
 
                             if (selectedObj != null)
                             {
@@ -307,7 +307,7 @@ namespace Dandaan.UserControls
                 {
                     if ((c is TextBox && c.Text != (c as Controls.TextBox).DefaultText)
                     || (c is ComboBox && c.Text != (c as Controls.ComboBox).DefaultText)
-                    || (c is Button && c.Text != (c as Controls.ButtonEdit).DefaultText))
+                    || (c is Button && c.Text != (c as Controls.Button).DefaultText))
                     {
                         c.BackColor = EditColor;
 
@@ -322,8 +322,8 @@ namespace Dandaan.UserControls
                             c.BackColor = (c as Controls.ComboBox).DefaultBackColor_;
                         else if (c is Button)
                         {
-                            c.BackColor = (c as Controls.ButtonEdit).DefaultBackColor_;
-                            (c as Controls.ButtonEdit).UseVisualStyleBackColor = true;
+                            c.BackColor = (c as Controls.Button).DefaultBackColor_;
+                            (c as Controls.Button).UseVisualStyleBackColor = true;
                         }
 
                         if (kind != EditorKind.Search)
@@ -333,7 +333,7 @@ namespace Dandaan.UserControls
                             foreach (Control A in Controls)
                                 if ((A is TextBox && A.Text != (A as Controls.TextBox).DefaultText && !(A as TextBox).ReadOnly)
                                 || (A is ComboBox && A.Text != (A as Controls.ComboBox).DefaultText)
-                                || (A is UserControl && A.Controls[A.Name + nameof(Dandaan.Controls.ButtonEdit)].Text != (A.Controls[A.Name + nameof(Dandaan.Controls.ButtonEdit)] as Controls.ButtonEdit).DefaultText))
+                                || (A is UserControl && A.Controls[A.Name + nameof(Dandaan.Controls.Button)].Text != (A.Controls[A.Name + nameof(Dandaan.Controls.Button)] as Controls.Button).DefaultText))
                                     (form.AcceptButton as Button).Enabled = true;
                         }
                     }
@@ -365,8 +365,8 @@ namespace Dandaan.UserControls
                 {
                     if (SQL.IsForeignKey(da.Sql))
                     {
-                        control.Controls[control.Name + nameof(Dandaan.Controls.ButtonEdit)].TextChanged
-                        += textChanged(control.Controls[control.Name + nameof(Dandaan.Controls.ButtonEdit)]);
+                        control.Controls[control.Name + nameof(Dandaan.Controls.Button)].TextChanged
+                        += textChanged(control.Controls[control.Name + nameof(Dandaan.Controls.Button)]);
                     }
                     //else if(
                 }
@@ -539,13 +539,13 @@ namespace Dandaan.UserControls
                             else if (item is UserControl)
                             {
                                 if (kind == EditorKind.Add)
-                                    item.Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)].Text =
-                                    (item.Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)] as Controls.ButtonEdit).DefaultText;
+                                    item.Controls[item.Name + nameof(Dandaan.Controls.Button)].Text =
+                                    (item.Controls[item.Name + nameof(Dandaan.Controls.Button)] as Controls.Button).DefaultText;
                                 else
                                 {
-                                    (item.Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)] as Controls.ButtonEdit).DefaultText = (item.Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)] as Controls.ButtonEdit).Text;
-                                    (item.Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)]).Text = (item.Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)] as Controls.ButtonEdit).Text + " ";
-                                    (item.Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)]).Text = (item.Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)] as Controls.ButtonEdit).DefaultText;
+                                    (item.Controls[item.Name + nameof(Dandaan.Controls.Button)] as Controls.Button).DefaultText = (item.Controls[item.Name + nameof(Dandaan.Controls.Button)] as Controls.Button).Text;
+                                    (item.Controls[item.Name + nameof(Dandaan.Controls.Button)]).Text = (item.Controls[item.Name + nameof(Dandaan.Controls.Button)] as Controls.Button).Text + " ";
+                                    (item.Controls[item.Name + nameof(Dandaan.Controls.Button)]).Text = (item.Controls[item.Name + nameof(Dandaan.Controls.Button)] as Controls.Button).DefaultText;
                                     // not working (item as Controls.ComboBox).RaiseTextChanged();
                                 }
                             }
@@ -606,7 +606,7 @@ namespace Dandaan.UserControls
 
                 if (Controls[item.Name] is UserControl)
                 {
-                    var o = (Controls[item.Name].Controls[item.Name + nameof(Dandaan.Controls.ButtonEdit)] as Controls.ButtonEdit).Obj;
+                    var o = (Controls[item.Name].Controls[item.Name + nameof(Dandaan.Controls.Button)] as Controls.Button).Obj;
                     if (o != null)
                     {
                         var type = o.GetType();

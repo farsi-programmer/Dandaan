@@ -134,13 +134,13 @@ namespace Dandaan.Forms
 
                 button.Click += (_, __) =>
                 {
-                    var name = $"{nameof(Dandaan)}.{nameof(Tables)}.{nameof(Tables.UserTable)}{userTable.Id}";
+                    var name = $"{typeof(Tables.UserTable).FullName}{userTable.Id}";
                     var path = $"{Program.DataDirectory}\\{name}.dll";
                     var contextName = nameof(DataContext) + userTable.Id;
 
                     Action B = () =>
                     {
-                        Type t = Reflection.LoadAssembly(path).GetType(name);
+                        Type t = Assemblies.Load(path).GetType(name);
 
                         Form form = null;
 
@@ -170,36 +170,22 @@ namespace Dandaan.Forms
                         ShowForm(ref form);
                     };
 
-                    Func<string, bool> exists = p =>
-                    {
-                        if (!File.Exists(p) || new FileInfo(p).Length == 0)
-                        {
-                            var result = DB.DataContext.UserTableAssemblys
-                            .Where(uta => uta.UserTableId == userTable.Id).FirstOrDefault();                            
-
-                            if(result != null) File.WriteAllBytes(p, result.Assembly);
-                            else return false;
-                        }
-
-                        return true;
-                    };
-
-                    if (exists(path)) B();
+                    if (Assemblies.FromDbToFile(userTable.Id.Value, path)) B();
                     else
                     {
                         var unbuiltReferences = false;
                         var unbuiltLabel = "";
 
                         foreach (var A in DB.DataContext.Columns.Where(c => c.UserTableId == userTable.Id))
-                            if (A.ReferenceColumnId != null)
+                            if (A.ColumnId != null)
                             {
                                 var userTableId = DB.DataContext.Columns.Where(c =>
-                                c.Id == A.ReferenceColumnId.Value).First().UserTableId;
+                                c.Id == A.ColumnId.Value).First().UserTableId;
 
                                 var n = $"{nameof(Dandaan)}.{nameof(Tables)}.{nameof(Tables.UserTable)}{userTableId}";
                                 var p = $"{Program.DataDirectory}\\{n}.dll";
 
-                                if (userTable.Id != userTableId && !exists(p))
+                                if (userTable.Id != userTableId && !Assemblies.FromDbToFile(userTableId.Value, p))
                                 {
                                     unbuiltReferences = true;
 

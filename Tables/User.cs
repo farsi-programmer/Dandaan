@@ -51,7 +51,7 @@ PRIMARY KEY CLUSTERED")]
 
         public static bool IsEnabled(int id)
         {
-            var user = SQL.SelectFirstWithWhere(new User(false) { Id = id }, false);
+            var user = DB.DataContext.Users.Where(_ => _.Id == id).FirstOrDefault();
             return user != null ? (user.State == (int)UserState.Enabled) : false;
         }
 

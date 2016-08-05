@@ -34,8 +34,19 @@ FOREIGN KEY REFERENCES [dbo].[" + nameof(Patient) + "] ([" + nameof(Patient.PatN
 
         public DateTime AptDateTime;
 
-//        ///<summary>FK to insplan.PlanNum for the primary insurance plan at the time the appointment is set complete. May be 0. We can't tell later which subscriber is involved; only the plan.</summary>
-//        public long InsPlan1;
+        //        ///<summary>FK to insplan.PlanNum for the primary insurance plan at the time the appointment is set complete. May be 0. We can't tell later which subscriber is involved; only the plan.</summary>
+        //        public long InsPlan1;
+
+        [Obsolete("For Linq2Sql.", true)]
+        public Appointment() { }
+
+        public Appointment(bool withDefaultValuesForInsert)
+        {
+            if (withDefaultValuesForInsert)
+            {
+                ;
+            }
+        }
     }
 }
 

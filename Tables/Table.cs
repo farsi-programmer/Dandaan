@@ -32,5 +32,16 @@ PRIMARY KEY CLUSTERED ([Name] ASC, [Version] DESC)")]
         [Column]
         [DandaanColumn(Sql = "[nvarchar](1000) NOT NULL")]
         public string SQL { get; set; }
+
+        [Obsolete("For Linq2Sql.", true)]
+        public Table() { }
+
+        public Table(bool withDefaultValuesForInsert)
+        {
+            if (withDefaultValuesForInsert)
+            {
+                ;
+            }
+        }
     }
 }

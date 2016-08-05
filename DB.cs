@@ -452,7 +452,7 @@ namespace Dandaan
                 if (!File.Exists(path) || new FileInfo(path).Length == 0)
                     File.WriteAllBytes(path, item.Assembly);
 
-                var assembly = Reflection.LoadAssembly(path);
+                var assembly = Assemblies.Load(path);
                 var type = assembly.GetType($"{nameof(Dandaan)}.{nameof(DataContext)}{item.UserTableId}");
 
                 if (type.IsSubclassOf(DataContextType)) DataContextType = type;

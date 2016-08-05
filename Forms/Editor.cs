@@ -33,8 +33,8 @@ namespace Dandaan.Forms
 
             FormClosing += (_, __) =>
             {
-                foreach (Control item in editor.Controls)
-                    if (item.BackColor == UserControls.Editor<object>.EditColor)
+                foreach (Control c in editor.Controls)
+                    if (c.BackColor == UserControls.Editor<object>.EditColor)
                     {
                         if (MessageBox.Show("آیا مطمئن هستید؟", Text, MessageBoxButtons.YesNo) == DialogResult.No)
                             __.Cancel = true;

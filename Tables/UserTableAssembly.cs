@@ -17,10 +17,21 @@ PRIMARY KEY CLUSTERED CONSTRAINT [FK_" + nameof(UserTableAssembly) + "_" + nameo
 FOREIGN KEY REFERENCES [dbo].[" + nameof(UserTable) + "] ([" + nameof(UserTable.Id) + "])",
             Label = "فرم")]
         public int? UserTableId { get; set; }
-        
+
         [Column]
         [DandaanColumn(Sql = "[varbinary](max) NOT NULL",
             Label = "اسمبلی")]
         public byte[] Assembly { get; set; }
+
+        [Obsolete("For Linq2Sql.", true)]
+        public UserTableAssembly() { }
+
+        public UserTableAssembly(bool withDefaultValuesForInsert)
+        {
+            if (withDefaultValuesForInsert)
+            {
+                ;
+            }
+        }
     }
 }

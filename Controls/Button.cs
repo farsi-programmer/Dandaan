@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace Dandaan.Controls
 {
-    public partial class ButtonEdit : System.Windows.Forms.Button
+    public partial class Button: System.Windows.Forms.Button
     {
-        public ButtonEdit()
+        public Button()
         {
             InitializeComponent();
 
@@ -25,14 +25,8 @@ namespace Dandaan.Controls
 
         public object Obj { get; set; }
 
-        protected override void OnPaint(PaintEventArgs pe)
-        {
-            base.OnPaint(pe);
-        }
+        protected override void OnPaint(PaintEventArgs pe) => base.OnPaint(pe);
 
-        public void RaiseTextChanged()
-        {
-            OnTextChanged(new EventArgs());
-        }
+        public void RaiseTextChanged() => OnTextChanged(new EventArgs());
     }
 }
