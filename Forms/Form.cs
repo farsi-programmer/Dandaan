@@ -27,8 +27,7 @@ namespace Dandaan.Forms
 
         private void Form_Resize(object sender, EventArgs e)
         {
-            if (lastFormWindowState != WindowState && WindowState != FormWindowState.Minimized)
-                lastFormWindowState = WindowState;
+            if (lastFormWindowState != WindowState && WindowState != FormWindowState.Minimized) lastFormWindowState = WindowState;
         }
 
         protected object Invoke(Action act) => base.Invoke(act);
@@ -49,10 +48,7 @@ namespace Dandaan.Forms
             else f.Show();//(this); this keeps the form on top, which i don't like
         }
 
-        private void Form_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            formsToClose.Iter(_ => _?.Close());
-        }
+        private void Form_FormClosing(object sender, FormClosingEventArgs e) => formsToClose.Iter(_ => _?.Close());
     }
 }
 

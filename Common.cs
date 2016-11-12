@@ -24,11 +24,9 @@ namespace Dandaan
         [DllImport("user32.dll")]
         static extern bool GetCaretPos(out Point lpPoint);
 
-        public static Match Match(string input, string pattern) => 
-            Regex.Match(input, pattern, RegexOptions.IgnoreCase);
+        public static Match Match(string input, string pattern) => Regex.Match(input, pattern, RegexOptions.IgnoreCase);
 
-        public static bool IsMatch(string input, string pattern) =>
-            Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
+        public static bool IsMatch(string input, string pattern) => Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
 
         public static Action Action(Action act) => act;
 

@@ -8,6 +8,8 @@ namespace Dandaan
     {
         public const string Title = "مدیریت دندانپزشکی";
 
+        public const string Name = nameof(Dandaan);
+
         public static readonly string DataDirectory = Application.StartupPath;
 
         public static int UserId { get; set; }
@@ -16,16 +18,14 @@ namespace Dandaan
 
         public static void ReadLocalSettings()
         {
-            var name = nameof(Dandaan);
-            var filePath = DataDirectory + "\\" + name + ".txt";
-            if (File.Exists(filePath)) LocalSettings = Serializer.Deserialize<LocalSettings>(filePath, name);
+            var filePath = DataDirectory + "\\" + Name + ".txt";
+            if (File.Exists(filePath)) LocalSettings = Serializer.Deserialize<LocalSettings>(filePath, Name);
         }
 
         public static void WriteLocalSettings()
         {
-            var name = nameof(Dandaan);
-            var filePath = DataDirectory + "\\" + name + ".txt";
-            Serializer.Serialize(LocalSettings, filePath, name);
+            var filePath = DataDirectory + "\\" + Name + ".txt";
+            Serializer.Serialize(LocalSettings, filePath, Name);
         }
 
         /// <summary>
@@ -34,7 +34,9 @@ namespace Dandaan
         [STAThread]
         static void Main()
         {
+            // this is used in connection string
             AppDomain.CurrentDomain.SetData("DataDirectory", DataDirectory);
+
             Application.ThreadExit += Application_ThreadExit;
             Application.ApplicationExit += Application_ApplicationExit;
 
@@ -51,6 +53,11 @@ namespace Dandaan
             ;
         }
 
+        private static void Application_ApplicationExit(object sender, EventArgs e)
+        {
+            ;
+        }
+
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             // we never want to get here, it crashes the program
@@ -59,7 +66,7 @@ namespace Dandaan
 
             if (e.ExceptionObject is Exception)
             {
-                var ex = (Exception)e.ExceptionObject;
+                var ex = e.ExceptionObject as Exception;
 
                 while (ex.InnerException != null) ex = ex.InnerException;
 
@@ -68,7 +75,7 @@ namespace Dandaan
 
             DB.Log(str);
 
-            MessageBox.Show("برنامه با مشکل مواجه شده است:‏\r\n" + str, Title);
+            MessageBox.Show("برنامه با مشکل مواجه شده است  و باید بسته شود:‏\r\n" + str, Title);
         }
 
         private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
@@ -80,11 +87,6 @@ namespace Dandaan
             DB.Log(ex.ToString());
 
             new Forms.Message(Title, "برنامه با مشکل مواجه شده است:‏\r\n" + ex).Show();
-        }
-
-        private static void Application_ApplicationExit(object sender, EventArgs e)
-        {
-            ;
         }
     }
 }

@@ -11,9 +11,6 @@ using System.Windows.Forms;
 
 namespace Dandaan.Forms
 {
-    // for designer
-    //public class _ConnectDB : ConnectDB { }
-
     public partial class ConnectDB : Form
     {
         public ConnectDB()
@@ -21,8 +18,6 @@ namespace Dandaan.Forms
             InitializeComponent();
 
             CancelButton = button2;
-
-            //MessageBox.Show((LicenseManager.UsageMode == LicenseUsageMode.Designtime).ToString());
         }
 
         private void ConnectDB_FormClosing(object sender, FormClosingEventArgs e) => thread?.Abort();
@@ -33,20 +28,16 @@ namespace Dandaan.Forms
 
         private void connect()
         {
-            //MessageBox.Show(DesignMode.ToString());
-
             Program.ReadLocalSettings();
 
-            // i want something responsive, in case it takes
-            // a long time to connect to db
+            // i want something responsive, in case it takes a long time to connect to db
 
             textBox1.AppendText("در حال اتصال به دیتابیس، لطفا اندکی صبر کنید...\r\n");
 
-            // we use threads when we don't want to block the UI thread,
-            // or when we can speed up a task by using multiple threads
-            // (splitting it between multiple threads)
+            // we use threads when we don't want to block the UI thread, or when we can speed up a task
+            // by using multiple threads (splitting it between multiple threads)
 
-            thread = new Thread(() =>
+            thread = Common.Thread(() =>
             {
                 int tries = 0;
                 go:
