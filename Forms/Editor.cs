@@ -36,8 +36,7 @@ namespace Dandaan.Forms
                 foreach (Control c in editor.Controls)
                     if (c.BackColor == UserControls.Editor<object>.EditColor)
                     {
-                        if (MessageBox.Show("آیا مطمئن هستید؟", Text, MessageBoxButtons.YesNo) == DialogResult.No)
-                            __.Cancel = true;
+                        if (MessageBox.Show("آیا مطمئن هستید؟", Text, MessageBoxButtons.YesNo) == DialogResult.No) __.Cancel = true;
 
                         break;
                     }

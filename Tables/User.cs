@@ -46,12 +46,14 @@ PRIMARY KEY CLUSTERED")]
         public static int Login(string name, string password)
         {
             var user = SQL.SelectFirstWithWhere(new User(false) { Name = name, Password = password }, false);
+
             return user != null ? user.Id.Value : 0;
         }
 
         public static bool IsEnabled(int id)
         {
             var user = DB.DataContext.Users.Where(_ => _.Id == id).FirstOrDefault();
+
             return user != null ? (user.State == (int)UserState.Enabled) : false;
         }
 

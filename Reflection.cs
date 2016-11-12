@@ -13,20 +13,15 @@ namespace Dandaan
 {
     class Reflection
     {
-        public static ColumnAttribute GetColumnAttribute(MemberInfo m) => 
-            m.GetCustomAttributes<ColumnAttribute>().First();        
+        public static ColumnAttribute GetColumnAttribute(MemberInfo m) => m.GetCustomAttributes<ColumnAttribute>().First();
 
-        public static DandaanAttribute GetDandaanAttribute(MemberInfo m) =>        
-            m.GetCustomAttributes<DandaanAttribute>().First();
+        public static DandaanAttribute GetDandaanAttribute(MemberInfo m) => m.GetCustomAttributes<DandaanAttribute>().First();
 
-        public static DandaanColumnAttribute GetDandaanColumnAttribute(MemberInfo m) =>
-            (DandaanColumnAttribute)GetDandaanAttribute(m);
+        public static DandaanColumnAttribute GetDandaanColumnAttribute(MemberInfo m) => (DandaanColumnAttribute)GetDandaanAttribute(m);
 
-        public static DandaanAttribute GetDandaanAttribute(Type t) =>
-            t.GetCustomAttributes<DandaanAttribute>().First();
+        public static DandaanAttribute GetDandaanAttribute(Type t) => t.GetCustomAttributes<DandaanAttribute>().First();
 
-        public static DandaanColumnAttribute GetDandaanColumnAttribute(Type t) =>
-            (DandaanColumnAttribute)GetDandaanAttribute(t);
+        public static DandaanColumnAttribute GetDandaanColumnAttribute(Type t) => (DandaanColumnAttribute)GetDandaanAttribute(t);
 
         public static string GetDescriptionAttribute(MemberInfo m, bool shouldHave = true)
         {
@@ -70,12 +65,12 @@ namespace Dandaan
                 var dir = Path.GetDirectoryName(assembly.Location);
                 var u = typeof(Tables.UserTable).FullName;
 
-                foreach (var reference in assembly.GetReferencedAssemblies())
-                    if (reference.Name.StartsWith(u))
+                foreach (var _ in assembly.GetReferencedAssemblies())
+                    if (_.Name.StartsWith(u))
                     {
-                        var p = $"{dir}\\{reference.Name}.dll";
+                        var p = $"{dir}\\{_.Name}.dll";
 
-                        FromDbToFile(int.Parse(reference.Name.Substring(u.Length)), p);
+                        FromDbToFile(int.Parse(_.Name.Substring(u.Length)), p);
 
                         Load(p);
                     }

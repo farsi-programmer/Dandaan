@@ -17,7 +17,7 @@ namespace Dandaan.UserControls
             InitializeComponent();
         }
 
-        public DateTimeEditor(bool iranian):this()
+        public DateTimeEditor(bool iranian) : this()
         {
             //for (int i = 0; i < 60; i++) comboBoxSecond.Items.Add(i);
 
